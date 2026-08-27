@@ -1075,7 +1075,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     var btn=document.getElementById('trk-play-fourth');
     var cd=document.getElementById('trk-countdown');
     if(!btn||!cd)return;
-    var TARGET=new Date('2026-08-29T00:00:00');
+    var TARGET=new Date('2026-08-28T12:00:00');
     var enabled=false;
     function pad(n){return String(n).padStart(2,'0')}
     function tick(){
@@ -1093,7 +1093,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     function enablePlay(){
       var a=document.createElement('a');
       a.className='trk-play';
-      a.href='#'; /* TODO: 填 FLY 的播放链接 */
+      a.href='https://www.bilibili.com/video/BV1wC496oEf4/';
       a.target='_blank';
       a.rel='noopener';
       a.setAttribute('aria-label','播放 FLY');
