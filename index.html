@@ -249,6 +249,40 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .log-ver{color:#4dff88;font-weight:700;letter-spacing:.05em}
 .log-date{color:rgba(125,255,168,.4);font-size:10px}
 .log-item{color:rgba(125,255,168,.85);padding-left:14px}
+/* 故障风格条目：多层故障效果叠加（抖动位移 + 整行闪烁 + 双色残影切片 + 横扫亮线 + 噪点条纹） */
+.glitch{position:relative;animation:gJit .32s steps(2) infinite,gFlick 2.1s steps(1) infinite}
+.glitch::before,.glitch::after{position:absolute;top:0;left:14px;white-space:nowrap;pointer-events:none}
+.glitch::before{content:'+ 添加了一些.....·?';animation:gCutA 1.4s steps(4) infinite;text-shadow:-2px 0 rgba(255,64,160,.9),-5px 0 rgba(255,64,160,.4);opacity:.8}
+.glitch::after{content:'+ 添加了一些....][?';animation:gCutB 1.9s steps(4) infinite;text-shadow:2px 0 rgba(0,220,255,.9),5px 0 rgba(0,220,255,.4);opacity:.8}
+@keyframes gJit{0%,100%{transform:translate(0)}8%{transform:translate(-1px,1px) skewX(-2.5deg)}16%{transform:translate(1px,-1px) skewX(2deg)}24%{transform:translate(0,0)}42%{transform:translate(2px,0) skewX(-1deg)}50%{transform:translate(-1px,1px)}64%{transform:translate(0,0) skewX(1deg)}82%{transform:translate(-2px,-1px)}90%{transform:translate(1px,0)}}
+@keyframes gFlick{0%,100%{opacity:1}6%{opacity:1}7%{opacity:.4}8%{opacity:1}44%{opacity:1}45%{opacity:.65}46%{opacity:1}75%{opacity:1}76%{opacity:.5}77%{opacity:1}}
+@keyframes gCutA{0%{clip-path:inset(12% 0 64% 0)}25%{clip-path:inset(70% 0 8% 0)}50%{clip-path:inset(100% 0 0 0)}75%{clip-path:inset(40% 0 38% 0)}100%{clip-path:inset(4% 0 80% 0)}}
+@keyframes gCutB{0%{clip-path:inset(100% 0 0 0)}25%{clip-path:inset(24% 0 58% 0)}50%{clip-path:inset(78% 0 4% 0)}75%{clip-path:inset(52% 0 30% 0)}100%{clip-path:inset(8% 0 72% 0)}}
+.glitch .g-bar{position:absolute;left:6px;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),rgba(0,255,190,.5),transparent);mix-blend-mode:screen;animation:gBar 1.6s linear infinite;pointer-events:none}
+.glitch .g-bar.d2{animation-delay:.9s}
+@keyframes gBar{0%{top:-4px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:calc(100% + 4px);opacity:0}}
+.glitch .g-noise{position:absolute;left:6px;right:0;top:0;bottom:0;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.16) 5px 6px,transparent 6px 11px);mix-blend-mode:overlay;animation:gNoise 1.1s steps(2) infinite;pointer-events:none}
+@keyframes gNoise{0%{opacity:0;transform:translateY(0)}12%{opacity:.8}30%{opacity:.2}52%{opacity:.65;transform:translateY(-2px)}80%{opacity:.3}100%{opacity:.05}}
+/* 版本详情彩蛋：伪入侵警告（接管整个弹窗） */
+.hack-ov{position:absolute;inset:0;z-index:10;background:#05000a;overflow:hidden;padding:30px 26px;transition:opacity .6s ease}
+.hack-ov[hidden]{display:none}
+.hack-ov::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,60,100,.07) 0 2px,transparent 2px 6px);animation:hackNoise .5s steps(2) infinite;pointer-events:none}
+/* 收尾态：噪点与扫描光束关闭，画面归于平静 */
+.hack-ov.calm::before{display:none}
+.hack-ov.calm .hack-beam{display:none}
+@keyframes hackNoise{0%{transform:translateY(0)}50%{transform:translateY(-3px)}100%{transform:translateY(2px)}}
+.hack-beam{position:absolute;left:0;right:0;height:64px;top:-64px;background:linear-gradient(180deg,transparent,rgba(255,70,110,.28),transparent);animation:hackBeam 1.3s linear infinite;pointer-events:none}
+@keyframes hackBeam{to{top:100%}}
+.hack-txt{position:relative;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2.05;color:#ff5277;text-shadow:0 0 10px rgba(255,60,100,.55);letter-spacing:.06em}
+.hack-txt div:first-child{color:#ffd166;text-shadow:0 0 10px rgba(255,209,102,.5)}
+.hack-txt .hack-red{color:#a3142c!important;text-shadow:0 0 14px rgba(255,40,70,.6)!important}
+.hack-txt .hack-joke{color:#7dffa8;text-shadow:0 0 10px rgba(90,255,160,.5)}
+@media(max-width:720px){.hack-txt{font-size:11px}}
+/* 入侵期间：弹窗整体抖动 + 正文红蓝错位撕裂 */
+.log-modal .log-card.hack{animation:hackShake .3s steps(2) infinite}
+@keyframes hackShake{0%,100%{transform:translate(0)}10%{transform:translate(-2px,1px) skewX(1.2deg)}20%{transform:translate(2px,-1px)}30%{transform:translate(-1px,-2px) skewX(-1deg)}40%{transform:translate(1px,2px)}50%{transform:translate(0)}60%{transform:translate(-2px,-1px)}70%{transform:translate(2px,1px) skewX(.6deg)}80%{transform:translate(-1px,1px)}90%{transform:translate(1px,-2px)}}
+.log-modal .log-card.hack .log-body{animation:hackJit .26s steps(2) infinite;text-shadow:-2px 0 rgba(255,40,90,.8),2px 0 rgba(0,210,255,.8)}
+@keyframes hackJit{0%{transform:translate(0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(0)}}
 .log-foot{margin-top:16px;letter-spacing:.1em}
 @media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
 /* 整个网页 CRT 模式：只缩放内容容器（U 型缓动）。fixed 背景与导航全程原地不动，零漂移零重排 */
@@ -456,7 +490,7 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© 2026 <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.2.0</button>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.2.1</button>
   </footer>
 </main>
 
@@ -469,6 +503,8 @@ html.crt-lock{overflow:hidden}
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">v3.2.1</span><span class="log-date">2026-08-29</span></div>
+      <div class="log-item glitch" data-text="+ 添加了一些......?"><i class="g-bar"></i><i class="g-bar d2"></i><i class="g-noise"></i>+ 添加了一些......?</div>
       <div class="log-ver-row"><span class="log-ver">v3.2.0</span><span class="log-date">2026-08-28</span></div>
       <div class="log-item">+ 新增 COMMUNITY 粉丝互动区</div>
       <div class="log-item">+ 接入 Waline 免登录留言板</div>
@@ -486,6 +522,10 @@ html.crt-lock{overflow:hidden}
       <div class="log-item">+ MAKE STUDIO 工作室官网上线</div>
       <div class="log-line dim log-foot">— 神秘的东西，还在某个角落。</div>
     </div>
+    <div class="hack-ov" id="hack-ov" hidden>
+      <div class="hack-beam"></div>
+      <div class="hack-txt" id="hack-text"></div>
+    </div>
   </div>
 </div>
 
@@ -502,12 +542,94 @@ html.crt-lock{overflow:hidden}
   var modal=document.getElementById('log-modal');
   var entry=document.getElementById('ver-entry');
   var close=document.getElementById('log-close');
-  function open(){if(!modal)return;modal.hidden=false;requestAnimationFrame(function(){modal.classList.add('show')})}
-  function closeModal(){if(!modal)return;modal.classList.remove('show');setTimeout(function(){modal.hidden=true},300)}
+  function open(){if(!modal)return;modal.hidden=false;requestAnimationFrame(function(){modal.classList.add('show')});if(!hackPlayed){clearTimeout(hackTimer);hackTimer=setTimeout(hackPlay,2000)}}
+  function closeModal(){if(!modal)return;clearTimeout(hackTimer);if(hBusy)hackCancel();modal.classList.remove('show');setTimeout(function(){modal.hidden=true},300)}
   if(entry)entry.addEventListener('click',open);
   if(close)close.addEventListener('click',closeModal);
   if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal&&!modal.hidden)closeModal()});
+
+  /* 版本详情彩蛋：伪入侵警告（完整播完一次后不再触发）
+     流程：入侵 -> 逐行打字 -> 清场（删掉所有前文+关掉全部故障）-> 平静打出最后一句 -> 谢幕 */
+  var HKEY='make-studio-hack';
+  var hackPlayed=false;
+  try{if(localStorage.getItem(HKEY)==='1')hackPlayed=true}catch(e){}
+  var hackLines=['> SIGNAL INTERCEPTED…','> 检测到未授权接入…','> 正在解析会话密文……','> 防火墙已绕过','> 追踪信号已锁定','> 身份核验中… 核验失败'];
+  var calmLine='正     在     强     制     获     取     位     置';
+  var jokeLine='> 开玩笑的，欢迎回来 :]';
+  var hov=document.getElementById('hack-ov');
+  var htxt=document.getElementById('hack-text');
+  var hcard=document.querySelector('.log-card');
+  var hackTimer=null,hRun=0,hBusy=false;
+  function hType(el,str,spd,next){
+    var i=0,t=setInterval(function(){
+      i++;
+      el.textContent=str.slice(0,i);
+      if(i>=str.length){clearInterval(t);setTimeout(next,420)}
+    },spd);
+  }
+  function hackCalm(run){
+    if(run!==hRun)return;
+    /* 清场：删掉前文，关掉弹窗抖动、正文残影、噪点、扫描光束 */
+    htxt.innerHTML='';
+    hcard.classList.remove('hack');
+    hov.classList.add('calm');
+    /* 第一句：深红慢速 */
+    var d1=document.createElement('div');
+    d1.className='hack-red';
+    htxt.appendChild(d1);
+    hType(d1,calmLine,170,function(){
+      if(run!==hRun)return;
+      /* 恐怖停顿片刻，再打出玩笑反转句 */
+      setTimeout(function(){
+        if(run!==hRun)return;
+        var d2=document.createElement('div');
+        d2.className='hack-joke';
+        htxt.appendChild(d2);
+        hType(d2,jokeLine,70,function(){hackEnd(run)});
+      },1000);
+    });
+  }
+  function hackEnd(run){
+    if(run!==hRun)return;
+    setTimeout(function(){
+      if(run!==hRun)return;
+      hov.hidden=true;hov.classList.remove('calm');
+      htxt.innerHTML='';
+      hBusy=false;
+    },1600);
+    try{localStorage.setItem(HKEY,'1')}catch(e){}
+  }
+  function hackPlay(){
+    if(hackPlayed||hBusy||!hov||!htxt||!hcard||modal.hidden)return;
+    var run=++hRun;
+    hBusy=true;
+    hcard.classList.add('hack');
+    hov.classList.remove('calm');
+    hov.hidden=false;
+    htxt.innerHTML='';
+    var li=0;
+    function next(){
+      if(run!==hRun)return;
+      if(li>=hackLines.length){setTimeout(function(){if(run===hRun)hackCalm(run)},700);return}
+      var d=document.createElement('div');
+      htxt.appendChild(d);
+      hType(d,hackLines[li++],36,next);
+    }
+    next();
+  }
+  function hackCancel(){
+    hRun++;
+    if(hcard)hcard.classList.remove('hack');
+    if(hov){hov.hidden=true;hov.classList.remove('calm');hov.style.opacity='1'}
+    if(htxt)htxt.innerHTML='';
+    hBusy=false;
+  }
+  /* 切换窗口（切走浏览器标签页）时彩蛋画面渐隐，切回时再渐进显现 */
+  document.addEventListener('visibilitychange',function(){
+    if(!hov||hov.hidden)return;
+    hov.style.opacity=document.hidden?'0':'1';
+  });
 
   var KEY='make-studio-crt';
   var overlay=document.getElementById('crt-overlay');
