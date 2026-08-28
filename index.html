@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@100&amp;family=Caveat:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
 button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline:none;color:inherit}
@@ -187,10 +188,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .trk-play svg{width:18px;height:18px;fill:currentColor;margin-left:2px;transition:transform .3s ease}
 .trk-play:hover{background:linear-gradient(135deg,var(--c-accent),var(--c-pink));border-color:transparent;color:#fff;box-shadow:0 6px 24px rgba(236,72,153,.35)}
 .trk-play:hover svg{transform:scale(1.1)}
-.trk-play.disabled{color:var(--c-fg-mute);border-color:var(--c-line);background:transparent;cursor:not-allowed;opacity:.5;position:relative}
-.trk-play.disabled svg{fill:currentColor}
-.trk-countdown{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);padding:6px 12px;background:#000;border:1px solid rgba(77,255,136,.4);color:#7dffa8;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;box-shadow:0 4px 16px rgba(0,0,0,.5);z-index:10;border-radius:2px}
-.trk-play.disabled:hover .trk-countdown{opacity:1;visibility:visible}
 
 .mem{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;margin-bottom:10px;border:1px solid var(--c-line);border-radius:14px;background:var(--c-card-bg);transition:all .3s ease;border-left:3px solid transparent}
 .mem:hover{background:var(--c-card-bg-hover);border-color:rgba(167,139,250,.2);border-left-color:var(--c-purple);transform:translateX(4px)}
@@ -217,6 +214,11 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 #copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .sec-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-fg-dim);letter-spacing:.1em;margin-left:10px;padding:2px 8px;border:1px solid rgba(129,140,248,.25);border-radius:999px}
 [data-theme="light"] .sec-hint{border-color:rgba(91,91,214,.25)}
+
+/* 粉丝互动区 */
+.comment-wrap{margin-top:40px;border:1px solid var(--c-line);border-radius:14px;padding:20px;background:var(--c-card-bg)}
+.comment-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--c-fg-dim);margin-bottom:16px;text-transform:uppercase}
+.waline{min-height:120px}
 
 .foot-wrap{margin-top:100px;padding:36px 32px 28px;border-top:1px solid var(--c-line);text-align:center}
 .foot{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);letter-spacing:.18em;text-transform:uppercase}
@@ -256,89 +258,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
-/* 解密入口 */
-.puzzle-entry{display:inline-flex;align-items:center;gap:7px;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.4em;color:var(--c-fg-mute);transition:color .3s ease,text-shadow .3s ease;padding:5px 10px;position:relative}
-.puzzle-entry span{display:inline-block;transition:transform .3s ease}
-.puzzle-entry:hover{color:var(--c-cyan);text-shadow:0 0 14px rgba(34,211,238,.55)}
-.puzzle-entry:hover span{transform:translateY(-2px)}
-.puzzle-entry:hover span:nth-child(2){transition-delay:.05s}
-.puzzle-entry:hover span:nth-child(3){transition-delay:.1s}
-/* 全屏 MS-DOS 解密终端 */
-.terminal{position:fixed;inset:0;z-index:1000;background:#000;opacity:0;pointer-events:none;transition:opacity .5s ease}
-.terminal.on{opacity:1;pointer-events:auto}
-.terminal[hidden]{display:none}
-.dos-screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#000;overflow:hidden}
-/* CRT 扫描线 */
-.dos-screen::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.16) 2px,rgba(0,0,0,.16) 4px);z-index:3}
-/* 磷光暗角 */
-.dos-screen::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,42,14,.6) 100%);z-index:2}
-.term-body{position:relative;z-index:4;flex:1;overflow-y:auto;padding:30px 34px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.72;color:#7dffa8;text-shadow:0 0 7px rgba(90,255,160,.35);display:flex;flex-direction:column;gap:3px;scrollbar-width:none}
-.term-body::-webkit-scrollbar{display:none}
-.term-line{white-space:pre-wrap;word-break:break-word;min-height:1.2em}
-.term-line.dim{color:rgba(125,255,168,.42)}
-.term-line.hint{color:#a8ffce}
-.term-line.ok{color:#4dff88}
-.term-line.err{color:#ff6b6b}
-.term-line.accent{color:#66e0ff}
-.term-line .k{color:#ff9ad5}
-/* 块状光标 */
-.term-cursor{display:inline-block;width:.6em;height:1.15em;background:#7dffa8;vertical-align:text-bottom;margin-left:1px;animation:dosBlink .85s step-end infinite}
-@keyframes dosBlink{0%,100%{opacity:1}50%{opacity:0}}
-.term-input-row{position:relative;z-index:4;display:flex;align-items:center;gap:10px;padding:14px 34px 24px;flex-shrink:0}
-.term-prompt{font-family:'JetBrains Mono',monospace;font-size:14px;color:#7dffa8;white-space:nowrap;flex-shrink:0;text-shadow:0 0 7px rgba(90,255,160,.35)}
-#term-input{flex:1;background:none;border:none;outline:none;color:#7dffa8;font-family:'JetBrains Mono',monospace;font-size:14px;caret-color:#7dffa8;text-shadow:0 0 7px rgba(90,255,160,.35)}
-#term-input::placeholder{color:rgba(125,255,168,.25)}
-.term-btn{display:inline-block;margin-top:6px;padding:8px 18px;border:1px solid rgba(77,255,136,.5);border-radius:4px;background:rgba(77,255,136,.06);color:#4dff88;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;cursor:pointer;transition:all .25s}
-.term-btn:hover{background:rgba(77,255,136,.16);box-shadow:0 0 20px rgba(77,255,136,.3)}
-.term-wait{display:inline-flex;align-items:center;gap:10px;color:#4dff88;font-family:'JetBrains Mono',monospace;font-size:13px}
-.term-wait .pulse{width:8px;height:8px;border-radius:50%;background:#4dff88;animation:waitPulse 1.6s ease-in-out infinite}
-@keyframes waitPulse{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
-/* 开机 logo glitch */
-.dos-boot{position:absolute;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;gap:18px}
-.dos-boot .boot-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(24px,6vw,56px);letter-spacing:.28em;color:#7dffa8;text-shadow:0 0 18px rgba(90,255,160,.6);animation:bootGlitch 1.3s steps(1) infinite}
-.dos-boot .boot-sub{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.4em;color:rgba(125,255,168,.5)}
-@keyframes bootGlitch{0%,88%{opacity:1;transform:none}89%{opacity:.35;transform:translateX(-3px) skewX(10deg)}91%{opacity:1;transform:translateX(2px)}93%{opacity:.5;transform:translateX(-2px) skewX(-8deg)}95%{opacity:1;transform:none}}
-/* 关机渐出 */
-.terminal.off{opacity:0;pointer-events:none}
-/* 第四首歌（隐藏曲目）揭幕仪式 */
-.trk-fourth{display:none;position:relative}
-.trk-fourth.released{display:flex;animation:revealCeremony 1.8s cubic-bezier(.16,1,.3,1) both;box-shadow:0 0 32px rgba(129,140,248,.45),0 0 80px rgba(34,211,238,.3);z-index:5}
-.trk-fourth .trk-cover{background:linear-gradient(135deg,#22d3ee,#818cf8);color:#fff;border-color:transparent}
-.trk-fourth .trk-num{color:var(--c-cyan);border-color:rgba(34,211,238,.4)}
-.trk-fourth.released::before{content:'';position:absolute;inset:0;z-index:3;border-radius:16px;background:linear-gradient(180deg,#2a1a3e 0%,#160d28 100%);transform-origin:top center;animation:curtainLift 1.5s cubic-bezier(.7,0,.3,1) .35s forwards}
-.trk-fourth.released::after{content:'';position:absolute;inset:-1px;z-index:4;border-radius:16px;background:radial-gradient(circle at 50% 20%,rgba(255,213,79,.55),transparent 65%);opacity:0;pointer-events:none;animation:goldFlash 1.1s ease-out 1.7s}
-@keyframes revealCeremony{0%{opacity:0;transform:translateY(36px) scale(.9);filter:brightness(.5)}45%{opacity:1;transform:translateY(0) scale(1.02);filter:brightness(1.3)}70%{transform:scale(1);filter:brightness(1.15)}100%{opacity:1;transform:none;filter:brightness(1.1)}}
-@keyframes curtainLift{0%{transform:scaleY(1);opacity:1}80%{opacity:1}100%{transform:scaleY(0);opacity:0}}
-@keyframes goldFlash{0%{opacity:0;filter:blur(8px)}30%{opacity:1;filter:blur(0)}100%{opacity:0;filter:blur(14px)}}
-/* 全屏聚焦遮罩 */
-.reveal-spotlight{position:fixed;inset:0;z-index:850;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 0%,transparent 34%,rgba(0,0,0,.7) 68%);opacity:0;transition:opacity .6s ease}
-.reveal-spotlight.show{opacity:1}
-@media(max-width:720px){
-  .term-body{padding:20px;font-size:12px}
-  .term-input-row{padding:12px 20px 20px}
-}
-/* 创始人寄语弹窗（DOS 风格） */
-.founder-modal{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.85);opacity:0;pointer-events:none;transition:opacity .3s ease}
-.founder-modal[hidden]{display:none}
-.founder-modal.show{opacity:1;pointer-events:auto}
-.founder-card{width:min(460px,100%);background:#000;border:1px solid rgba(77,255,136,.4);padding:20px 22px;box-shadow:0 0 32px rgba(77,255,136,.14),inset 0 0 28px rgba(77,255,136,.04);transform:translateY(14px) scale(.97);transition:transform .3s cubic-bezier(.16,1,.3,1);position:relative}
-.founder-modal.show .founder-card{transform:none}
-.founder-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.16) 2px,rgba(0,0,0,.16) 4px)}
-.founder-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(77,255,136,.2);position:relative;z-index:1}
-.founder-av{width:40px;height:40px;background:#000;color:#7dffa8;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;flex-shrink:0;border:1px solid rgba(77,255,136,.4);text-shadow:0 0 8px rgba(90,255,160,.5);box-shadow:0 0 10px rgba(77,255,136,.15)}
-.founder-id{flex:1;min-width:0}
-.founder-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#7dffa8;text-shadow:0 0 8px rgba(90,255,160,.4)}
-.founder-role{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(125,255,168,.5);margin-top:3px;letter-spacing:.12em}
-.founder-close{background:none;border:none;color:rgba(125,255,168,.6);cursor:pointer;font-size:16px;line-height:1;padding:4px 6px;transition:color .2s;text-shadow:0 0 6px rgba(90,255,160,.4);position:relative;z-index:1}
-.founder-close:hover{color:#7dffa8}
-.founder-text{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9;color:#7dffa8;text-shadow:0 0 6px rgba(90,255,160,.35);position:relative;z-index:1}
-/* 首次停留轻提示 */
-.hint-tip{position:fixed;right:24px;bottom:24px;z-index:900;display:flex;align-items:center;gap:14px;padding:12px 16px;background:#000;border:1px solid rgba(77,255,136,.4);color:#7dffa8;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;text-shadow:0 0 6px rgba(90,255,160,.35);box-shadow:0 8px 28px rgba(0,0,0,.55);opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:2px}
-.hint-tip[hidden]{display:none}
-.hint-tip.show{opacity:1;transform:none;pointer-events:auto}
-.hint-tip-close{background:none;border:none;color:rgba(125,255,168,.6);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;transition:color .2s}
-.hint-tip-close:hover{color:#7dffa8}
-@media(max-width:720px){.hint-tip{right:16px;bottom:16px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -360,6 +279,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <li><a href="#sec-works">Works</a></li>
       <li><a href="#sec-mem">Members</a></li>
       <li><a href="#sec-con">Contact</a></li>
+      <li><a href="#sec-com">Community</a></li>
     </ul>
     <button class="theme-toggle" id="theme-toggle" aria-label="切换主题">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -423,11 +343,11 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="trk-i"><div class="trk-n">无解</div><div class="trk-m">2026 · 03:11 <span class="tag mv">MV</span> <span class="tag">BILIBILI</span></div></div>
       <a class="trk-play" href="https://b23.tv/R9LYYzB" target="_blank" rel="noopener" aria-label="观看无解MV"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"></path></svg></a>
     </div>
-    <div class="trk trk-fourth" id="trk-fourth">
+    <div class="trk">
       <div class="trk-num">04</div>
       <div class="trk-cover"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".9"><path d="M12 3a9 9 0 0 1 9 9h-2a7 7 0 0 0-14 0H3a9 9 0 0 1 9-9z"></path><path d="M12 7a5 5 0 0 1 5 5h-2a3 3 0 0 0-6 0H7a5 5 0 0 1 5-5z"></path><circle cx="12" cy="14" r="1.5"></circle></svg></div>
-      <div class="trk-i"><div class="trk-n">FLY</div><div class="trk-m">2026 <span class="tag">HIDDEN</span> <span class="tag mv">UNRELEASED</span></div></div>
-      <span class="trk-play disabled" id="trk-play-fourth" aria-disabled="true" title="未发布"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg><span class="trk-countdown" id="trk-countdown"></span></span>
+      <div class="trk-i"><div class="trk-n">FLY</div><div class="trk-m">2026 <span class="tag">SINGLE</span> <span class="tag">BILIBILI</span></div></div>
+      <a class="trk-play" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="播放 FLY"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
     </div>
   </section>
 
@@ -465,92 +385,27 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     </div>
   </section>
 
+  <section class="sec" id="sec-com">
+    <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
+    <div class="con-grid">
+      <div class="con-card" data-copy="538460781">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--c-yellow)"><path d="M12 3a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1v3h10v-3h1a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2V7a4 4 0 0 0-4-4z"></path><circle cx="9" cy="13" r="1" fill="currentColor"></circle><circle cx="15" cy="13" r="1" fill="currentColor"></circle></svg>
+        <div><div class="con-lbl">QQ 粉丝群</div><div class="con-val">538460781</div></div>
+      </div>
+    </div>
+    <div class="comment-wrap">
+      <div class="comment-title">留言区 · 说说你想听的</div>
+      <div class="waline" id="waline"></div>
+    </div>
+  </section>
+
   <footer class="foot-wrap">
     <p class="foot">© 2026 <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="puzzle-entry" id="puzzle-entry" aria-label="隐藏解密入口"><span>?</span><span>?</span><span>?</span></button>
   </footer>
 </main>
 
-<div class="terminal" id="terminal" hidden>
-  <div class="dos-screen">
-    <div class="dos-boot" id="dos-boot">
-      <div class="boot-logo">MAKE STUDIO</div>
-      <div class="boot-sub">INITIALIZING SYSTEM…</div>
-    </div>
-    <div class="term-body" id="term-body"></div>
-    <div class="term-input-row">
-      <span class="term-prompt" id="term-prompt">C:\MAKE\STUDIO&gt;</span>
-      <input id="term-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="输入命令" />
-    </div>
-  </div>
-</div>
-
-<div class="reveal-spotlight" id="reveal-spotlight"></div>
-
-<div class="founder-modal" id="founder-modal" hidden>
-  <div class="founder-card">
-    <div class="founder-head">
-      <span class="founder-av">D</span>
-      <div class="founder-id">
-        <div class="founder-name">dangao_w</div>
-        <div class="founder-role">创始人 · FOUNDER</div>
-      </div>
-      <button class="founder-close" id="founder-close" aria-label="关闭">✕</button>
-    </div>
-    <p class="founder-text">恭喜你解锁了全部解密内容！带着你解密出来的东西发到我的邮箱，可以给你一点小福利哦~（笑）</p>
-  </div>
-</div>
-
-<div class="hint-tip" id="hint-tip" hidden>
-  <span>&gt; 页脚，似乎藏着什么。</span>
-  <button class="hint-tip-close" id="hint-tip-close" aria-label="关闭">✕</button>
-</div>
-
 <script>
 (function(){'use strict';
-
-/* 控制台彩蛋：警告偷看源码的人 */
-(function(){
-  var art=[
-    '██╗    ██╗ █████╗ ██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗',
-    '██║    ██║██╔══██╗██╔══██╗████╗  ██║██║████╗  ██║██╔════╝',
-    '██║ █╗ ██║███████║██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗',
-    '██║███╗██║██╔══██║██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║',
-    '╚███╔███╔╝██║  ██║██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝',
-    ' ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝'
-  ].join('\n');
-  console.log('%c'+art,'color:#ff6b6b;font-weight:bold;font-family:monospace;');
-  console.log('%c喂，偷看源码可不算解密。','color:#ff6b6b;font-size:16px;font-weight:bold;font-family:monospace;');
-  console.log('%c答案不在这里——它藏在你能看见的页面里。','color:#7dffa8;font-size:13px;font-family:monospace;');
-  console.log('%c回去，回到终端，用你自己的脑子。','color:rgba(125,255,168,.7);font-size:12px;font-family:monospace;');
-  console.log('%c— MAKE STUDIO','color:rgba(125,255,168,.45);font-size:11px;font-family:monospace;');
-})();
-
-/* 首次停留轻提示 */
-(function(){
-  var KEY='make-studio-hinted';
-  var el=document.getElementById('hint-tip');
-  var close=document.getElementById('hint-tip-close');
-  if(!el)return;
-  try{if(localStorage.getItem(KEY)==='1')return}catch(e){}
-  var shown=false;
-  function hide(){
-    el.classList.remove('show');
-    setTimeout(function(){el.hidden=true},500);
-  }
-  setTimeout(function(){
-    if(shown)return;
-    shown=true;
-    el.hidden=false;
-    requestAnimationFrame(function(){el.classList.add('show')});
-    try{localStorage.setItem(KEY,'1')}catch(e){}
-    setTimeout(hide,9000);
-  },15000);
-  if(close)close.addEventListener('click',function(){
-    hide();
-    try{localStorage.setItem(KEY,'1')}catch(e){}
-  });
-})();
 
 /* Theme toggle */
 (function(){
@@ -726,471 +581,19 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   });
 })();
 
-/* Puzzle / Decrypt terminal (MS-DOS) */
-(function(){
-  var term=document.getElementById('terminal');
-  var body=document.getElementById('term-body');
-  var input=document.getElementById('term-input');
-  var entry=document.getElementById('puzzle-entry');
-  var bootEl=document.getElementById('dos-boot');
-  if(!term||!body||!input)return;
-
-  var stage=0, busy=true, released=false;
-  var gen=0, shutdownTimer=null;
-  var BOOTED_KEY='make-studio-booted';
-  var STAGE_KEY='make-studio-stage';
-  var RELEASED_KEY='make-studio-released';
-  var booted=false;
-  try{booted=localStorage.getItem(BOOTED_KEY)==='1'}catch(e){}
-  /* 读取持久化进度 */
-  try{
-    var savedStage=parseInt(localStorage.getItem(STAGE_KEY)||'0',10);
-    if(savedStage>=1&&savedStage<=4)stage=savedStage;
-    released=localStorage.getItem(RELEASED_KEY)==='1';
-  }catch(e){}
-  var EMAIL='makestudio_qz@outlook.com';
-  var SIGNAL_CODE=(function(){try{return btoa('MAKE FOUR')}catch(e){return 'TUFLRSBGT1VS'}})();
-  var UNLOCK_CODE='OJSWYZLBONSQ'; /* base32("release")，站长回传给解密用户的发布代码 */
-  function saveProgress(){try{localStorage.setItem(STAGE_KEY,String(stage))}catch(e){}}
-  /* 若第四首歌已解锁，刷新后仍显示 */
-  if(released){
-    var _ft=document.getElementById('trk-fourth');
-    if(_ft)_ft.classList.add('released');
-  }
-
-  /* ---- 音频 ---- */
-  var actx=null;
-  function ensureAudio(){
-    if(!actx){var AC=window.AudioContext||window.webkitAudioContext;if(AC)actx=new AC()}
-    if(actx&&actx.state==='suspended')actx.resume();
-  }
-  function tone(type,f0,f1,dur,vol,delay){
-    if(!actx)return;
-    var t=actx.currentTime+(delay||0);
-    var o=actx.createOscillator(),g=actx.createGain();
-    o.type=type||'sine';
-    o.frequency.setValueAtTime(f0,t);
-    if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol||0.08,t+0.03);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g);g.connect(actx.destination);
-    o.start(t);o.stop(t+dur+0.06);
-  }
-  function noiseBuffer(){
-    if(actx.__noise)return actx.__noise;
-    var len=Math.floor(actx.sampleRate*0.4);
-    var buf=actx.createBuffer(1,len,actx.sampleRate);
-    var d=buf.getChannelData(0);
-    for(var i=0;i<len;i++)d[i]=Math.random()*2-1;
-    actx.__noise=buf;
-    return buf;
-  }
-  function noise(dur,vol,freq,delay){
-    if(!actx)return;
-    var t=actx.currentTime+(delay||0);
-    var src=actx.createBufferSource();src.buffer=noiseBuffer();
-    var f=actx.createBiquadFilter();f.type='bandpass';f.frequency.value=freq||5000;f.Q.value=0.8;
-    var g=actx.createGain();
-    g.gain.setValueAtTime(vol||0.1,t);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    src.connect(f);f.connect(g);g.connect(actx.destination);
-    src.start(t);src.stop(t+dur+0.05);
-  }
-  /* 老电脑开机：CRT 通电嗡 + 消磁嗞 + BIOS 自检哔 */
-  function playBoot(){
-    ensureAudio();
-    tone('sine',45,60,0.8,0.07,0);      /* 显示器/电源低频电流嗡 */
-    noise(0.16,0.14,7500,0.02);          /* CRT 高压消磁"嗞" */
-    tone('sine',55,45,0.7,0.05,0.05);    /* 硬盘低鸣 */
-    tone('square',980,980,0.14,0.1,0.4); /* BIOS POST 自检通过"哔" */
-  }
-  /* 老电脑关机：CRT 放电嗞 + 电源嗡熄灭 */
-  function playShutdown(){
-    ensureAudio();
-    noise(0.35,0.16,9500,0);             /* CRT 高压放电"嗞——" */
-    tone('sine',60,38,0.6,0.07,0);       /* 电源电流嗡熄灭 */
-    tone('square',1200,1200,0.06,0.05,0.12); /* 断电"嗒" */
-  }
-  function playRelease(){ensureAudio();[523.25,659.25,783.99,1046.5].forEach(function(f,i){tone('triangle',f,null,0.34,0.1,i*0.12)})}
-
-  /* ---- 输出 ---- */
-  function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
-  function typeAsync(text,cls){
-    var g=gen;
-    return new Promise(function(res){
-      if(g!==gen||!text){res();return}
-      var d=document.createElement('div');
-      d.className='term-line'+(cls?' '+cls:'');
-      body.appendChild(d);
-      var cur=document.createElement('span');cur.className='term-cursor';d.appendChild(cur);
-      var i=0;
-      (function step(){
-        if(g!==gen){d.remove();body.scrollTop=body.scrollHeight;res();return}
-        if(i>=text.length){cur.remove();body.scrollTop=body.scrollHeight;res();return}
-        d.insertBefore(document.createTextNode(text.charAt(i)),cur);
-        i++;body.scrollTop=body.scrollHeight;
-        setTimeout(step,14+Math.random()*16);
-      })();
-    });
-  }
-  function line(cls,text){
-    var d=document.createElement('div');
-    d.className='term-line'+(cls?' '+cls:'');
-    d.textContent=text||'';
-    body.appendChild(d);body.scrollTop=body.scrollHeight;
-    return d;
-  }
-  function clearScreen(){body.innerHTML=''}
-  function focus(){setTimeout(function(){input.focus()},30)}
-
-  /* ---- 启动序列（老电脑 BIOS 自检） ---- */
-  async function memoryTest(g){
-    var d=document.createElement('div');
-    d.className='term-line';
-    body.appendChild(d);
-    d.appendChild(document.createTextNode('Memory Testing : '));
-    var num=document.createElement('span');
-    num.textContent='0K';
-    d.appendChild(num);
-    var cur=document.createElement('span');cur.className='term-cursor';d.appendChild(cur);
-    var total=262144,val=0,step=2048;
-    while(val<total){
-      if(g!==gen){d.remove();return}
-      val=Math.min(total,val+step);
-      num.textContent=val+'K';
-      body.scrollTop=body.scrollHeight;
-      step=Math.min(32768,step+768);
-      await wait(Math.max(7,30-val/16384));
-    }
-    cur.remove();
-    var ok=document.createElement('span');ok.className='ok';ok.textContent=' OK';
-    d.appendChild(ok);
-    body.scrollTop=body.scrollHeight;
-  }
-  async function detect(label,result,g,resultCls){
-    if(g!==gen)return;
-    var d=document.createElement('div');
-    d.className='term-line';
-    body.appendChild(d);
-    var cur=document.createElement('span');cur.className='term-cursor';d.appendChild(cur);
-    for(var i=0;i<label.length;i++){
-      if(g!==gen){d.remove();return}
-      d.insertBefore(document.createTextNode(label.charAt(i)),cur);
-      body.scrollTop=body.scrollHeight;
-      await wait(11);
-    }
-    cur.remove();
-    await wait(240);
-    if(g!==gen)return;
-    var s=document.createElement('span');s.className=resultCls||'ok';s.textContent=result;
-    d.appendChild(s);
-    if(result!=='None'){
-      var ok=document.createElement('span');ok.className='ok';ok.textContent='  OK';
-      d.appendChild(ok);
-    }
-    body.scrollTop=body.scrollHeight;
-  }
-  async function bootSequence(g){
-    if(g!==gen)return;
-    if(booted){
-      /* 已启动过：跳过开机动画，直接进入系统（但仍播启动音） */
-      playBoot();
-      await typeAsync('MAKE STUDIO OS [Version 4.0.2026]','ok');
-      await typeAsync('');
-      await enterDecrypt(g);
-      return;
-    }
-    bootEl.style.display='flex';
-    playBoot();
-    await wait(2200);
-    if(g!==gen){bootEl.style.display='none';return}
-    bootEl.style.display='none';
-    /* 显卡 BIOS */
-    await typeAsync('MAKE STUDIO VGA BIOS V2.0');
-    await typeAsync('(C) 1998 MAKE STUDIO, INC.','dim');
-    await typeAsync('');
-    /* 主板 BIOS */
-    await typeAsync('Award Modular BIOS v4.51PG, An Energy Star Ally');
-    await typeAsync('Copyright (C) 1984-98, Award Software, Inc.','dim');
-    await typeAsync('');
-    await typeAsync('MAKE STUDIO 440BX REV 1.0');
-    await typeAsync('');
-    await typeAsync('Main Processor : INTEL PENTIUM III 733MHz');
-    await typeAsync('L2 Cache : 256K');
-    await memoryTest(g);
-    await typeAsync('Keyboard : Detected');
-    await typeAsync('');
-    await typeAsync('Award Plug and Play BIOS Extension v1.0A','dim');
-    await detect('Initialize Plug and Play Cards ... ','PNP Init Completed',g);
-    await typeAsync('');
-    await detect('Detecting Primary Master   ... ','MAKE OS DISK',g);
-    await detect('Detecting Primary Slave    ... ','None',g,'dim');
-    await detect('Detecting Secondary Master ... ','AUDIO ARCHIVE',g);
-    await detect('Detecting Secondary Slave  ... ','None',g,'dim');
-    await typeAsync('');
-    await typeAsync('S.M.A.R.T. Status BAD, Backup and Replace','err');
-    await typeAsync('WARNING: Immediately back-up your data and replace your hard disk drive.','err');
-    await typeAsync('A failure may be imminent.','err');
-    await wait(450);
-    await typeAsync('');
-    await typeAsync('Verifying DMI Pool Data ............');
-    await typeAsync('');
-    await typeAsync('Boot from CD-ROM :');
-    await wait(280);
-    await typeAsync('Boot from Hard Disk :');
-    await typeAsync('');
-    await detect('Detecting Floppy Drive A: ... ','1.44M',g);
-    await detect('Detecting Floppy Drive B: ... ','None',g,'dim');
-    await typeAsync('');
-    await detect('Initializing Audio Engine ... ','48kHz / 24bit',g);
-    await typeAsync('Loading MAKE OS ...........');
-    await wait(600);
-    if(g!==gen)return;
-    clearScreen();
-    await wait(250);
-    await typeAsync('MAKE STUDIO OS [Version 4.0.2026]','ok');
-    await typeAsync('');
-    if(g!==gen)return;
-    try{localStorage.setItem(BOOTED_KEY,'1')}catch(e){}
-    booted=true;
-    await enterDecrypt(g);
-  }
-
-  /* 根据持久化进度进入解密阶段 */
-  async function enterDecrypt(g){
-    if(g!==gen)return;
-    await typeAsync('这间工作室，藏着三段没有署名的回响。','dim');
-    await typeAsync('输入 help 查看可用指令。','hint');
-    if(released){
-      await typeAsync('');
-      await typeAsync('所有进度均已完成。','ok');
-      await typeAsync('第四首，即将释出。','dim');
-      return;
-    }
-    if(stage===4){
-      await showDone();
-    }else if(stage>=1&&stage<=3){
-      await showStage(stage);
-    }else{
-      stage=1;
-      saveProgress();
-      await showStage(1);
-    }
-  }
-
-  /* ---- 谜题 ---- */
-  async function showStage(s){
-    await typeAsync('');
-    if(s===1){
-      await typeAsync('── 信号 1 / 3 ──');
-      await typeAsync('「Much luvv And Keep going can MAKE Everything」');
-      await typeAsync('颜色，是它留给你的暗号。','dim');
-    }else if(s===2){
-      await typeAsync('── 信号 2 / 3 ──');
-      await typeAsync('碎片已确认。','ok');
-      await typeAsync('灰烬。枷锁。无解。');
-      await typeAsync('名单的末尾，似乎空着一个位置。','dim');
-    }else if(s===3){
-      await typeAsync('── 信号 3 / 3 ──');
-      await typeAsync('碎片已确认。','ok');
-      await typeAsync('碎片集齐：MAKE + FOUR');
-      await typeAsync('把它们交给 encode，让它替你开口。','dim');
-    }
-  }
-  async function showHelp(){
-    await typeAsync('');
-    await typeAsync('可用指令：');
-    await typeAsync('  help   — 显示帮助');
-    await typeAsync('  clue   — 获取当前关卡提示');
-    await typeAsync('  clear  — 清空屏幕');
-    await typeAsync('  exit   — 关机');
-    await typeAsync('每一关的答案，就是下一关的钥匙。','dim');
-  }
-  async function showClue(){
-    if(stage===1)await typeAsync('提示：回到最初那段话，看谁穿着不一样的颜色。','hint');
-    else if(stage===2)await typeAsync('提示：去看看展示柜里的作品，数到三，别停。','hint');
-    else if(stage===3)await typeAsync('提示：两个词之间留一个空格，再交给那套老编码。','hint');
-    else if(stage===4)await typeAsync('提示：把你得到的寄出去，回信里藏着下一步。','hint');
-    else await typeAsync('没有需要提示的了。','dim');
-  }
-  async function showDone(){
-    await typeAsync('');
-    await typeAsync('── 通道已开启 ──');
-    await typeAsync('所有进度均已完成。','ok');
-    await typeAsync('把这串信号码发往：');
-    await typeAsync(EMAIL,'accent');
-    await typeAsync('等待下一步的回应。','dim');
-    var d=document.createElement('div');
-    d.className='term-line';
-    d.innerHTML='<button class="term-btn" id="term-send">发送信号 ▸</button>';
-    body.appendChild(d);body.scrollTop=body.scrollHeight;
-    var btn=document.getElementById('term-send');
-    if(btn)btn.addEventListener('click',function(){
-      var subj=encodeURIComponent(SIGNAL_CODE);
-      var mailBody=encodeURIComponent('I found the fourth track.\n\nSignal: '+SIGNAL_CODE+'\n\n— from the terminal');
-      window.location.href='mailto:'+EMAIL+'?subject='+subj+'&body='+mailBody;
-      line('','');line('ok','信号已发出 · 等待回应…');
-    });
-  }
-  async function releaseTrack(){
-    await typeAsync('');
-    await typeAsync('── 代码验证通过 ──','ok');
-    await typeAsync('正在解密隐藏曲目…');
-    await wait(800);
-    /* 关机动画 */
-    await typeAsync('');
-    await typeAsync('Shutting down...','dim');
-    await wait(300);
-    playShutdown();
-    term.classList.add('off');
-    await wait(520);
-    term.classList.remove('off','on');
-    term.hidden=true;
-    document.body.style.overflow='';
-    var works=document.getElementById('sec-works');
-    if(works)works.scrollIntoView({behavior:'smooth',block:'center'});
-    setTimeout(function(){
-      var t=document.getElementById('trk-fourth');
-      if(t)t.classList.add('released');
-      playRelease();
-      var sp=document.getElementById('reveal-spotlight');
-      if(sp)sp.classList.add('show');
-      setTimeout(function(){
-        if(sp)sp.classList.remove('show');
-        setTimeout(showFounderModal,400);
-      },2800);
-    },400);
-    released=true;
-    try{localStorage.setItem(RELEASED_KEY,'1')}catch(e){}
-  }
-  function showFounderModal(){
-    var m=document.getElementById('founder-modal');
-    if(!m)return;
-    m.hidden=false;
-    requestAnimationFrame(function(){m.classList.add('show')});
-  }
-  /* 第四首歌播放倒计时 */
-  (function(){
-    var btn=document.getElementById('trk-play-fourth');
-    var cd=document.getElementById('trk-countdown');
-    if(!btn||!cd)return;
-    var TARGET=new Date('2026-08-28T12:00:00');
-    var enabled=false;
-    function pad(n){return String(n).padStart(2,'0')}
-    function tick(){
-      var diff=TARGET-Date.now();
-      if(diff<=0){
-        if(!enabled){enabled=true;enablePlay()}
-        return;
-      }
-      var d=Math.floor(diff/86400000);
-      var h=Math.floor((diff%86400000)/3600000);
-      var m=Math.floor((diff%3600000)/60000);
-      var s=Math.floor((diff%60000)/1000);
-      cd.textContent='释出倒计时 '+d+'天 '+pad(h)+':'+pad(m)+':'+pad(s);
-    }
-    function enablePlay(){
-      var a=document.createElement('a');
-      a.className='trk-play';
-      a.href='https://www.bilibili.com/video/BV1wC496oEf4/';
-      a.target='_blank';
-      a.rel='noopener';
-      a.setAttribute('aria-label','播放 FLY');
-      a.innerHTML='<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
-      btn.parentNode.replaceChild(a,btn);
-    }
-    tick();
-    setInterval(tick,1000);
-  })();
-  async function handle(cmd){
-    cmd=(cmd||'').trim();
-    if(!cmd||busy)return;
-    var lc=cmd.toLowerCase();
-    busy=true;
-    try{
-      if(lc==='help'){await showHelp();return}
-      if(lc==='clue'){await showClue();return}
-      if(lc==='clear'){clearScreen();return}
-      if(lc==='exit'||lc==='quit'||lc==='shutdown'){await shutdown();return}
-      if(lc===UNLOCK_CODE.toLowerCase()){
-        if(released)await typeAsync('隐藏曲目已发布。','dim');
-        else await releaseTrack();
-        return;
-      }
-      if(stage===1){
-        if(lc==='make'){await typeAsync('✓ 正确。第一枚碎片已确认。','ok');stage=2;saveProgress();await showStage(2)}
-        else await typeAsync('✗ 不是这个。再读一遍那段话。','err');
-        return;
-      }
-      if(stage===2){
-        if(lc==='four'||lc==='4'){await typeAsync('✓ 正确。第二枚碎片已确认。','ok');stage=3;saveProgress();await showStage(3)}
-        else await typeAsync('✗ 不对。再看看那份名单。','err');
-        return;
-      }
-      if(stage===3){
-        if(lc==='encode'){await typeAsync('正在编码 MAKE FOUR → base64 …');await typeAsync('信号码：'+SIGNAL_CODE,'accent');stage=4;saveProgress();await showDone()}
-        else await typeAsync('✗ 不对。给它一条指令。','err');
-        return;
-      }
-      await typeAsync('未识别的指令，输入 help 查看。','dim');
-    }finally{
-      busy=false;
-      if(!term.hidden)focus();
-    }
-  }
-  function openTerm(){
-    gen++;
-    var g=gen;
-    clearTimeout(shutdownTimer);
-    ensureAudio();
-    stage=0;
-    term.hidden=false;
-    term.classList.remove('off');
-    document.body.style.overflow='hidden';
-    requestAnimationFrame(function(){if(g===gen)term.classList.add('on')});
-    clearScreen();
-    busy=true;input.disabled=true;
-    bootSequence(g).then(function(){
-      if(g!==gen)return;
-      busy=false;input.disabled=false;focus();
-    });
-  }
-  function shutdown(){
-    gen++;
-    return new Promise(function(res){
-      busy=true;
-      playShutdown();
-      term.classList.add('off');
-      clearTimeout(shutdownTimer);
-      shutdownTimer=setTimeout(function(){
-        term.classList.remove('off','on');
-        term.hidden=true;
-        document.body.style.overflow='';
-        busy=false;
-        res();
-      },520);
-    });
-  }
-  if(entry)entry.addEventListener('click',openTerm);
-  input.addEventListener('keydown',function(e){
-    if(e.key==='Enter'){var v=input.value;input.value='';handle(v)}
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'&&!term.hidden)shutdown();
-  });
-  var fModal=document.getElementById('founder-modal');
-  var fClose=document.getElementById('founder-close');
-  function closeFounder(){
-    if(!fModal)return;
-    fModal.classList.remove('show');
-    setTimeout(function(){fModal.hidden=true},350);
-  }
-  if(fClose)fClose.addEventListener('click',closeFounder);
-  if(fModal)fModal.addEventListener('click',function(e){if(e.target===fModal)closeFounder()});
 })();
+</script>
 
-})();
+<script type="module">
+/* Waline 评论（免登录） */
+import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+init({
+  el: '#waline',
+  serverURL: 'https://makestudio-2mzj52234-dangaow.vercel.app',
+  lang: 'zh-CN',
+  dark: 'html[data-theme="dark"]',
+  locale: { placeholder: '说说你想听的…' }
+});
 </script>
 
 
