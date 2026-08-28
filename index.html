@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark" class=""><head>
+<html lang="zh-CN" data-theme="dark"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MAKE STUDIO // 工作室</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@100&amp;family=Caveat:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <style>
@@ -27,8 +27,6 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-scroll-thumb:rgba(129,140,248,.25);
   --c-scroll-thumb-hover:rgba(129,140,248,.45);
   --c-selection-bg:rgba(129,140,248,.4);--c-selection-fg:#fff;
-  --c-particle-line:'rgba(168,85,247,';
-  --c-particle-core:rgba(255,255,255,.8);
   --c-toast-bg:rgba(34,211,238,.15);--c-toast-border:rgba(34,211,238,.4);
   --c-corner:rgba(34,211,238,.2);--c-corner-hover:rgba(34,211,238,.25);
   --c-cover-bg:#0a0a0a;--c-cover-icon:rgba(255,255,255,.2);
@@ -51,15 +49,13 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-scroll-thumb:rgba(91,91,214,.25);
   --c-scroll-thumb-hover:rgba(91,91,214,.45);
   --c-selection-bg:rgba(91,91,214,.25);--c-selection-fg:#1c1c28;
-  --c-particle-line:'rgba(109,40,217,';
-  --c-particle-core:rgba(28,28,40,.45);
   --c-toast-bg:rgba(14,116,144,.12);--c-toast-border:rgba(14,116,144,.3);
   --c-corner:rgba(14,116,144,.2);--c-corner-hover:rgba(14,116,144,.25);
   --c-cover-bg:#c5c0b8;--c-cover-icon:rgba(0,0,0,.2);
   --c-secline:rgba(109,40,217,.2);
 }
 textarea{-webkit-user-select:text!important;user-select:text!important}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:var(--c-scroll-thumb) transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:var(--c-scroll-thumb) transparent;scrollbar-gutter:stable}
 body{background:var(--c-bg);color:var(--c-fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;transition:background-color .5s ease,color .5s ease}
 a{color:inherit}
 a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius:4px}
@@ -226,6 +222,65 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .foot-luvv{color:var(--c-pink)}
 .foot-fl{color:var(--c-yellow);font-weight:600}
 
+/* 更新日志入口 */
+.ver-entry{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--c-fg-mute);margin-top:14px;padding:2px 8px;border:1px solid transparent;border-radius:999px;transition:all .3s ease;opacity:.55}
+.ver-entry:hover{color:var(--c-cyan);border-color:rgba(34,211,238,.35);opacity:1;text-shadow:0 0 12px rgba(34,211,238,.5)}
+/* 更新日志弹窗（DOS 风格） */
+.log-modal{position:fixed;inset:0;z-index:1150;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.85);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.log-modal[hidden]{display:none}
+.log-modal.show{opacity:1;pointer-events:auto}
+.log-card{width:min(520px,100%);max-height:80vh;overflow:hidden;background:#000;border:1px solid rgba(77,255,136,.4);box-shadow:0 0 40px rgba(77,255,136,.15),inset 0 0 30px rgba(77,255,136,.04);transform:translateY(14px) scale(.97);transition:transform .3s cubic-bezier(.16,1,.3,1);position:relative;display:flex;flex-direction:column}
+.log-modal.show .log-card{transform:none;animation:crtFlicker 6s steps(1) infinite}
+@keyframes crtFlicker{0%,88%,100%{opacity:1}89%{opacity:.78}90%{opacity:1}94%{opacity:.88}95%{opacity:1}}
+.log-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);z-index:2}
+/* CRT 动态扫描线（移动亮线） */
+.log-card::after{content:'';position:absolute;left:0;right:0;height:64px;top:-64px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.14),rgba(90,255,160,.06),transparent);pointer-events:none;z-index:3;animation:crtScan 3.2s linear infinite}
+@keyframes crtScan{0%{top:-64px}100%{top:100%}}
+.log-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(77,255,136,.2);position:relative;z-index:1}
+.log-title{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#7dffa8;text-shadow:0 0 8px rgba(90,255,160,.4)}
+.log-close{background:none;border:none;color:rgba(125,255,168,.6);cursor:pointer;font-size:16px;line-height:1;padding:4px 6px;transition:color .2s}
+.log-close:hover{color:#7dffa8}
+.log-body{padding:16px 18px 20px;overflow-y:auto;position:relative;z-index:1;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:#7dffa8;text-shadow:0 0 6px rgba(90,255,160,.3)}
+.log-body::-webkit-scrollbar{width:5px}
+.log-body::-webkit-scrollbar-thumb{background:rgba(77,255,136,.3);border-radius:999px}
+.log-line{color:#7dffa8}
+.log-line.dim{color:rgba(125,255,168,.45)}
+.log-ver-row{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+.log-ver{color:#4dff88;font-weight:700;letter-spacing:.05em}
+.log-date{color:rgba(125,255,168,.4);font-size:10px}
+.log-item{color:rgba(125,255,168,.85);padding-left:14px}
+.log-foot{margin-top:16px;letter-spacing:.1em}
+@media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
+/* 整个网页 CRT 模式：只缩放内容容器（U 型缓动）。fixed 背景与导航全程原地不动，零漂移零重排 */
+#crt-scale{will-change:transform;transition:transform .95s cubic-bezier(.65,0,.35,1)}
+#crt-scale.s{transform:scale(.86)}
+/* CRT 序列期间冻结页面全部动画（粒子由 JS 暂停；覆盖层子树靠例外规则保持活力） */
+body.crt-frozen *{animation-play-state:paused!important}
+body.crt-frozen .crt-overlay,body.crt-frozen .crt-overlay *{animation-play-state:running!important}
+/* 动态背景层：CRT 期间淡出隐场，把舞台留给屏幕；结束时 2s 渐显回归 */
+body.crt-frozen #bg-canvas,body.crt-frozen .aurora,body.crt-frozen .grid-overlay{transition:opacity 2s ease}
+body.crt-hidebg #bg-canvas,body.crt-hidebg .aurora,body.crt-hidebg .grid-overlay{opacity:0}
+/* CRT 播放期间锁定滚动（JS 挂到 html 上） */
+html.crt-lock{overflow:hidden}
+/* CRT 覆盖层（锚定视口：黑白滤镜 + 凸面 + 扫描线 + 彩蛋文字，网站内容透过来）。
+   滤镜与缩放错峰执行：缩放只在全彩/黑白静止画面上进行，全程没有“变灰 + 缩放”同帧重绘 */
+.crt-overlay{position:fixed;inset:0;z-index:1300;pointer-events:none;opacity:0;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .7s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease}
+.crt-overlay[hidden]{display:none}
+/* 进入：先淡入 CRT 框架（此时只有缩放、滤镜未动）；画面安定后由 .g 单独渐变变灰 */
+.crt-overlay.on{opacity:1;pointer-events:auto;user-select:none}
+.crt-overlay.g{backdrop-filter:grayscale(1) contrast(1.07) brightness(.84);-webkit-backdrop-filter:grayscale(1) contrast(1.07) brightness(.84)}
+/* 凸面玻璃高光 + 球面暗角（整个视口凸出来） */
+.crt-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(255,255,255,.08),transparent 58%),radial-gradient(ellipse at 50% 50%,transparent 52%,rgba(0,0,0,.68) 100%);z-index:1}
+/* 静态扫描线 */
+.crt-overlay::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 4px);z-index:2}
+/* 动态扫描亮线 */
+.crt-scanbeam{position:absolute;left:0;right:0;height:70px;top:-70px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.14),transparent);animation:crtBeam 2.8s linear infinite;z-index:3}
+@keyframes crtBeam{0%{top:-70px}100%{top:100%}}
+/* 彩蛋文字 */
+.crt-text{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:clamp(16px,3.5vw,26px);color:#7dffa8;letter-spacing:.12em;text-shadow:0 0 12px rgba(90,255,160,.85),0 0 38px rgba(90,255,160,.4)}
+.crt-text .crt-line{opacity:0;transition:opacity .25s ease}
+.crt-text .crt-line.show{opacity:1}
+
 @media(min-width:721px) and (max-width:1024px){
   #ct{max-width:680px;padding:90px 28px 60px}.sec{margin-bottom:100px}.pl{font-size:36px}.nav-links{gap:28px}
 }
@@ -262,7 +317,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 </head>
 <body>
 
-<canvas id="bg-canvas" width="1085" height="830" style="width: 1085px; height: 830px;"></canvas>
+<canvas id="bg-canvas"></canvas>
 <div class="aurora a1"></div>
 <div class="aurora a2"></div>
 <div class="aurora a3"></div>
@@ -271,7 +326,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 
 <div id="copy-toast">复制成功 ✓</div>
 
-<nav id="nav" style="transform: translateY(0px); padding-top: calc(20.0px + env(safe-area-inset-top)); padding-bottom: 20px; --nav-bg-alpha: 0.000; --nav-blur: 0px;">
+<nav id="nav">
   <div class="nav-logo">MAKE / STUDIO</div>
   <div class="nav-right">
     <ul class="nav-links">
@@ -301,7 +356,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <div>EST. 2023</div>
   </div>
   <div class="hero-title-wrap">
-    <h1 id="h-t" style="transform: translateY(0px); opacity: 1; font-size: 166px; animation: 12s ease 0s infinite normal none running hueShift;">MAKE STUDIO</h1>
+    <h1 id="h-t">MAKE STUDIO</h1>
     <p class="hero-tagline">heartbeat, <span class="hl">feelings</span>, songs.</p>
   </div>
   <div class="scroll-hint">
@@ -401,11 +456,162 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 
   <footer class="foot-wrap">
     <p class="foot">© 2026 <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.2.0</button>
   </footer>
 </main>
 
+<div class="log-modal" id="log-modal" hidden>
+  <div class="log-card">
+    <div class="log-head">
+      <span class="log-title">CHANGELOG.TXT</span>
+      <button class="log-close" id="log-close" aria-label="关闭">✕</button>
+    </div>
+    <div class="log-body">
+      <div class="log-line">MAKE STUDIO // 更新日志</div>
+      <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">v3.2.0</span><span class="log-date">2026-08-28</span></div>
+      <div class="log-item">+ 新增 COMMUNITY 粉丝互动区</div>
+      <div class="log-item">+ 接入 Waline 免登录留言板</div>
+      <div class="log-item">+ QQ 粉丝群入口</div>
+      <div class="log-ver-row"><span class="log-ver">v3.1.0</span><span class="log-date">2026-08-26</span></div>
+      <div class="log-item">+ 新增白色主题（浅色模式）</div>
+      <div class="log-item">* 优化性能，压缩代码体积</div>
+      <div class="log-ver-row"><span class="log-ver">v3.0.0</span><span class="log-date">2026-08-25</span></div>
+      <div class="log-item">+ 第四首单曲《FLY》正式发布</div>
+      <div class="log-item">- 解密活动结束，信号通道关闭</div>
+      <div class="log-ver-row"><span class="log-ver">v2.0.0</span><span class="log-date">2026-08-24</span></div>
+      <div class="log-item">+ 隐藏解密终端（MAKE STUDIO OS）上线</div>
+      <div class="log-item">+ 三层信号谜题</div>
+      <div class="log-ver-row"><span class="log-ver">v1.0.0</span><span class="log-date">2026</span></div>
+      <div class="log-item">+ MAKE STUDIO 工作室官网上线</div>
+      <div class="log-line dim log-foot">— 神秘的东西，还在某个角落。</div>
+    </div>
+  </div>
+</div>
+
+<div class="crt-overlay" id="crt-overlay" hidden>
+  <div class="crt-scanbeam"></div>
+  <div class="crt-text" id="crt-text"></div>
+</div>
+
 <script>
 (function(){'use strict';
+
+/* 更新日志 + 神秘痕迹 */
+(function(){
+  var modal=document.getElementById('log-modal');
+  var entry=document.getElementById('ver-entry');
+  var close=document.getElementById('log-close');
+  function open(){if(!modal)return;modal.hidden=false;requestAnimationFrame(function(){modal.classList.add('show')})}
+  function closeModal(){if(!modal)return;modal.classList.remove('show');setTimeout(function(){modal.hidden=true},300)}
+  if(entry)entry.addEventListener('click',open);
+  if(close)close.addEventListener('click',closeModal);
+  if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal&&!modal.hidden)closeModal()});
+
+  var KEY='make-studio-crt';
+  var overlay=document.getElementById('crt-overlay');
+  var text=document.getElementById('crt-text');
+  if(!overlay||!text)return;
+  try{if(localStorage.getItem(KEY)==='1')return}catch(e){}
+  var lines=['C:\\MAKE>_','> ACCESS GRANTED','signal lost...','> who is there?'];
+  var lineEls=[];
+  lines.forEach(function(l){
+    var d=document.createElement('div');
+    d.className='crt-line';
+    text.appendChild(d);
+    lineEls.push(d);
+  });
+  function typeLine(el,str,done){
+    var i=0;
+    var timer=setInterval(function(){
+      i++;
+      el.textContent=str.slice(0,i);
+      if(i>=str.length){clearInterval(timer);setTimeout(done,1000)}
+    },85);
+  }
+  function runLine(idx){
+    if(idx>=lineEls.length){
+      setTimeout(function(){exit()},3000);
+      return;
+    }
+    lineEls[idx].classList.add('show');
+    typeLine(lineEls[idx],lines[idx],function(){runLine(idx+1)});
+  }
+  /* 进入 CRT：锁定滚动与交互；只缩放内容容器，背景与导航零漂移 */
+  var docEl=document.documentElement;
+  var ct=document.getElementById('ct');
+  var nav=document.getElementById('nav');
+  var wrap=null;
+  function lockUI(){
+    docEl.classList.add('crt-lock');
+    if(ct)ct.inert=true;
+    if(nav)nav.inert=true;
+    if(document.activeElement)document.activeElement.blur();
+  }
+  function unlockUI(){
+    docEl.classList.remove('crt-lock');
+    if(ct)ct.inert=false;
+    if(nav)nav.inert=false;
+  }
+  function freezeBg(){
+    document.body.classList.add('crt-frozen');
+    if(window.__bgPause)window.__bgPause(true);
+  }
+  function unfreezeBg(){
+    document.body.classList.remove('crt-frozen');
+    if(window.__bgPause)window.__bgPause(false);
+  }
+  function enter(){
+    /* 触发即写入标记：即使中途刷新，彩蛋也不再播放第二次 */
+    try{localStorage.setItem(KEY,'1')}catch(e){}
+    var y=window.scrollY||window.pageYOffset||0;
+    var vh=window.innerHeight;
+    lockUI();
+    freezeBg();
+    document.body.classList.add('crt-hidebg'); /* 动态背景层淡出隐场 */
+    /* 把页面内容装进独立容器：缩放只作用于内容，fixed 背景层/导航全程原地不动 */
+    wrap=document.createElement('div');
+    wrap.id='crt-scale';
+    wrap.style.transformOrigin='50% '+(y+vh/2)+'px';
+    var hero=document.getElementById('hero');
+    if(hero)wrap.appendChild(hero);
+    if(ct)wrap.appendChild(ct);
+    document.body.appendChild(wrap);
+    overlay.hidden=false;
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        wrap.classList.add('s');      /* U 型拉远（静止全彩画面，无滤镜重绘） */
+        overlay.classList.add('on');  /* 淡入 CRT 框架 */
+        /* 缩放安定后画面已完全静止，再渐变变灰并开始逐行打字 */
+        setTimeout(function(){
+          overlay.classList.add('g');
+          runLine(0);
+        },1000);
+      });
+    });
+  }
+  function exit(done){
+    /* 第一步：画面静止时先把颜色还原（0.45s），此时没有任何变换在跑 */
+    overlay.classList.remove('g');
+    setTimeout(function(){
+      /* 第二步：拉回原位 + 淡出 CRT 框架（静止黑白画面，无滤镜重绘） */
+      wrap.classList.remove('s');
+      overlay.classList.remove('on');
+      setTimeout(function(){
+        overlay.hidden=true;
+        /* 先撤隐场：背景层开始 2s 渐显（此时冻结类还在，渐显时长恒定 2s） */
+        document.body.classList.remove('crt-hidebg');
+        /* 下一帧恢复背景动画：边渐显边动，无跳变 */
+        requestAnimationFrame(unfreezeBg);
+        unlockUI();
+        wrap.style.willChange='auto';
+        if(done)done();
+      },1000);
+    },500);
+  }
+  setTimeout(enter,6000);
+})();
 
 /* Theme toggle */
 (function(){
@@ -484,21 +690,25 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   resize();window.addEventListener('resize',resize);
   if(window.visualViewport)window.visualViewport.addEventListener('resize',resize);
   var running=false;
+  var paused=false;
+  window.__bgPause=function(b){paused=b};
   function draw(){
-    var COLS=getCols(),coreCol=getCoreColor(),lineCol=getLineColor();
-    ctx.clearRect(0,0,W,H);
-    for(var i=0;i<pt.length;i++){
-      var p=pt[i];p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
-      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*p.gr);
-      g.addColorStop(0,COLS[p.cIdx]+(p.a*.6)+')');g.addColorStop(1,COLS[p.cIdx]+'0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.gr,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=coreCol;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-    }
-    ctx.lineWidth=.5*dpr;
-    for(var i=0;i<pt.length;i++)for(var j=i+1;j<pt.length;j++){
-      var a=pt[i],b=pt[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
-      if(d2<maxD2){ctx.strokeStyle=lineCol+((1-Math.sqrt(d2)/maxD)*.2)+')';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+    if(!paused){
+      var COLS=getCols(),coreCol=getCoreColor(),lineCol=getLineColor();
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<pt.length;i++){
+        var p=pt[i];p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+        var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*p.gr);
+        g.addColorStop(0,COLS[p.cIdx]+(p.a*.6)+')');g.addColorStop(1,COLS[p.cIdx]+'0)');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.gr,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=coreCol;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      }
+      ctx.lineWidth=.5*dpr;
+      for(var i=0;i<pt.length;i++)for(var j=i+1;j<pt.length;j++){
+        var a=pt[i],b=pt[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
+        if(d2<maxD2){ctx.strokeStyle=lineCol+((1-Math.sqrt(d2)/maxD)*.2)+')';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+      }
     }
     requestAnimationFrame(draw);
   }
