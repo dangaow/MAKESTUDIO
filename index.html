@@ -249,20 +249,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .log-ver{color:#4dff88;font-weight:700;letter-spacing:.05em}
 .log-date{color:rgba(125,255,168,.4);font-size:10px}
 .log-item{color:rgba(125,255,168,.85);padding-left:14px}
-/* 故障风格条目：多层故障效果叠加（抖动位移 + 整行闪烁 + 双色残影切片 + 横扫亮线 + 噪点条纹） */
-.glitch{position:relative;animation:gJit .32s steps(2) infinite,gFlick 2.1s steps(1) infinite}
-.glitch::before,.glitch::after{position:absolute;top:0;left:14px;white-space:nowrap;pointer-events:none}
-.glitch::before{content:'+ 添加了一些.....·?';animation:gCutA 1.4s steps(4) infinite;text-shadow:-2px 0 rgba(255,64,160,.9),-5px 0 rgba(255,64,160,.4);opacity:.8}
-.glitch::after{content:'+ 添加了一些....][?';animation:gCutB 1.9s steps(4) infinite;text-shadow:2px 0 rgba(0,220,255,.9),5px 0 rgba(0,220,255,.4);opacity:.8}
-@keyframes gJit{0%,100%{transform:translate(0)}8%{transform:translate(-1px,1px) skewX(-2.5deg)}16%{transform:translate(1px,-1px) skewX(2deg)}24%{transform:translate(0,0)}42%{transform:translate(2px,0) skewX(-1deg)}50%{transform:translate(-1px,1px)}64%{transform:translate(0,0) skewX(1deg)}82%{transform:translate(-2px,-1px)}90%{transform:translate(1px,0)}}
-@keyframes gFlick{0%,100%{opacity:1}6%{opacity:1}7%{opacity:.4}8%{opacity:1}44%{opacity:1}45%{opacity:.65}46%{opacity:1}75%{opacity:1}76%{opacity:.5}77%{opacity:1}}
-@keyframes gCutA{0%{clip-path:inset(12% 0 64% 0)}25%{clip-path:inset(70% 0 8% 0)}50%{clip-path:inset(100% 0 0 0)}75%{clip-path:inset(40% 0 38% 0)}100%{clip-path:inset(4% 0 80% 0)}}
-@keyframes gCutB{0%{clip-path:inset(100% 0 0 0)}25%{clip-path:inset(24% 0 58% 0)}50%{clip-path:inset(78% 0 4% 0)}75%{clip-path:inset(52% 0 30% 0)}100%{clip-path:inset(8% 0 72% 0)}}
-.glitch .g-bar{position:absolute;left:6px;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),rgba(0,255,190,.5),transparent);mix-blend-mode:screen;animation:gBar 1.6s linear infinite;pointer-events:none}
-.glitch .g-bar.d2{animation-delay:.9s}
-@keyframes gBar{0%{top:-4px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:calc(100% + 4px);opacity:0}}
-.glitch .g-noise{position:absolute;left:6px;right:0;top:0;bottom:0;background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(255,255,255,.16) 5px 6px,transparent 6px 11px);mix-blend-mode:overlay;animation:gNoise 1.1s steps(2) infinite;pointer-events:none}
-@keyframes gNoise{0%{opacity:0;transform:translateY(0)}12%{opacity:.8}30%{opacity:.2}52%{opacity:.65;transform:translateY(-2px)}80%{opacity:.3}100%{opacity:.05}}
 /* 版本详情彩蛋：伪入侵警告（接管整个弹窗） */
 .hack-ov{position:absolute;inset:0;z-index:10;background:#05000a;overflow:hidden;padding:30px 26px;transition:opacity .6s ease}
 .hack-ov[hidden]{display:none}
@@ -285,6 +271,62 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes hackJit{0%{transform:translate(0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(0)}}
 .log-foot{margin-top:16px;letter-spacing:.1em}
 @media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
+/* ============ 站内播放：底部迷你音乐条 ============ */
+#mp-bar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,150%);z-index:1100;width:min(540px,calc(100vw - 32px));padding:12px 16px 9px;border:1px solid var(--c-line);border-radius:18px;background:rgba(12,12,26,.72);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 18px 50px rgba(0,0,0,.45);transition:transform .55s cubic-bezier(.16,1,.3,1),background-color .5s ease,border-color .5s ease}
+[data-theme="light"] #mp-bar{background:rgba(255,255,255,.8);box-shadow:0 18px 50px rgba(0,0,0,.18)}
+#mp-bar.on{transform:translate(-50%,0)}
+.mp-main{display:flex;align-items:center;gap:14px}
+.mp-cover{width:44px;height:44px;border-radius:10px;overflow:hidden;border:1px solid var(--c-line);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--c-cover-bg);transition:box-shadow .4s ease}
+.mp-cover img{width:100%;height:100%;object-fit:cover;will-change:transform;transition:transform .45s ease}
+#mp-bar.playing .mp-cover img{animation:mpSpin 14s linear infinite}
+#mp-bar.playing .mp-cover{box-shadow:0 0 0 3px rgba(129,140,248,.22),0 4px 16px rgba(0,0,0,.3)}
+@keyframes mpSpin{from{transform:scale(1.45) rotate(0deg)}to{transform:scale(1.45) rotate(360deg)}}
+.mp-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.mp-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--c-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .5s ease}
+.mp-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);letter-spacing:.08em;display:flex;align-items:center;gap:8px;transition:color .5s ease}
+.mp-sub .mp-dot{width:4px;height:4px;border-radius:50%;background:var(--c-green);box-shadow:0 0 6px var(--c-green);opacity:0;transition:opacity .3s ease}
+#mp-bar.playing .mp-dot{opacity:1;animation:pulse 2s ease-in-out infinite}
+.mp-ctrl{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.mp-btn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--c-fg-dim);transition:all .25s ease;border:1px solid transparent}
+.mp-btn:hover{color:var(--c-fg);border-color:var(--c-line);background:var(--c-card-bg)}
+.mp-btn svg{width:15px;height:15px;fill:currentColor}
+.mp-btn.stroke svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#mp-bar.loop #mp-loop{color:var(--c-accent);border-color:rgba(129,140,248,.3);background:var(--c-card-bg)}
+[data-theme="light"] #mp-bar.loop #mp-loop{border-color:rgba(91,91,214,.3)}
+.mp-play{width:40px;height:40px;background:linear-gradient(135deg,var(--c-accent),var(--c-pink));color:#fff;box-shadow:0 6px 18px rgba(236,72,153,.35)}
+.mp-play:hover{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--c-accent),var(--c-pink));box-shadow:0 8px 24px rgba(236,72,153,.5)}
+.mp-play svg{width:16px;height:16px}
+.mp-prog{display:flex;align-items:center;gap:10px;width:100%;margin-top:6px}
+.mp-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);min-width:38px;text-align:center;letter-spacing:.05em;transition:color .5s ease}
+.mp-range{flex:1;-webkit-appearance:none;appearance:none;height:14px;background:transparent;cursor:pointer;touch-action:pan-y}
+.mp-range::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--c-accent) var(--mp-p,0%),var(--c-line) var(--mp-p,0%))}
+.mp-range::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#fff;margin-top:-3.5px;border:none;box-shadow:0 0 8px rgba(129,140,248,.8)}
+.mp-range::-moz-range-track{height:4px;border-radius:2px;background:var(--c-line)}
+.mp-range::-moz-range-progress{height:4px;border-radius:2px;background:var(--c-accent)}
+.mp-range::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#fff;border:none;box-shadow:0 0 8px rgba(129,140,248,.8)}
+#mp-bar.err .mp-dot{background:var(--c-pink);box-shadow:0 0 6px var(--c-pink)}
+#mp-bar.err #mp-state{cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:720px){
+  #mp-bar{width:calc(100vw - 24px);bottom:calc(12px + env(safe-area-inset-bottom));padding:10px 12px 8px;border-radius:14px;gap:0}
+  .mp-main{gap:10px}.mp-cover{width:38px;height:38px;border-radius:8px}.mp-name{font-size:12px}
+  .mp-btn{width:30px;height:30px}.mp-btn svg{width:13px;height:13px}.mp-play{width:36px;height:36px}
+}
+/* ============ 站内播放：B 站视频弹窗 ============ */
+#vid-modal{position:fixed;inset:0;z-index:1150;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .3s ease}
+#vid-modal[hidden]{display:none}
+#vid-modal.show{opacity:1;pointer-events:auto}
+.vid-box{width:min(880px,100%);background:#000;border:1px solid var(--c-line);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6);transform:translateY(16px) scale(.98);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+#vid-modal.show .vid-box{transform:translateY(0) scale(1)}
+.vid-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--c-line)}
+.vid-title{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-fg);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid-head-r{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.vid-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-pink);border:1px solid rgba(244,114,182,.3);padding:2px 8px;border-radius:5px;letter-spacing:.08em}
+.vid-close{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--c-fg-dim);transition:all .25s ease}
+.vid-close:hover{color:var(--c-fg);background:var(--c-card-bg)}
+.vid-close svg{width:14px;height:14px}
+.vid-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.vid-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media(max-width:720px){#vid-modal{padding:12px}.vid-head{padding:10px 14px}.vid-title{font-size:12px}}
 /* 整个网页 CRT 模式：只缩放内容容器（U 型缓动）。fixed 背景与导航全程原地不动，零漂移零重排 */
 #crt-scale{will-change:transform;transition:transform .95s cubic-bezier(.65,0,.35,1)}
 #crt-scale.s{transform:scale(.86)}
@@ -418,25 +460,25 @@ html.crt-lock{overflow:hidden}
       <div class="trk-num">01</div>
       <div class="trk-cover"><img src="assets/cover-huijin.jpg" alt="灰烬" loading="lazy"></div>
       <div class="trk-i"><div class="trk-n">灰烬</div><div class="trk-m">2026 · 02:17 <span class="tag">SINGLE</span> <span class="tag">网易云音乐</span></div></div>
-      <a class="trk-play" href="https://music.163.com/song?id=3405702569" target="_blank" rel="noopener" aria-label="播放灰烬"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
+      <a class="trk-play" data-music="huijin" href="https://music.163.com/song?id=3405702569" target="_blank" rel="noopener" aria-label="播放灰烬"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
     </div>
     <div class="trk">
       <div class="trk-num">02</div>
       <div class="trk-cover"><img src="assets/cover-jiasuo.jpg" alt="枷锁" loading="lazy"></div>
       <div class="trk-i"><div class="trk-n">枷锁</div><div class="trk-m">2025 · 03:09 <span class="tag">SINGLE</span> <span class="tag">网易云音乐</span></div></div>
-      <a class="trk-play" href="https://y.music.163.com/m/song?id=3350521507" target="_blank" rel="noopener" aria-label="播放枷锁"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
+      <a class="trk-play" data-music="jiasuo" href="https://y.music.163.com/m/song?id=3350521507" target="_blank" rel="noopener" aria-label="播放枷锁"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
     </div>
     <div class="trk">
       <div class="trk-num">03</div>
       <div class="trk-cover dark-cover"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".25"><path d="M8 5v14l11-7z"></path></svg></div>
       <div class="trk-i"><div class="trk-n">无解</div><div class="trk-m">2026 · 03:11 <span class="tag mv">MV</span> <span class="tag">BILIBILI</span></div></div>
-      <a class="trk-play" href="https://b23.tv/R9LYYzB" target="_blank" rel="noopener" aria-label="观看无解MV"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"></path></svg></a>
+      <a class="trk-play" data-video="wujie" href="https://www.bilibili.com/video/BV136uE6cEWg/" target="_blank" rel="noopener" aria-label="观看无解MV"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"></path></svg></a>
     </div>
     <div class="trk">
       <div class="trk-num">04</div>
       <div class="trk-cover"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".9"><path d="M12 3a9 9 0 0 1 9 9h-2a7 7 0 0 0-14 0H3a9 9 0 0 1 9-9z"></path><path d="M12 7a5 5 0 0 1 5 5h-2a3 3 0 0 0-6 0H7a5 5 0 0 1 5-5z"></path><circle cx="12" cy="14" r="1.5"></circle></svg></div>
-      <div class="trk-i"><div class="trk-n">FLY</div><div class="trk-m">2026 <span class="tag">SINGLE</span> <span class="tag">BILIBILI</span></div></div>
-      <a class="trk-play" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="播放 FLY"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></a>
+      <div class="trk-i"><div class="trk-n">FLY</div><div class="trk-m">2026 · 01:34 <span class="tag mv">MV</span> <span class="tag">BILIBILI</span></div></div>
+      <a class="trk-play" data-video="fly" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="播放 FLY"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56-.374-.933-.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"></path></svg></a>
     </div>
   </section>
 
@@ -478,7 +520,7 @@ html.crt-lock{overflow:hidden}
     <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
     <div class="con-grid">
       <div class="con-card" data-copy="538460781">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--c-yellow)"><path d="M12 3a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h1v3h10v-3h1a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2V7a4 4 0 0 0-4-4z"></path><circle cx="9" cy="13" r="1" fill="currentColor"></circle><circle cx="15" cy="13" r="1" fill="currentColor"></circle></svg>
+        <svg viewBox="0 0 24 24" style="fill:var(--c-yellow)"><path d="M12 2.1c-3 0-5.4 2.3-5.4 5.3 0 1.6.7 3 1.9 4-.6 1.6-1 3-1.1 4.4-.1 1.1 1.2 1.8 2.1 1.1l2.5-1.9c.5-.4 1.1 0 1.1.6v.6c0 1.3 1.2 2.3 2.5 2.3h-.8c1.3 0 2.5-1 2.5-2.3v-.6c0-.6.6-1 1.1-.6l2.5 1.9c.9.7 2.2 0 2.1-1.1-.1-1.4-.5-2.8-1.1-4.4 1.2-1 1.9-2.4 1.9-4 0-3-2.4-5.3-5.4-5.3z"></path><ellipse cx="12" cy="11.6" rx="3" ry="4.3" fill="var(--c-bg)"></ellipse><circle cx="9.4" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="9.4" cy="6.6" r=".7"></circle><circle cx="14.6" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="14.6" cy="6.6" r=".7"></circle></svg>
         <div><div class="con-lbl">QQ 粉丝群</div><div class="con-val">538460781</div></div>
       </div>
     </div>
@@ -490,7 +532,7 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© 2026 <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.2.1</button>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.3.1</button>
   </footer>
 </main>
 
@@ -503,8 +545,13 @@ html.crt-lock{overflow:hidden}
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">v3.3.1</span><span class="log-date">2026-08-29</span></div>
+      <div class="log-item">+ 站内播放：底部迷你播放条（网易云流）</div>
+      <div class="log-item">+ 站内播放：B 站视频弹窗（无解 / FLY）</div>
+      <div class="log-item">+ 播放条新增单曲循环与封面旋转</div>
+      <div class="log-item">* 修复评论区本地预览报错</div>
       <div class="log-ver-row"><span class="log-ver">v3.2.1</span><span class="log-date">2026-08-29</span></div>
-      <div class="log-item glitch" data-text="+ 添加了一些......?"><i class="g-bar"></i><i class="g-bar d2"></i><i class="g-noise"></i>+ 添加了一些......?</div>
+      <div class="log-item">+ 添加了一些......?</div>
       <div class="log-ver-row"><span class="log-ver">v3.2.0</span><span class="log-date">2026-08-28</span></div>
       <div class="log-item">+ 新增 COMMUNITY 粉丝互动区</div>
       <div class="log-item">+ 接入 Waline 免登录留言板</div>
@@ -532,6 +579,41 @@ html.crt-lock{overflow:hidden}
 <div class="crt-overlay" id="crt-overlay" hidden>
   <div class="crt-scanbeam"></div>
   <div class="crt-text" id="crt-text"></div>
+</div>
+
+<!-- 站内播放：底部迷你音乐条 -->
+<div id="mp-bar" role="region" aria-label="音乐播放器">
+  <div class="mp-main">
+    <div class="mp-cover"><img id="mp-cover" src="assets/cover-huijin.jpg" alt="封面"></div>
+    <div class="mp-info">
+      <div class="mp-name" id="mp-name"></div>
+      <div class="mp-sub"><span class="mp-dot"></span><span id="mp-state">等待播放</span><span>·</span><span>网易云音乐</span></div>
+    </div>
+    <div class="mp-ctrl">
+      <button class="mp-btn" id="mp-prev" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M6 4h3.6v16H6z"></path><path d="M20 5v14l-10-7z"></path></svg></button>
+      <button class="mp-btn mp-play" id="mp-toggle" aria-label="播放 / 暂停"><svg viewBox="0 0 24 24"><polygon points="7,4 21,12 7,20"></polygon></svg></button>
+      <button class="mp-btn" id="mp-next" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="M14.4 4H18v16h-3.6z"></path><path d="M4 5v14l10-7z"></path></svg></button>
+      <button class="mp-btn stroke" id="mp-loop" aria-label="单曲循环：关" title="单曲循环"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></button>
+      <button class="mp-btn stroke" id="mp-close" aria-label="关闭播放器"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+  </div>
+  <div class="mp-prog">
+    <span class="mp-time" id="mp-cur">00:00</span>
+    <input class="mp-range" id="mp-range" type="range" min="0" max="1000" value="0" step="1" aria-label="播放进度">
+    <span class="mp-time" id="mp-dur">--:--</span>
+  </div>
+</div>
+<audio id="mp-audio" preload="none"></audio>
+
+<!-- 站内播放：B 站视频弹窗 -->
+<div id="vid-modal" hidden>
+  <div class="vid-box">
+    <div class="vid-head">
+      <div class="vid-title" id="vid-n"></div>
+      <div class="vid-head-r"><span class="vid-tag">BILIBILI</span><button class="vid-close" id="vid-close" aria-label="关闭视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    </div>
+    <div class="vid-stage"><iframe id="vid-frame" title="MAKE STUDIO 视频" allow="autoplay; fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin"></iframe></div>
+  </div>
 </div>
 
 <script>
@@ -664,17 +746,23 @@ html.crt-lock{overflow:hidden}
   var docEl=document.documentElement;
   var ct=document.getElementById('ct');
   var nav=document.getElementById('nav');
+  var mpBar=document.getElementById('mp-bar');
+  var vidModal=document.getElementById('vid-modal');
   var wrap=null;
   function lockUI(){
     docEl.classList.add('crt-lock');
     if(ct)ct.inert=true;
     if(nav)nav.inert=true;
+    if(mpBar)mpBar.inert=true;
+    if(vidModal)vidModal.inert=true;
     if(document.activeElement)document.activeElement.blur();
   }
   function unlockUI(){
     docEl.classList.remove('crt-lock');
     if(ct)ct.inert=false;
     if(nav)nav.inert=false;
+    if(mpBar)mpBar.inert=false;
+    if(vidModal)vidModal.inert=false;
   }
   function freezeBg(){
     document.body.classList.add('crt-frozen');
@@ -913,6 +1001,135 @@ html.crt-lock{overflow:hidden}
   });
 })();
 
+/* ============ 站内播放：音乐播放器 + B 站视频弹窗 ============ */
+(function(){
+  var bar=document.getElementById('mp-bar'),
+      audio=document.getElementById('mp-audio'),
+      cover=document.getElementById('mp-cover'),
+      nameEl=document.getElementById('mp-name'),
+      stateEl=document.getElementById('mp-state'),
+      btnToggle=document.getElementById('mp-toggle'),
+      btnPrev=document.getElementById('mp-prev'),
+      btnNext=document.getElementById('mp-next'),
+      btnLoop=document.getElementById('mp-loop'),
+      btnClose=document.getElementById('mp-close'),
+      range=document.getElementById('mp-range'),
+      curEl=document.getElementById('mp-cur'),
+      durEl=document.getElementById('mp-dur'),
+      vm=document.getElementById('vid-modal'),
+      vf=document.getElementById('vid-frame'),
+      vn=document.getElementById('vid-n');
+
+  /* 曲目库：srcs 为候选音频源，依次尝试（网易云流直链） */
+  var PLAYLIST=[
+    {id:'huijin',name:'灰烬',cover:'assets/cover-huijin.jpg',srcs:[
+      'https://music.163.com/song/media/outer/url?id=3405702569.mp3',
+      'https://music.163.com/song/media/outer/url?id=3405702569'
+    ]},
+    {id:'jiasuo',name:'枷锁',cover:'assets/cover-jiasuo.jpg',srcs:[
+      'https://music.163.com/song/media/outer/url?id=3350521507.mp3',
+      'https://music.163.com/song/media/outer/url?id=3350521507'
+    ]}
+  ];
+  var VIDEOS={wujie:{name:'无解 · MV',bv:'BV136uE6cEWg'},fly:{name:'FLY · MV',bv:'BV1wC496oEf4'}};
+
+  var ICON_PLAY='<svg viewBox="0 0 24 24"><polygon points="7,4 21,12 7,20"></polygon></svg>';
+  var ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M7 4h3.6v16H7zM13.4 4H17v16h-3.6z"></path></svg>';
+  var cur=-1,srcIdx=0,seeking=false,vidPausedMusic=false;
+
+  function fmt(s){if(!isFinite(s)||s<0)s=0;s=Math.floor(s);var m=Math.floor(s/60),r=s%60;return(m<10?'0':'')+m+':'+(r<10?'0':'')+r}
+
+  function setPlaying(p){bar.classList.toggle('playing',p);stateEl.textContent=p?'播放中':'已暂停';btnToggle.innerHTML=p?ICON_PAUSE:ICON_PLAY}
+
+  function loadTrack(i,auto){
+    cur=(i+PLAYLIST.length)%PLAYLIST.length;srcIdx=0;
+    var t=PLAYLIST[cur];
+    cover.src=t.cover;nameEl.textContent=t.name;
+    range.value=0;range.style.setProperty('--mp-p','0%');curEl.textContent='00:00';durEl.textContent='--:--';
+    bar.classList.remove('err');bar.classList.add('on');
+    audio.src=t.srcs[0];audio.load();
+    if(auto){
+      stateEl.textContent='加载中…';
+      var p=audio.play();if(p&&p.catch)p.catch(function(){setPlaying(false);stateEl.textContent='等待播放'});
+    }
+    else stateEl.textContent='已暂停';
+  }
+
+  function playBy(id){for(var i=0;i<PLAYLIST.length;i++)if(PLAYLIST[i].id===id){loadTrack(i,true);return}}
+
+  audio.addEventListener('error',function(){
+    if(cur<0)return;
+    var t=PLAYLIST[cur];srcIdx++;
+    if(srcIdx<t.srcs.length){audio.src=t.srcs[srcIdx];audio.load();audio.play()}
+    else{bar.classList.add('err');setPlaying(false);stateEl.textContent='加载失败 · 点击前往网易云';bar.classList.remove('playing')}
+  });
+  audio.addEventListener('stalled',function(){if(!bar.classList.contains('err'))stateEl.textContent='加载中…'});
+  audio.addEventListener('playing',function(){setPlaying(true)});
+  audio.addEventListener('pause',function(){if(!bar.classList.contains('err'))setPlaying(false)});
+  audio.addEventListener('waiting',function(){if(!bar.classList.contains('err'))stateEl.textContent='缓冲中…'});
+  audio.addEventListener('ended',function(){
+    if(bar.classList.contains('loop')){audio.currentTime=0;var p=audio.play();if(p&&p.catch)p.catch(function(){})}
+    else loadTrack(cur+1,true);
+  });
+  audio.addEventListener('timeupdate',function(){
+    if(seeking)return;
+    var d=audio.duration;if(!isFinite(d)||!d)return;
+    range.value=audio.currentTime/d*1000;
+    range.style.setProperty('--mp-p',audio.currentTime/d*100+'%');
+    curEl.textContent=fmt(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata',function(){durEl.textContent=fmt(audio.duration)});
+
+  range.addEventListener('input',function(){seeking=true;var d=audio.duration;if(isFinite(d)&&d)curEl.textContent=fmt(d*range.value/1000)});
+  range.addEventListener('change',function(){if(isFinite(audio.duration)&&audio.duration)audio.currentTime=audio.duration*range.value/1000;seeking=false});
+
+  btnToggle.addEventListener('click',function(){if(cur<0)loadTrack(0,true);else audio.paused?audio.play():audio.pause()});
+  btnPrev.addEventListener('click',function(){loadTrack(cur<0?0:cur-1,true)});
+  btnNext.addEventListener('click',function(){loadTrack(cur<0?0:cur+1,true)});
+  btnLoop.addEventListener('click',function(){
+    var on=bar.classList.toggle('loop');
+    btnLoop.setAttribute('aria-label',on?'单曲循环：开':'单曲循环：关');
+  });
+  btnClose.addEventListener('click',function(){audio.pause();setPlaying(false);bar.classList.remove('on')});
+  /* 加载失败时点击状态文字跳转对应歌曲外链 */
+  stateEl.addEventListener('click',function(){
+    if(!bar.classList.contains('err')||cur<0)return;
+    var t=PLAYLIST[cur];
+    var url=t.id==='huijin'?'https://music.163.com/song?id=3405702569':'https://music.163.com/song?id=3350521507';
+    window.open(url,'_blank','noopener');
+  });
+
+  /* ---- B 站视频弹窗 ---- */
+  function openVideo(id){
+    var v=VIDEOS[id];if(!v)return;
+    vn.textContent=v.name;
+    vf.src='https://player.bilibili.com/player.html?bvid='+v.bv+'&autoplay=1&high_quality=1&danmaku=0';
+    vm.hidden=false;
+    requestAnimationFrame(function(){requestAnimationFrame(function(){vm.classList.add('show')})});
+    vidPausedMusic=false;
+    if(!audio.paused&&cur>=0){audio.pause();vidPausedMusic=true}
+  }
+  function closeVideo(){
+    vm.classList.remove('show');
+    setTimeout(function(){vm.hidden=true;vf.src='';if(vidPausedMusic&&cur>=0){audio.play();vidPausedMusic=false}},320);
+  }
+  document.getElementById('vid-close').addEventListener('click',closeVideo);
+  vm.addEventListener('click',function(e){if(e.target===vm)closeVideo()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!vm.hidden)closeVideo()});
+
+  /* ---- 作品区按钮：站内播放（拦截默认外链） ---- */
+  document.addEventListener('click',function(e){
+    var el=e.target&&e.target.closest?e.target.closest('[data-music],[data-video]'):null;
+    if(!el)return;
+    var m=el.getAttribute('data-music');
+    if(m){e.preventDefault();playBy(m);return}
+    var v=el.getAttribute('data-video');
+    if(v){e.preventDefault();openVideo(v)}
+  });
+
+  btnToggle.innerHTML=ICON_PLAY;
+})();
+
 })();
 </script>
 
@@ -924,6 +1141,9 @@ init({
   serverURL: 'https://makestudio-comment.vercel.app',
   lang: 'zh-CN',
   dark: 'html[data-theme="dark"]',
+  path: 'index', // 固定评论归属路径，避免 file:// 下产生文件系统路径
+  emoji: ['https://unpkg.com/@waline/emojis@1.1.0/weibo'], // 显式完整地址，修复协议相对 URL 变 file:// 的问题
+  pageview: false, // 关闭页面访问统计，减少无效后端请求
   locale: { placeholder: '说说你想听的…' }
 });
 </script>
