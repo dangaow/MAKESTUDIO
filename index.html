@@ -532,7 +532,7 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© 2026 <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.3.1</button>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.3.2</button>
   </footer>
 </main>
 
@@ -545,8 +545,8 @@ html.crt-lock{overflow:hidden}
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
-      <div class="log-ver-row"><span class="log-ver">v3.3.1</span><span class="log-date">2026-08-29</span></div>
-      <div class="log-item">+ 站内播放：底部迷你播放条（网易云流）</div>
+      <div class="log-ver-row"><span class="log-ver">v3.3.2</span><span class="log-date">2026-08-29</span></div>
+      <div class="log-item">+ 站内播放：底部迷你播放条（本地 mp3）</div>
       <div class="log-item">+ 站内播放：B 站视频弹窗（无解 / FLY）</div>
       <div class="log-item">+ 播放条新增单曲循环与封面旋转</div>
       <div class="log-item">* 修复评论区本地预览报错</div>
@@ -1020,15 +1020,15 @@ html.crt-lock{overflow:hidden}
       vf=document.getElementById('vid-frame'),
       vn=document.getElementById('vid-n');
 
-  /* 曲目库：srcs 为候选音频源，依次尝试（网易云流直链） */
+  /* 曲目库：srcs 为候选音频源，依次尝试（本地 mp3 优先，网易云流作兜底） */
   var PLAYLIST=[
     {id:'huijin',name:'灰烬',cover:'assets/cover-huijin.jpg',srcs:[
-      'https://music.163.com/song/media/outer/url?id=3405702569.mp3',
-      'https://music.163.com/song/media/outer/url?id=3405702569'
+      'assets/huijin.mp3',
+      'https://music.163.com/song/media/outer/url?id=3405702569.mp3'
     ]},
     {id:'jiasuo',name:'枷锁',cover:'assets/cover-jiasuo.jpg',srcs:[
-      'https://music.163.com/song/media/outer/url?id=3350521507.mp3',
-      'https://music.163.com/song/media/outer/url?id=3350521507'
+      'assets/jiasuo.mp3',
+      'https://music.163.com/song/media/outer/url?id=3350521507.mp3'
     ]}
   ];
   var VIDEOS={wujie:{name:'无解 · MV',bv:'BV136uE6cEWg'},fly:{name:'FLY · MV',bv:'BV1wC496oEf4'}};
