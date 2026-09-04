@@ -239,43 +239,35 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .sec-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-fg-dim);letter-spacing:.1em;margin-left:10px;padding:2px 8px;border:1px solid rgba(129,140,248,.25);border-radius:999px}
 [data-theme="light"] .sec-hint{border-color:rgba(91,91,214,.25)}
 
-/* ============ 工业机架：历程时间线 + 设备器材 ============ */
-.rack{position:relative;padding:26px 26px 22px;border-radius:14px;border:1px solid var(--c-metal-strong);background:linear-gradient(180deg,var(--c-panel),rgba(0,0,0,.05));box-shadow:inset 0 0 0 1px rgba(0,0,0,.05),0 18px 48px rgba(0,0,0,.16)}
-[data-theme="light"] .rack{background:linear-gradient(180deg,var(--c-panel),rgba(0,0,0,.02));box-shadow:inset 0 0 0 1px rgba(0,0,0,.03),0 14px 38px rgba(0,0,0,.08)}
-.rack::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(180deg,var(--c-rack-line) 0 1px,transparent 1px 3px)}
-.scrw{position:absolute;width:8px;height:8px;border-radius:50%;z-index:1;background:radial-gradient(circle at 35% 30%,var(--c-screw),rgba(0,0,0,.55));box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
-.scrw::before{content:'';position:absolute;left:50%;top:1px;bottom:1px;width:1px;background:rgba(0,0,0,.45);transform:translateX(-50%)}
-.scrw::after{content:'';position:absolute;top:50%;left:1px;right:1px;height:1px;background:rgba(0,0,0,.45);transform:translateY(-50%)}
-.scrw.tl{top:9px;left:9px}.scrw.tr{top:9px;right:9px}.scrw.bl{bottom:9px;left:9px}.scrw.br{bottom:9px;right:9px}
+/* ============ 历程时间线 + 设备器材 ============ */
+/* 时间线：与成员卡片一致的列表，左侧 LED 节点，悬停着色左边框 */
+.tline{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--c-line);border-left:3px solid transparent;border-radius:14px;background:var(--c-card-bg);transition:transform .3s ease,border-color .3s ease,background-color .3s ease}
+.tline+.tline{margin-top:10px}
+.tline:hover{transform:translateX(4px);background:var(--c-card-bg-hover);border-left-color:var(--led,var(--c-cyan))}
+.tline-node{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:var(--led,var(--c-cyan));box-shadow:0 0 10px var(--led,var(--c-cyan))}
+.tline-date{flex-shrink:0;width:96px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--c-fg-dim)}
+.tline-body{flex:1;min-width:0}
+.tline-t{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--c-fg)}
+.tline-d{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);margin-top:4px;letter-spacing:.08em}
 
-/* 时间线 */
-.tl{position:relative;display:flex;gap:18px;padding:0 0 26px}
-.tl:last-child{padding-bottom:0}
-.tl::before{content:'';position:absolute;left:5px;top:15px;bottom:-8px;width:1.5px;background:linear-gradient(180deg,var(--c-metal-strong),var(--c-line))}
-.tl:last-child::before{display:none}
-.tl-led{position:relative;flex-shrink:0;width:12px;height:12px;border-radius:50%;margin-top:3px;z-index:1;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--led,var(--c-cyan)) 58%,rgba(0,0,0,.55));box-shadow:0 0 10px var(--led,var(--c-cyan)),inset 0 0 0 1px rgba(0,0,0,.28)}
-.tl-date{flex-shrink:0;width:96px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;color:var(--c-fg-dim);padding-top:3px}
-.tl-body{flex:1;min-width:0}
-.tl-t{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--c-fg);letter-spacing:.02em}
-.tl-d{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);margin-top:4px;letter-spacing:.04em;line-height:1.6}
-
-/* 设备机架 */
-.gear{position:relative;display:flex;align-items:center;gap:14px;padding:15px 16px}
-.gear+.gear{border-top:1px solid var(--c-line)}
-.gear-led{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-green) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-green),inset 0 0 0 1px rgba(0,0,0,.3)}
-.gear-led.warn{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-yellow) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-yellow),inset 0 0 0 1px rgba(0,0,0,.3)}
-.gear-led.dim{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.8),var(--c-fg-mute) 60%,rgba(0,0,0,.55));box-shadow:inset 0 0 0 1px rgba(0,0,0,.32)}
-.gear-i{flex:1;min-width:0}
-.gear-k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--c-fg-mute);text-transform:uppercase}
-.gear-v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--c-fg);margin-top:4px;letter-spacing:.01em}
-.gear-tag{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;padding:4px 10px;border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg-dim);background:var(--c-card-bg);text-transform:uppercase}
-.gear-quote{position:relative;margin-top:18px;padding:16px 20px 14px;border:1px dashed var(--c-metal-strong);border-radius:10px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;letter-spacing:.08em;line-height:1.9;color:var(--c-fg-dim)}
+/* 设备：与联系方式卡片一致的网格，LED 状态灯作图标 */
+.gear-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.gear-card{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--c-line);border-radius:14px;background:var(--c-card-bg);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease,background-color .3s ease}
+.gear-card:hover{transform:translateY(-2px);border-color:rgba(129,140,248,.25);box-shadow:0 10px 28px var(--c-shadow);background:rgba(129,140,248,.04)}
+[data-theme="light"] .gear-card:hover{border-color:rgba(91,91,214,.25);background:rgba(91,91,214,.05)}
+.gear-led{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-green) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-green)}
+.gear-led.warn{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-yellow) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-yellow)}
+.gear-led.dim{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.8),var(--c-fg-mute) 60%,rgba(0,0,0,.55));box-shadow:none}
+.gear-body{flex:1;min-width:0}
+.gear-k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--c-fg-mute);text-transform:uppercase}
+.gear-v{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c-fg);margin-top:4px;line-height:1.55;word-break:break-word}
+.gear-tag{margin-left:auto;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;padding:3px 8px;border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg-dim);text-transform:uppercase;white-space:nowrap}
+.gear-quote{margin-top:20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.06em;line-height:2;color:var(--c-fg-dim)}
 .gear-quote .q-hl{color:var(--c-pink);font-weight:600}
 
 @media(max-width:720px){
-  .rack{padding:18px 16px 16px}
-  .tl{flex-wrap:wrap;gap:10px}.tl-date{width:auto}.tl-body{flex-basis:100%;padding-left:24px}
-  .gear{padding:13px 12px;gap:11px}.gear-v{font-size:12px}.gear-quote{font-size:12px}
+  .tline{padding:14px 16px;gap:12px}.tline-date{width:auto;font-size:10px}
+  .gear-grid{grid-template-columns:1fr}.gear-card{padding:15px 16px}
 }
 
 /* 粉丝互动区 */
@@ -564,52 +556,48 @@ html.crt-lock{overflow:hidden}
 
   <section class="sec" id="sec-time">
     <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">TIMELINE</h2><div class="sec-line"></div></div>
-    <div class="rack">
-      <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
-      <div class="tl">
-        <span class="tl-led"></span>
-        <div class="tl-date">2023.10.6</div>
-        <div class="tl-body"><div class="tl-t">工作室正式成立</div><div class="tl-d">FOUNDED · THE BEGINNING</div></div>
-      </div>
-      <div class="tl">
-        <span class="tl-led" style="--led:var(--c-purple)"></span>
-        <div class="tl-date">2025.4.12</div>
-        <div class="tl-body"><div class="tl-t">开始筹备第一张全长专辑</div><div class="tl-d">PREPARING FULL-LENGTH ALBUM</div></div>
-      </div>
-      <div class="tl">
-        <span class="tl-led" style="--led:var(--c-pink)"></span>
-        <div class="tl-date">2025.12.14</div>
-        <div class="tl-body"><div class="tl-t">发布第一首歌曲《心雨》</div><div class="tl-d">FIRST SINGLE OUT NOW</div></div>
-      </div>
-      <div class="tl">
-        <span class="tl-led" style="--led:var(--c-yellow)"></span>
-        <div class="tl-date">2026.2.14</div>
-        <div class="tl-body"><div class="tl-t">主理人 @dangao_w 发布单曲《枷锁》</div><div class="tl-d">FOUNDER'S SOLO SINGLE</div></div>
-      </div>
+    <div class="tline" style="--led:var(--c-cyan)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2023.10.6</div>
+      <div class="tline-body"><div class="tline-t">工作室正式成立</div><div class="tline-d">FOUNDED · THE BEGINNING</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-purple)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2025.4.12</div>
+      <div class="tline-body"><div class="tline-t">开始筹备第一张全长专辑</div><div class="tline-d">PREPARING FULL-LENGTH ALBUM</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-pink)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2025.12.14</div>
+      <div class="tline-body"><div class="tline-t">发布第一首歌曲《心雨》</div><div class="tline-d">FIRST SINGLE OUT NOW</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-yellow)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2026.2.14</div>
+      <div class="tline-body"><div class="tline-t">主理人 @dangao_w 发布单曲《枷锁》</div><div class="tline-d">FOUNDER'S SOLO SINGLE</div></div>
     </div>
   </section>
 
   <section class="sec" id="sec-gear">
     <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">STUDIO GEAR</h2><div class="sec-line"></div></div>
-    <div class="rack">
-      <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
-      <div class="gear">
+    <div class="gear-grid">
+      <div class="gear-card">
         <span class="gear-led"></span>
-        <div class="gear-i"><div class="gear-k">HOST · 宿主</div><div class="gear-v">盗版的 FL Studio 26</div></div>
+        <div class="gear-body"><div class="gear-k">HOST · 宿主</div><div class="gear-v">盗版的 FL Studio 26</div></div>
         <span class="gear-tag">DAW</span>
       </div>
-      <div class="gear">
+      <div class="gear-card">
         <span class="gear-led warn"></span>
-        <div class="gear-i"><div class="gear-k">MIC · 麦克风</div><div class="gear-v">某不知名闪克麦克风</div></div>
+        <div class="gear-body"><div class="gear-k">MIC · 麦克风</div><div class="gear-v">某不知名闪克麦克风</div></div>
         <span class="gear-tag">INPUT</span>
       </div>
-      <div class="gear">
+      <div class="gear-card">
         <span class="gear-led dim"></span>
-        <div class="gear-i"><div class="gear-k">MONITOR · 监听</div><div class="gear-v">小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</div></div>
+        <div class="gear-body"><div class="gear-k">MONITOR · 监听</div><div class="gear-v">小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</div></div>
         <span class="gear-tag">OUTPUT</span>
       </div>
-      <div class="gear-quote">正是这些<span class="q-hl">破破烂烂</span>的东西 造就了我<span class="q-hl">神奇</span>的生活</div>
     </div>
+    <div class="gear-quote">正是这些<span class="q-hl">破破烂烂</span>的东西 造就了我<span class="q-hl">神奇</span>的生活</div>
   </section>
 
   <section class="sec" id="sec-mem">
@@ -677,8 +665,9 @@ html.crt-lock{overflow:hidden}
       <div class="log-line dim">────────────────────</div>
       <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
       <div class="log-item">+ 新增「历程时间线」区块（TIMELINE）</div>
-      <div class="log-item">+ 新增「设备器材」机架区块（STUDIO GEAR）</div>
-      <div class="log-item">* 工业质感：金属面板、拉丝纹理、四角螺丝与 LED 指示灯</div>
+      <div class="log-item">+ 新增「设备器材」区块（STUDIO GEAR）</div>
+      <div class="log-item">* 重构两区块为与成员/联系方式一致的卡片样式，统一整体性</div>
+      <div class="log-item">* 修复移动端左上角取景框（录像 UI）偏移问题</div>
       <div class="log-ver-row"><span class="log-ver">v3.3.2</span><span class="log-date">2026-08-29</span></div>
       <div class="log-item">+ 站内播放：底部迷你播放条（本地 mp3）</div>
       <div class="log-item">+ 站内播放：B 站视频弹窗（无解 / FLY）</div>
