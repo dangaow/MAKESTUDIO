@@ -41,6 +41,9 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-corner:rgba(34,211,238,.2);--c-corner-hover:rgba(34,211,238,.25);
   --c-cover-bg:#0a0a0a;--c-cover-icon:rgba(255,255,255,.2);
   --c-secline:rgba(167,139,250,.3);
+  --c-metal:rgba(158,166,182,.14);--c-metal-strong:rgba(178,186,202,.26);
+  --c-panel:rgba(158,166,182,.03);--c-screw:rgba(186,194,210,.3);
+  --c-rack-line:rgba(158,166,182,.1);
   transition:background-color .5s ease,color .5s ease;
 }
 [data-theme="light"]{
@@ -63,6 +66,9 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-corner:rgba(14,116,144,.2);--c-corner-hover:rgba(14,116,144,.25);
   --c-cover-bg:#c5c0b8;--c-cover-icon:rgba(0,0,0,.2);
   --c-secline:rgba(109,40,217,.2);
+  --c-metal:rgba(70,76,90,.16);--c-metal-strong:rgba(70,76,90,.26);
+  --c-panel:rgba(70,76,90,.04);--c-screw:rgba(70,76,90,.3);
+  --c-rack-line:rgba(70,76,90,.12);
 }
 textarea{-webkit-user-select:text!important;user-select:text!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:var(--c-scroll-thumb) transparent;scrollbar-gutter:stable}
@@ -85,13 +91,17 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes float3{0%,100%{transform:translate(0,0) scale(.95)}50%{transform:translate(-4vw,-6vh) scale(1.05)}}
 .grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--c-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--c-grid-line) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at center,black 15%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at center,black 15%,transparent 70%);transition:opacity .5s ease}
 .vignette{position:fixed;inset:0;z-index:50;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,var(--c-vignette) 100%);transition:opacity .5s ease}
+.grain{position:fixed;inset:0;z-index:49;pointer-events:none;opacity:.055;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.brush{position:fixed;inset:0;z-index:49;pointer-events:none;opacity:.6;mix-blend-mode:overlay;background:repeating-linear-gradient(180deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 3px)}
+[data-theme="light"] .grain{opacity:.07;mix-blend-mode:multiply}
+[data-theme="light"] .brush{opacity:.5;mix-blend-mode:multiply;background:repeating-linear-gradient(180deg,rgba(0,0,0,.02) 0,rgba(0,0,0,.02) 1px,transparent 1px,transparent 3px)}
 
 #nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(20px + env(safe-area-inset-top)) 48px 20px;display:flex;align-items:center;justify-content:space-between;transform:translateZ(0) translateY(0);isolation:isolate;transition:padding .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
 #nav::before{content:'';position:absolute;inset:0;background:rgba(var(--c-nav-bg),var(--nav-bg-alpha));backdrop-filter:blur(var(--nav-blur)) saturate(1.6);-webkit-backdrop-filter:blur(var(--nav-blur)) saturate(1.6);z-index:-1;transition:background .3s ease,backdrop-filter .3s ease}
 .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:14px;letter-spacing:.2em;background:linear-gradient(120deg,var(--c-fg) 0%,var(--c-cyan) 40%,var(--c-purple) 70%,var(--c-pink) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradFlow 8s ease infinite}
 @keyframes gradFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .nav-right{display:flex;align-items:center;gap:24px}
-.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links{display:flex;gap:30px;list-style:none}
 .nav-links a{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--c-fg-dim);text-decoration:none;position:relative;padding:5px 0;transition:color .25s ease}
 .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:linear-gradient(90deg,var(--c-cyan),var(--c-purple));transition:width .3s ease}
 .nav-links a:hover{color:var(--c-fg)}
@@ -228,6 +238,45 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes ctBlink{50%{opacity:0}}
 .sec-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-fg-dim);letter-spacing:.1em;margin-left:10px;padding:2px 8px;border:1px solid rgba(129,140,248,.25);border-radius:999px}
 [data-theme="light"] .sec-hint{border-color:rgba(91,91,214,.25)}
+
+/* ============ 工业机架：历程时间线 + 设备器材 ============ */
+.rack{position:relative;padding:26px 26px 22px;border-radius:14px;border:1px solid var(--c-metal-strong);background:linear-gradient(180deg,var(--c-panel),rgba(0,0,0,.05));box-shadow:inset 0 0 0 1px rgba(0,0,0,.05),0 18px 48px rgba(0,0,0,.16)}
+[data-theme="light"] .rack{background:linear-gradient(180deg,var(--c-panel),rgba(0,0,0,.02));box-shadow:inset 0 0 0 1px rgba(0,0,0,.03),0 14px 38px rgba(0,0,0,.08)}
+.rack::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(180deg,var(--c-rack-line) 0 1px,transparent 1px 3px)}
+.scrw{position:absolute;width:8px;height:8px;border-radius:50%;z-index:1;background:radial-gradient(circle at 35% 30%,var(--c-screw),rgba(0,0,0,.55));box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.scrw::before{content:'';position:absolute;left:50%;top:1px;bottom:1px;width:1px;background:rgba(0,0,0,.45);transform:translateX(-50%)}
+.scrw::after{content:'';position:absolute;top:50%;left:1px;right:1px;height:1px;background:rgba(0,0,0,.45);transform:translateY(-50%)}
+.scrw.tl{top:9px;left:9px}.scrw.tr{top:9px;right:9px}.scrw.bl{bottom:9px;left:9px}.scrw.br{bottom:9px;right:9px}
+
+/* 时间线 */
+.tl{position:relative;display:flex;gap:18px;padding:0 0 26px}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:'';position:absolute;left:5px;top:15px;bottom:-8px;width:1.5px;background:linear-gradient(180deg,var(--c-metal-strong),var(--c-line))}
+.tl:last-child::before{display:none}
+.tl-led{position:relative;flex-shrink:0;width:12px;height:12px;border-radius:50%;margin-top:3px;z-index:1;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--led,var(--c-cyan)) 58%,rgba(0,0,0,.55));box-shadow:0 0 10px var(--led,var(--c-cyan)),inset 0 0 0 1px rgba(0,0,0,.28)}
+.tl-date{flex-shrink:0;width:96px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;color:var(--c-fg-dim);padding-top:3px}
+.tl-body{flex:1;min-width:0}
+.tl-t{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--c-fg);letter-spacing:.02em}
+.tl-d{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);margin-top:4px;letter-spacing:.04em;line-height:1.6}
+
+/* 设备机架 */
+.gear{position:relative;display:flex;align-items:center;gap:14px;padding:15px 16px}
+.gear+.gear{border-top:1px solid var(--c-line)}
+.gear-led{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-green) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-green),inset 0 0 0 1px rgba(0,0,0,.3)}
+.gear-led.warn{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-yellow) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-yellow),inset 0 0 0 1px rgba(0,0,0,.3)}
+.gear-led.dim{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.8),var(--c-fg-mute) 60%,rgba(0,0,0,.55));box-shadow:inset 0 0 0 1px rgba(0,0,0,.32)}
+.gear-i{flex:1;min-width:0}
+.gear-k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--c-fg-mute);text-transform:uppercase}
+.gear-v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--c-fg);margin-top:4px;letter-spacing:.01em}
+.gear-tag{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;padding:4px 10px;border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg-dim);background:var(--c-card-bg);text-transform:uppercase}
+.gear-quote{position:relative;margin-top:18px;padding:18px 20px 16px;border:1px dashed var(--c-metal-strong);border-radius:10px;text-align:center;font-family:'Caveat',cursive;font-size:21px;line-height:1.55;color:var(--c-fg-dim)}
+.gear-quote .q-hl{color:var(--c-pink);font-weight:500}
+
+@media(max-width:720px){
+  .rack{padding:18px 16px 16px}
+  .tl{flex-wrap:wrap;gap:10px}.tl-date{width:auto}.tl-body{flex-basis:100%;padding-left:24px}
+  .gear{padding:13px 12px;gap:11px}.gear-v{font-size:12px}.gear-quote{font-size:19px}
+}
 
 /* 粉丝互动区 */
 .comment-wrap{margin-top:40px;border:1px solid var(--c-line);border-radius:14px;padding:20px;background:var(--c-card-bg)}
@@ -425,6 +474,8 @@ html.crt-lock{overflow:hidden}
 <div class="aurora a3"></div>
 <div class="grid-overlay"></div>
 <div class="vignette"></div>
+<div class="grain"></div>
+<div class="brush"></div>
 
 <div id="copy-toast" role="status" aria-live="polite"><span class="ct-prom">&gt;_</span><span class="ct-text" id="ct-text">COPY OK</span><span class="ct-cur"></span></div>
 
@@ -435,6 +486,8 @@ html.crt-lock{overflow:hidden}
     <ul class="nav-links" id="nav-links">
       <li><a href="#sec-phil">Philosophy</a></li>
       <li><a href="#sec-works">Works</a></li>
+      <li><a href="#sec-time">Timeline</a></li>
+      <li><a href="#sec-gear">Gear</a></li>
       <li><a href="#sec-mem">Members</a></li>
       <li><a href="#sec-con">Contact</a></li>
       <li><a href="#sec-com">Community</a></li>
@@ -509,8 +562,58 @@ html.crt-lock{overflow:hidden}
     </div>
   </section>
 
+  <section class="sec" id="sec-time">
+    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">TIMELINE</h2><span class="sec-hint">历程</span><div class="sec-line"></div></div>
+    <div class="rack">
+      <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
+      <div class="tl">
+        <span class="tl-led"></span>
+        <div class="tl-date">2023.10.6</div>
+        <div class="tl-body"><div class="tl-t">工作室正式成立</div><div class="tl-d">FOUNDED · THE BEGINNING</div></div>
+      </div>
+      <div class="tl">
+        <span class="tl-led" style="--led:var(--c-purple)"></span>
+        <div class="tl-date">2025.4.12</div>
+        <div class="tl-body"><div class="tl-t">开始筹备第一张全长专辑</div><div class="tl-d">PREPARING FULL-LENGTH ALBUM</div></div>
+      </div>
+      <div class="tl">
+        <span class="tl-led" style="--led:var(--c-pink)"></span>
+        <div class="tl-date">2025.12.14</div>
+        <div class="tl-body"><div class="tl-t">发布第一首歌曲《心雨》</div><div class="tl-d">FIRST SINGLE OUT NOW</div></div>
+      </div>
+      <div class="tl">
+        <span class="tl-led" style="--led:var(--c-yellow)"></span>
+        <div class="tl-date">2026.2.14</div>
+        <div class="tl-body"><div class="tl-t">主理人 @dangao_w 发布单曲《枷锁》</div><div class="tl-d">FOUNDER'S SOLO SINGLE</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="sec-gear">
+    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">STUDIO GEAR</h2><span class="sec-hint">设备机架</span><div class="sec-line"></div></div>
+    <div class="rack">
+      <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
+      <div class="gear">
+        <span class="gear-led"></span>
+        <div class="gear-i"><div class="gear-k">HOST · 宿主</div><div class="gear-v">盗版的 FL Studio 26</div></div>
+        <span class="gear-tag">DAW</span>
+      </div>
+      <div class="gear">
+        <span class="gear-led warn"></span>
+        <div class="gear-i"><div class="gear-k">MIC · 麦克风</div><div class="gear-v">某不知名闪克麦克风</div></div>
+        <span class="gear-tag">INPUT</span>
+      </div>
+      <div class="gear">
+        <span class="gear-led dim"></span>
+        <div class="gear-i"><div class="gear-k">MONITOR · 监听</div><div class="gear-v">小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</div></div>
+        <span class="gear-tag">OUTPUT</span>
+      </div>
+      <div class="gear-quote">正是这些<span class="q-hl">破破烂烂</span>的东西 造就了我<span class="q-hl">神奇</span>的生活</div>
+    </div>
+  </section>
+
   <section class="sec" id="sec-mem">
-    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">MEMBERS</h2><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">MEMBERS</h2><div class="sec-line"></div></div>
     <div class="mem">
       <div class="mem-l"><div class="mem-av d">D</div><div><div class="mem-n">dangao_w@MAKE Studio</div><div class="mem-id">ID · 0001 · JOINED 2023</div></div></div>
       <span class="mem-r">FOUNDER · 主理人 · 音乐人</span>
@@ -522,7 +625,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-con">
-    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">CONTACT</h2><span class="sec-hint">点击复制</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 06</span><h2 class="sec-t">CONTACT</h2><span class="sec-hint">点击复制</span><div class="sec-line"></div></div>
     <div class="con-grid">
       <div class="con-card" data-copy="makestudio_qz@outlook.com">
         <svg viewBox="0 0 24 24" style="stroke:var(--c-cyan)"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
@@ -544,7 +647,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-com">
-    <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 07</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
     <div class="con-grid">
       <div class="con-card" data-copy="538460781">
         <svg viewBox="0 0 24 24" style="fill:var(--c-yellow)"><path d="M12 2.1c-3 0-5.4 2.3-5.4 5.3 0 1.6.7 3 1.9 4-.6 1.6-1 3-1.1 4.4-.1 1.1 1.2 1.8 2.1 1.1l2.5-1.9c.5-.4 1.1 0 1.1.6v.6c0 1.3 1.2 2.3 2.5 2.3h-.8c1.3 0 2.5-1 2.5-2.3v-.6c0-.6.6-1 1.1-.6l2.5 1.9c.9.7 2.2 0 2.1-1.1-.1-1.4-.5-2.8-1.1-4.4 1.2-1 1.9-2.4 1.9-4 0-3-2.4-5.3-5.4-5.3z"></path><ellipse cx="12" cy="11.6" rx="3" ry="4.3" fill="var(--c-bg)"></ellipse><circle cx="9.4" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="9.4" cy="6.6" r=".7"></circle><circle cx="14.6" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="14.6" cy="6.6" r=".7"></circle></svg>
