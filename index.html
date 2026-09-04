@@ -269,13 +269,13 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .gear-k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--c-fg-mute);text-transform:uppercase}
 .gear-v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--c-fg);margin-top:4px;letter-spacing:.01em}
 .gear-tag{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;padding:4px 10px;border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg-dim);background:var(--c-card-bg);text-transform:uppercase}
-.gear-quote{position:relative;margin-top:18px;padding:18px 20px 16px;border:1px dashed var(--c-metal-strong);border-radius:10px;text-align:center;font-family:'Caveat',cursive;font-size:21px;line-height:1.55;color:var(--c-fg-dim)}
-.gear-quote .q-hl{color:var(--c-pink);font-weight:500}
+.gear-quote{position:relative;margin-top:18px;padding:16px 20px 14px;border:1px dashed var(--c-metal-strong);border-radius:10px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;letter-spacing:.08em;line-height:1.9;color:var(--c-fg-dim)}
+.gear-quote .q-hl{color:var(--c-pink);font-weight:600}
 
 @media(max-width:720px){
   .rack{padding:18px 16px 16px}
   .tl{flex-wrap:wrap;gap:10px}.tl-date{width:auto}.tl-body{flex-basis:100%;padding-left:24px}
-  .gear{padding:13px 12px;gap:11px}.gear-v{font-size:12px}.gear-quote{font-size:19px}
+  .gear{padding:13px 12px;gap:11px}.gear-v{font-size:12px}.gear-quote{font-size:12px}
 }
 
 /* 粉丝互动区 */
@@ -563,7 +563,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-time">
-    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">TIMELINE</h2><span class="sec-hint">历程</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">TIMELINE</h2><div class="sec-line"></div></div>
     <div class="rack">
       <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
       <div class="tl">
@@ -590,7 +590,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-gear">
-    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">STUDIO GEAR</h2><span class="sec-hint">设备机架</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">STUDIO GEAR</h2><div class="sec-line"></div></div>
     <div class="rack">
       <i class="scrw tl"></i><i class="scrw tr"></i><i class="scrw bl"></i><i class="scrw br"></i>
       <div class="gear">
@@ -662,7 +662,7 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.3.2</button>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.4.0</button>
   </footer>
 </main>
 
@@ -675,6 +675,10 @@ html.crt-lock{overflow:hidden}
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
+      <div class="log-item">+ 新增「历程时间线」区块（TIMELINE）</div>
+      <div class="log-item">+ 新增「设备器材」机架区块（STUDIO GEAR）</div>
+      <div class="log-item">* 工业质感：金属面板、拉丝纹理、四角螺丝与 LED 指示灯</div>
       <div class="log-ver-row"><span class="log-ver">v3.3.2</span><span class="log-date">2026-08-29</span></div>
       <div class="log-item">+ 站内播放：底部迷你播放条（本地 mp3）</div>
       <div class="log-item">+ 站内播放：B 站视频弹窗（无解 / FLY）</div>
