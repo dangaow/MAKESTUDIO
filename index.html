@@ -331,6 +331,32 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes hackJit{0%{transform:translate(0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(0)}}
 .log-foot{margin-top:16px;letter-spacing:.1em}
 @media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
+/* ============ 隐藏：私密来信（连点 LOGO 5 次触发） ============ */
+.mail-modal{position:fixed;inset:0;z-index:1160;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(4,4,12,.62);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .3s ease}
+[data-theme="light"] .mail-modal{background:rgba(20,22,30,.35)}
+.mail-modal[hidden]{display:none}
+.mail-modal.show{opacity:1;pointer-events:auto}
+.mail-card{width:min(420px,100%);border:1px solid var(--c-line);border-radius:18px;background:var(--c-bg);box-shadow:0 24px 70px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.04);overflow:hidden;transform:translateY(16px) scale(.97);transition:transform .32s cubic-bezier(.16,1,.3,1)}
+.mail-modal.show .mail-card{transform:none}
+.mail-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--c-line);background:linear-gradient(180deg,var(--c-card-bg-hover),transparent)}
+.mail-title{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.16em;background:linear-gradient(120deg,var(--c-fg),var(--c-cyan) 45%,var(--c-pink));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.mail-close{background:none;border:none;color:var(--c-fg-dim);cursor:pointer;font-size:16px;line-height:1;padding:4px 6px;transition:color .2s}
+.mail-close:hover{color:var(--c-fg)}
+.mail-form{padding:20px;display:flex;flex-direction:column;gap:14px}
+.mail-field{display:flex;flex-direction:column;gap:7px}
+.mail-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--c-fg-dim);text-transform:uppercase}
+.mail-lbl i{font-style:normal;color:var(--c-fg-mute);text-transform:none;letter-spacing:0}
+.mail-input{width:100%;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-fg);background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:10px;padding:11px 13px;transition:border-color .25s ease,box-shadow .25s ease}
+.mail-input::placeholder{color:var(--c-fg-mute)}
+.mail-input:focus{outline:none;border-color:rgba(129,140,248,.5);box-shadow:0 0 0 3px rgba(129,140,248,.12)}
+[data-theme="light"] .mail-input:focus{border-color:rgba(91,91,214,.5);box-shadow:0 0 0 3px rgba(91,91,214,.12)}
+.mail-area{resize:vertical;min-height:120px;line-height:1.6}
+.mail-submit{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.1em;padding:12px 16px;border:none;border-radius:10px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--c-accent),var(--c-pink));box-shadow:0 8px 22px rgba(236,72,153,.3);transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease}
+.mail-submit:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(236,72,153,.42)}
+.mail-submit:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.mail-status{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;min-height:16px;margin:0;color:var(--c-fg-dim)}
+.mail-status.ok{color:var(--c-green)}
+.mail-status.err{color:#fb7185}
 /* ============ 站内播放：底部迷你音乐条 ============ */
 #mp-bar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,150%);z-index:1100;width:min(540px,calc(100vw - 32px));padding:12px 16px 9px;border:1px solid var(--c-line);border-radius:18px;background:rgba(12,12,26,.72);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 18px 50px rgba(0,0,0,.45);transition:transform .55s cubic-bezier(.16,1,.3,1),background-color .5s ease,border-color .5s ease}
 [data-theme="light"] #mp-bar{background:rgba(255,255,255,.8);box-shadow:0 18px 50px rgba(0,0,0,.18)}
@@ -737,6 +763,34 @@ html.crt-lock{overflow:hidden}
       <div class="vid-head-r"><span class="vid-tag">BILIBILI</span><button class="vid-close" id="vid-close" aria-label="关闭视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     </div>
     <div class="vid-stage"><iframe id="vid-frame" title="MAKE STUDIO 视频" allow="autoplay; fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin"></iframe></div>
+  </div>
+</div>
+
+<!-- 隐藏：私密来信（不挂导航，连续点击左上角 LOGO 5 次触发） -->
+<div class="mail-modal" id="mail-modal" hidden>
+  <div class="mail-card">
+    <div class="mail-head">
+      <span class="mail-title">PRIVATE MESSAGE</span>
+      <button class="mail-close" id="mail-close" aria-label="关闭">✕</button>
+    </div>
+    <form class="mail-form" id="mail-form" novalidate>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
+      <input type="hidden" name="_subject" value="来自官网隐藏来信">
+      <label class="mail-field">
+        <span class="mail-lbl">昵称 <i>可选</i></span>
+        <input class="mail-input" name="name" type="text" autocomplete="name" placeholder="怎么称呼你">
+      </label>
+      <label class="mail-field">
+        <span class="mail-lbl">回信邮箱 <i>可选，方便我回复</i></span>
+        <input class="mail-input" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+      </label>
+      <label class="mail-field">
+        <span class="mail-lbl">想说的话 <i>必填</i></span>
+        <textarea class="mail-input mail-area" name="message" rows="5" required placeholder="写点什么..."></textarea>
+      </label>
+      <button class="mail-submit" type="submit" id="mail-submit">SEND &#8594;</button>
+      <p class="mail-status" id="mail-status" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </div>
 
@@ -1268,6 +1322,71 @@ html.crt-lock{overflow:hidden}
   btnToggle.innerHTML=ICON_PLAY;
 })();
 
+})();
+</script>
+
+<script>
+/* 隐藏：私密来信（连续点击左上角 LOGO 5 次触发 + Formspree 提交） */
+(function(){
+  'use strict';
+  var ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; /* TODO: 替换成你的 form ID */
+  var NEED = 5, RESET_MS = 3000;
+  var logo = document.querySelector('.nav-logo');
+  var modal = document.getElementById('mail-modal');
+  var form = document.getElementById('mail-form');
+  var statusEl = document.getElementById('mail-status');
+  var submit = document.getElementById('mail-submit');
+  var closeBtn = document.getElementById('mail-close');
+  var clicks = 0, timer = null;
+
+  function open(){
+    if(!modal) return;
+    modal.hidden = false;
+    requestAnimationFrame(function(){ modal.classList.add('show'); });
+    var fn = form && form.elements['name'];
+    if(fn) fn.focus();
+  }
+  function close(){
+    if(!modal) return;
+    modal.classList.remove('show');
+    setTimeout(function(){ modal.hidden = true; }, 300);
+  }
+
+  if(logo){
+    logo.addEventListener('click', function(){
+      clicks++;
+      clearTimeout(timer);
+      if(clicks >= NEED){ clicks = 0; open(); }
+      else{ timer = setTimeout(function(){ clicks = 0; }, RESET_MS); }
+    });
+  }
+
+  if(closeBtn) closeBtn.addEventListener('click', close);
+  if(modal) modal.addEventListener('click', function(e){ if(e.target === modal) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal && !modal.hidden) close(); });
+
+  if(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(submit) submit.disabled = true;
+      if(statusEl){ statusEl.textContent = '发送中…'; statusEl.className = 'mail-status'; }
+      fetch(ENDPOINT, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function(r){
+        if(!r.ok){ return r.json().then(function(err){ throw err; }); }
+        return r.json();
+      }).then(function(){
+        form.reset();
+        if(statusEl){ statusEl.textContent = '✓ 已送达，感谢来信。'; statusEl.className = 'mail-status ok'; }
+      }).catch(function(){
+        if(statusEl){ statusEl.textContent = '发送失败，请稍后再试。'; statusEl.className = 'mail-status err'; }
+      }).finally(function(){
+        if(submit) submit.disabled = false;
+      });
+    });
+  }
 })();
 </script>
 
