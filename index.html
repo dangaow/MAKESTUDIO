@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b1a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='%2322d3ee' stroke-opacity='.35' stroke-width='2.5'/%3E%3Cpath d='M24 24L38 32L24 40' fill='none' stroke='%2322d3ee' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M40 44H54' stroke='%23818cf8' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@100&amp;family=Caveat:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@100&amp;family=Caveat:wght@400;500&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Orbitron:wght@400;700;900&amp;display=optional" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
@@ -41,6 +41,9 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-corner:rgba(34,211,238,.2);--c-corner-hover:rgba(34,211,238,.25);
   --c-cover-bg:#0a0a0a;--c-cover-icon:rgba(255,255,255,.2);
   --c-secline:rgba(167,139,250,.3);
+  --c-metal:rgba(158,166,182,.14);--c-metal-strong:rgba(178,186,202,.26);
+  --c-panel:rgba(158,166,182,.03);--c-screw:rgba(186,194,210,.3);
+  --c-rack-line:rgba(158,166,182,.1);
   transition:background-color .5s ease,color .5s ease;
 }
 [data-theme="light"]{
@@ -63,6 +66,9 @@ button{background:none;border:none;padding:0;font:inherit;cursor:pointer;outline
   --c-corner:rgba(14,116,144,.2);--c-corner-hover:rgba(14,116,144,.25);
   --c-cover-bg:#c5c0b8;--c-cover-icon:rgba(0,0,0,.2);
   --c-secline:rgba(109,40,217,.2);
+  --c-metal:rgba(70,76,90,.16);--c-metal-strong:rgba(70,76,90,.26);
+  --c-panel:rgba(70,76,90,.04);--c-screw:rgba(70,76,90,.3);
+  --c-rack-line:rgba(70,76,90,.12);
 }
 textarea{-webkit-user-select:text!important;user-select:text!important}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:var(--c-scroll-thumb) transparent;scrollbar-gutter:stable}
@@ -85,13 +91,17 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes float3{0%,100%{transform:translate(0,0) scale(.95)}50%{transform:translate(-4vw,-6vh) scale(1.05)}}
 .grid-overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--c-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--c-grid-line) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse at center,black 15%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at center,black 15%,transparent 70%);transition:opacity .5s ease}
 .vignette{position:fixed;inset:0;z-index:50;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,var(--c-vignette) 100%);transition:opacity .5s ease}
+.grain{position:fixed;inset:0;z-index:49;pointer-events:none;opacity:.055;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.brush{position:fixed;inset:0;z-index:49;pointer-events:none;opacity:.6;mix-blend-mode:overlay;background:repeating-linear-gradient(180deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 3px)}
+[data-theme="light"] .grain{opacity:.07;mix-blend-mode:multiply}
+[data-theme="light"] .brush{opacity:.5;mix-blend-mode:multiply;background:repeating-linear-gradient(180deg,rgba(0,0,0,.02) 0,rgba(0,0,0,.02) 1px,transparent 1px,transparent 3px)}
 
 #nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(20px + env(safe-area-inset-top)) 48px 20px;display:flex;align-items:center;justify-content:space-between;transform:translateZ(0) translateY(0);isolation:isolate;transition:padding .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
 #nav::before{content:'';position:absolute;inset:0;background:rgba(var(--c-nav-bg),var(--nav-bg-alpha));backdrop-filter:blur(var(--nav-blur)) saturate(1.6);-webkit-backdrop-filter:blur(var(--nav-blur)) saturate(1.6);z-index:-1;transition:background .3s ease,backdrop-filter .3s ease}
 .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:14px;letter-spacing:.2em;background:linear-gradient(120deg,var(--c-fg) 0%,var(--c-cyan) 40%,var(--c-purple) 70%,var(--c-pink) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradFlow 8s ease infinite}
 @keyframes gradFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .nav-right{display:flex;align-items:center;gap:24px}
-.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links{display:flex;gap:30px;list-style:none}
 .nav-links a{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--c-fg-dim);text-decoration:none;position:relative;padding:5px 0;transition:color .25s ease}
 .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:linear-gradient(90deg,var(--c-cyan),var(--c-purple));transition:width .3s ease}
 .nav-links a:hover{color:var(--c-fg)}
@@ -105,6 +115,10 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .theme-toggle .icon-moon{opacity:1;transform:scale(1) rotate(0)}
 [data-theme="light"] .theme-toggle .icon-sun{opacity:1;transform:scale(1) rotate(0)}
 [data-theme="light"] .theme-toggle .icon-moon{opacity:0;transform:scale(0) rotate(90deg)}
+.nav-burger{display:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card-bg);color:var(--c-fg-dim);align-items:center;justify-content:center;transition:color .3s ease,border-color .3s ease,background-color .3s ease;-webkit-tap-highlight-color:transparent}
+.nav-burger:hover{color:var(--c-fg);border-color:rgba(129,140,248,.3);background:var(--c-card-bg-hover)}
+[data-theme="light"] .nav-burger:hover{border-color:rgba(91,91,214,.3)}
+.nav-burger svg{width:17px;height:17px}
 
 #hero{position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:calc(120px + env(safe-area-inset-top)) 24px calc(80px + env(safe-area-inset-bottom))}
 .corner{position:absolute;width:48px;height:48px;border:1.5px solid var(--c-corner);pointer-events:none;opacity:0;animation:fadeIn .6s ease 1.6s forwards}
@@ -224,6 +238,38 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes ctBlink{50%{opacity:0}}
 .sec-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-fg-dim);letter-spacing:.1em;margin-left:10px;padding:2px 8px;border:1px solid rgba(129,140,248,.25);border-radius:999px}
 [data-theme="light"] .sec-hint{border-color:rgba(91,91,214,.25)}
+
+/* ============ 历程时间线 + 设备器材 ============ */
+/* 时间线：与成员卡片一致的列表，左侧 LED 节点，悬停着色左边框 */
+.tline{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--c-line);border-left:3px solid transparent;border-radius:14px;background:var(--c-card-bg);transition:transform .3s ease,border-color .3s ease,background-color .3s ease}
+.tline+.tline{margin-top:10px}
+.tline:hover{transform:translateX(4px);background:var(--c-card-bg-hover);border-left-color:var(--led,var(--c-cyan))}
+.tline-node{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:var(--led,var(--c-cyan));box-shadow:0 0 10px var(--led,var(--c-cyan))}
+.tline-date{flex-shrink:0;width:96px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--c-fg-dim)}
+.tline-body{flex:1;min-width:0}
+.tline-t{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--c-fg)}
+.tline-d{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-fg-mute);margin-top:4px;letter-spacing:.08em}
+
+/* 设备：与联系方式卡片一致的网格，LED 状态灯作图标 */
+.gear-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.gear-card{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--c-line);border-radius:14px;background:var(--c-card-bg);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease,background-color .3s ease}
+.gear-card:hover{transform:translateY(-2px);border-color:rgba(129,140,248,.25);box-shadow:0 10px 28px var(--c-shadow);background:rgba(129,140,248,.04)}
+[data-theme="light"] .gear-card:hover{border-color:rgba(91,91,214,.25);background:rgba(91,91,214,.05)}
+.gear-led{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-green) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-green)}
+.gear-led.warn{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),var(--c-yellow) 60%,rgba(0,0,0,.5));box-shadow:0 0 8px var(--c-yellow)}
+.gear-led.dim{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.8),var(--c-fg-mute) 60%,rgba(0,0,0,.55));box-shadow:none}
+.gear-body{flex:1;min-width:0}
+.gear-k{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--c-fg-mute);text-transform:uppercase}
+.gear-v{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c-fg);margin-top:4px;line-height:1.55;word-break:break-word}
+.gear-tag{margin-left:auto;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;padding:3px 8px;border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg-dim);text-transform:uppercase;white-space:nowrap}
+.gear-quote{margin-top:20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.06em;line-height:2;color:var(--c-fg-dim)}
+.gear-quote .q-hl{color:var(--c-pink);font-weight:600}
+.gear-quote .q-mark{color:var(--c-fg-mute);font-weight:600;opacity:.85;margin:0 1px}
+
+@media(max-width:720px){
+  .tline{padding:14px 16px;gap:12px}.tline-date{width:auto;font-size:10px}
+  .gear-grid{grid-template-columns:1fr}.gear-card{padding:15px 16px}
+}
 
 /* 粉丝互动区 */
 .comment-wrap{margin-top:40px;border:1px solid var(--c-line);border-radius:14px;padding:20px;background:var(--c-card-bg)}
@@ -384,6 +430,14 @@ html.crt-lock{overflow:hidden}
   .con-grid{grid-template-columns:1fr}.aurora{filter:blur(90px)}.aurora.a3{opacity:calc(var(--c-aurora-opacity) * 0.4)}
   .theme-toggle{width:34px;height:34px}
 }
+@media(max-width:720px){
+  .nav-right{gap:12px}
+  .nav-links{display:flex;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:10px 24px 20px;background:rgba(var(--c-nav-bg),.97);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line);opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .28s ease,transform .28s ease}
+  .nav-links a{font-size:13px;padding:14px 0;letter-spacing:.14em}
+  #nav.open .nav-links{opacity:1;transform:translateY(0);pointer-events:auto}
+  .nav-burger{display:flex}
+  #nav.open .nav-burger{color:var(--c-fg)}
+}
 @media(max-width:360px){
   #nav{padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
   #ct{padding:60px 16px 40px}.pl{font-size:26px}.pl-shift{transform:translateX(8px)}.hero-tagline{font-size:18px}
@@ -413,15 +467,20 @@ html.crt-lock{overflow:hidden}
 <div class="aurora a3"></div>
 <div class="grid-overlay"></div>
 <div class="vignette"></div>
+<div class="grain"></div>
+<div class="brush"></div>
 
 <div id="copy-toast" role="status" aria-live="polite"><span class="ct-prom">&gt;_</span><span class="ct-text" id="ct-text">COPY OK</span><span class="ct-cur"></span></div>
 
 <nav id="nav">
   <div class="nav-logo">MAKE / STUDIO</div>
   <div class="nav-right">
-    <ul class="nav-links">
+    <button class="nav-burger" id="nav-burger" aria-label="打开菜单" aria-expanded="false" aria-controls="nav-links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
+    <ul class="nav-links" id="nav-links">
       <li><a href="#sec-phil">Philosophy</a></li>
       <li><a href="#sec-works">Works</a></li>
+      <li><a href="#sec-time">Timeline</a></li>
+      <li><a href="#sec-gear">Gear</a></li>
       <li><a href="#sec-mem">Members</a></li>
       <li><a href="#sec-con">Contact</a></li>
       <li><a href="#sec-com">Community</a></li>
@@ -496,8 +555,54 @@ html.crt-lock{overflow:hidden}
     </div>
   </section>
 
+  <section class="sec" id="sec-time">
+    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">TIMELINE</h2><div class="sec-line"></div></div>
+    <div class="tline" style="--led:var(--c-cyan)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2023.10.6</div>
+      <div class="tline-body"><div class="tline-t">工作室正式成立</div><div class="tline-d">FOUNDED · THE BEGINNING</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-purple)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2025.4.12</div>
+      <div class="tline-body"><div class="tline-t">开始筹备第一张全长专辑</div><div class="tline-d">PREPARING FULL-LENGTH ALBUM</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-pink)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2025.12.14</div>
+      <div class="tline-body"><div class="tline-t">发布第一首歌曲《心雨》</div><div class="tline-d">FIRST SINGLE OUT NOW</div></div>
+    </div>
+    <div class="tline" style="--led:var(--c-yellow)">
+      <span class="tline-node"></span>
+      <div class="tline-date">2026.2.14</div>
+      <div class="tline-body"><div class="tline-t">主理人 @dangao_w 发布单曲《枷锁》</div><div class="tline-d">FOUNDER'S SOLO SINGLE</div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="sec-gear">
+    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">STUDIO GEAR</h2><div class="sec-line"></div></div>
+    <div class="gear-grid">
+      <div class="gear-card">
+        <span class="gear-led"></span>
+        <div class="gear-body"><div class="gear-k">HOST · 宿主</div><div class="gear-v">盗版的 FL Studio 26</div></div>
+        <span class="gear-tag">DAW</span>
+      </div>
+      <div class="gear-card">
+        <span class="gear-led warn"></span>
+        <div class="gear-body"><div class="gear-k">MIC · 麦克风</div><div class="gear-v">某不知名闪克麦克风</div></div>
+        <span class="gear-tag">INPUT</span>
+      </div>
+      <div class="gear-card">
+        <span class="gear-led dim"></span>
+        <div class="gear-body"><div class="gear-k">MONITOR · 监听</div><div class="gear-v">小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</div></div>
+        <span class="gear-tag">OUTPUT</span>
+      </div>
+    </div>
+    <div class="gear-quote"><span class="q-mark">「</span>正是这些<span class="q-hl">破破烂烂</span>的东西 造就了我<span class="q-hl">神奇</span>的生活<span class="q-mark">」</span></div>
+  </section>
+
   <section class="sec" id="sec-mem">
-    <div class="sec-head"><span class="sec-n">/ 03</span><h2 class="sec-t">MEMBERS</h2><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">MEMBERS</h2><div class="sec-line"></div></div>
     <div class="mem">
       <div class="mem-l"><div class="mem-av d">D</div><div><div class="mem-n">dangao_w@MAKE Studio</div><div class="mem-id">ID · 0001 · JOINED 2023</div></div></div>
       <span class="mem-r">FOUNDER · 主理人 · 音乐人</span>
@@ -509,7 +614,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-con">
-    <div class="sec-head"><span class="sec-n">/ 04</span><h2 class="sec-t">CONTACT</h2><span class="sec-hint">点击复制</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 06</span><h2 class="sec-t">CONTACT</h2><span class="sec-hint">点击复制</span><div class="sec-line"></div></div>
     <div class="con-grid">
       <div class="con-card" data-copy="makestudio_qz@outlook.com">
         <svg viewBox="0 0 24 24" style="stroke:var(--c-cyan)"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
@@ -531,7 +636,7 @@ html.crt-lock{overflow:hidden}
   </section>
 
   <section class="sec" id="sec-com">
-    <div class="sec-head"><span class="sec-n">/ 05</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
+    <div class="sec-head"><span class="sec-n">/ 07</span><h2 class="sec-t">COMMUNITY</h2><span class="sec-hint">粉丝互动</span><div class="sec-line"></div></div>
     <div class="con-grid">
       <div class="con-card" data-copy="538460781">
         <svg viewBox="0 0 24 24" style="fill:var(--c-yellow)"><path d="M12 2.1c-3 0-5.4 2.3-5.4 5.3 0 1.6.7 3 1.9 4-.6 1.6-1 3-1.1 4.4-.1 1.1 1.2 1.8 2.1 1.1l2.5-1.9c.5-.4 1.1 0 1.1.6v.6c0 1.3 1.2 2.3 2.5 2.3h-.8c1.3 0 2.5-1 2.5-2.3v-.6c0-.6.6-1 1.1-.6l2.5 1.9c.9.7 2.2 0 2.1-1.1-.1-1.4-.5-2.8-1.1-4.4 1.2-1 1.9-2.4 1.9-4 0-3-2.4-5.3-5.4-5.3z"></path><ellipse cx="12" cy="11.6" rx="3" ry="4.3" fill="var(--c-bg)"></ellipse><circle cx="9.4" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="9.4" cy="6.6" r=".7"></circle><circle cx="14.6" cy="6.9" r="1.55" fill="var(--c-bg)"></circle><circle cx="14.6" cy="6.6" r=".7"></circle></svg>
@@ -546,7 +651,7 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.3.2</button>
+    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.4.0</button>
   </footer>
 </main>
 
@@ -559,6 +664,11 @@ html.crt-lock{overflow:hidden}
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
+      <div class="log-item">+ 新增「历程时间线」区块（TIMELINE）</div>
+      <div class="log-item">+ 新增「设备器材」区块（STUDIO GEAR）</div>
+      <div class="log-item">* 重构两区块为与成员/联系方式一致的卡片样式，统一整体性</div>
+      <div class="log-item">* 修复移动端左上角取景框（录像 UI）偏移问题</div>
       <div class="log-ver-row"><span class="log-ver">v3.3.2</span><span class="log-date">2026-08-29</span></div>
       <div class="log-item">+ 站内播放：底部迷你播放条（本地 mp3）</div>
       <div class="log-item">+ 站内播放：B 站视频弹窗（无解 / FLY）</div>
@@ -873,6 +983,17 @@ html.crt-lock{overflow:hidden}
   tick();setInterval(tick,1000);
 })();
 
+/* Mobile nav burger */
+(function(){
+  var nav=document.getElementById('nav'),btn=document.getElementById('nav-burger');
+  if(!nav||!btn)return;
+  function set(o){nav.classList.toggle('open',o);btn.setAttribute('aria-expanded',o?'true':'false');btn.setAttribute('aria-label',o?'关闭菜单':'打开菜单')}
+  btn.addEventListener('click',function(e){e.stopPropagation();set(!nav.classList.contains('open'))});
+  nav.querySelectorAll('.nav-links a').forEach(function(a){a.addEventListener('click',function(){set(false)})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&nav.classList.contains('open'))set(false)});
+  document.addEventListener('click',function(e){if(nav.classList.contains('open')&&!nav.contains(e.target))set(false)});
+})();
+
 /* Nav scroll animation */
 (function(){
   var nav=document.getElementById('nav'),ht=document.getElementById('h-t'),ticking=false;
@@ -898,7 +1019,7 @@ html.crt-lock{overflow:hidden}
 (function(){
   var cvs=document.getElementById('bg-canvas');if(!cvs)return;
   var ctx=cvs.getContext('2d');if(!ctx)return;
-  var W,H,pt=[],dpr=1,maxD=100,maxD2=10000;
+  var W,H,pt=[],dpr=1,maxD=100,maxD2=10000,isMobile=false;
   function getCols(){return window.__themeColors||['rgba(99,102,241,','rgba(236,72,153,','rgba(34,211,238,','rgba(168,85,247,','rgba(250,204,21,']}
   function getCoreColor(){return window.__theme==='light'?'rgba(28,28,40,.45)':'rgba(255,255,255,.8)'}
   function getLineColor(){return window.__theme==='light'?'rgba(109,40,217,':'rgba(168,85,247,'}
@@ -906,7 +1027,7 @@ html.crt-lock{overflow:hidden}
     dpr=Math.min(window.devicePixelRatio||1,2);
     W=cvs.width=window.innerWidth*dpr;H=cvs.height=window.innerHeight*dpr;
     cvs.style.width=window.innerWidth+'px';cvs.style.height=window.innerHeight+'px';
-    var mob=window.innerWidth<720;maxD=(mob?70:100)*dpr;maxD2=maxD*maxD;
+    var mob=window.innerWidth<720;isMobile=mob;maxD=(mob?70:100)*dpr;maxD2=maxD*maxD;
     var glowR=mob?5:8,n=Math.min(mob?35:60,Math.floor((window.innerWidth*window.innerHeight)/(mob?30000:22000)));
     var COLS=getCols();
     pt=[];for(var i=0;i<n;i++)pt.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3*dpr,vy:(Math.random()-.5)*.3*dpr,r:(Math.random()*1.2+.4)*dpr,gr:glowR,cIdx:Math.floor(Math.random()*COLS.length),a:Math.random()*.5+.15});
@@ -929,9 +1050,11 @@ html.crt-lock{overflow:hidden}
         ctx.fillStyle=coreCol;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
       }
       ctx.lineWidth=.5*dpr;
-      for(var i=0;i<pt.length;i++)for(var j=i+1;j<pt.length;j++){
-        var a=pt[i],b=pt[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
-        if(d2<maxD2){ctx.strokeStyle=lineCol+((1-Math.sqrt(d2)/maxD)*.2)+')';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+      if(!isMobile){
+        for(var i=0;i<pt.length;i++)for(var j=i+1;j<pt.length;j++){
+          var a=pt[i],b=pt[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
+          if(d2<maxD2){ctx.strokeStyle=lineCol+((1-Math.sqrt(d2)/maxD)*.2)+')';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+        }
       }
     }
     requestAnimationFrame(draw);
