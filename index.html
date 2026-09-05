@@ -331,32 +331,48 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes hackJit{0%{transform:translate(0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(0)}}
 .log-foot{margin-top:16px;letter-spacing:.1em}
 @media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
-/* ============ 隐藏：私密来信（连点 LOGO 5 次触发） ============ */
-.mail-modal{position:fixed;inset:0;z-index:1160;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(4,4,12,.62);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .3s ease}
-[data-theme="light"] .mail-modal{background:rgba(20,22,30,.35)}
-.mail-modal[hidden]{display:none}
-.mail-modal.show{opacity:1;pointer-events:auto}
-.mail-card{width:min(420px,100%);border:1px solid var(--c-line);border-radius:18px;background:var(--c-bg);box-shadow:0 24px 70px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.04);overflow:hidden;transform:translateY(16px) scale(.97);transition:transform .32s cubic-bezier(.16,1,.3,1)}
-.mail-modal.show .mail-card{transform:none}
-.mail-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--c-line);background:linear-gradient(180deg,var(--c-card-bg-hover),transparent)}
-.mail-title{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.16em;background:linear-gradient(120deg,var(--c-fg),var(--c-cyan) 45%,var(--c-pink));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
-.mail-close{background:none;border:none;color:var(--c-fg-dim);cursor:pointer;font-size:16px;line-height:1;padding:4px 6px;transition:color .2s}
-.mail-close:hover{color:var(--c-fg)}
-.mail-form{padding:20px;display:flex;flex-direction:column;gap:14px}
-.mail-field{display:flex;flex-direction:column;gap:7px}
-.mail-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--c-fg-dim);text-transform:uppercase}
-.mail-lbl i{font-style:normal;color:var(--c-fg-mute);text-transform:none;letter-spacing:0}
-.mail-input{width:100%;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-fg);background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:10px;padding:11px 13px;transition:border-color .25s ease,box-shadow .25s ease}
-.mail-input::placeholder{color:var(--c-fg-mute)}
-.mail-input:focus{outline:none;border-color:rgba(129,140,248,.5);box-shadow:0 0 0 3px rgba(129,140,248,.12)}
-[data-theme="light"] .mail-input:focus{border-color:rgba(91,91,214,.5);box-shadow:0 0 0 3px rgba(91,91,214,.12)}
-.mail-area{resize:vertical;min-height:120px;line-height:1.6}
-.mail-submit{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.1em;padding:12px 16px;border:none;border-radius:10px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--c-accent),var(--c-pink));box-shadow:0 8px 22px rgba(236,72,153,.3);transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease}
-.mail-submit:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(236,72,153,.42)}
-.mail-submit:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.mail-status{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;min-height:16px;margin:0;color:var(--c-fg-dim)}
-.mail-status.ok{color:var(--c-green)}
-.mail-status.err{color:#fb7185}
+/* ============ 隐藏：私密来信（连点 LOGO 5 次触发 · MS-DOS 终端） ============ */
+.mail-term{position:fixed;inset:0;z-index:1260;background:#000;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.mail-term[hidden]{display:none}
+.mail-term.show{opacity:1;pointer-events:auto}
+.mail-screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#000;overflow:hidden}
+/* CRT 扫描线 + 整体闪烁 */
+.mail-screen::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.16) 2px,rgba(0,0,0,.16) 4px);z-index:3;animation:crtFlicker 6s steps(1) infinite}
+/* 磷光暗角 */
+.mail-screen::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,42,14,.55) 100%);z-index:2}
+/* 扫描光束 */
+.mail-beam{position:absolute;left:0;right:0;height:80px;top:-80px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.12),rgba(90,255,160,.05),transparent);pointer-events:none;z-index:3;animation:crtScan 3.6s linear infinite}
+/* 开机 glitch 屏 */
+.mail-boot{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;gap:18px}
+.mail-boot[hidden]{display:none}
+.mail-boot .boot-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(26px,7vw,62px);letter-spacing:.26em;color:#7dffa8;text-shadow:0 0 20px rgba(90,255,160,.6);animation:mailGlitch 1.3s steps(1) infinite}
+.mail-boot .boot-sub{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.42em;color:rgba(125,255,168,.5)}
+@keyframes mailGlitch{0%,88%{opacity:1;transform:none}89%{opacity:.35;transform:translateX(-3px) skewX(10deg)}91%{opacity:1;transform:translateX(2px)}93%{opacity:.5;transform:translateX(-2px) skewX(-8deg)}95%{opacity:1;transform:none}}
+/* 正文滚动区 */
+.mail-body{position:relative;z-index:4;flex:1;overflow-y:auto;padding:30px 32px;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.72;color:#7dffa8;text-shadow:0 0 7px rgba(90,255,160,.32);display:flex;flex-direction:column;gap:2px;scrollbar-width:none}
+.mail-body::-webkit-scrollbar{display:none}
+.mail-line{white-space:pre-wrap;word-break:break-word;min-height:1.2em}
+.mail-line.dim{color:rgba(125,255,168,.4)}
+.mail-line.hint{color:#a8ffce}
+.mail-line.ok{color:#4dff88}
+.mail-line.err{color:#ff6b6b}
+.mail-line.accent{color:#66e0ff}
+/* 块状光标 */
+@keyframes dosBlink{0%,100%{opacity:1}50%{opacity:0}}
+.mail-cursor{display:inline-block;width:.6em;height:1.15em;background:#7dffa8;vertical-align:text-bottom;margin-left:1px;animation:dosBlink .85s step-end infinite}
+/* 输入托盘 */
+.mail-tray{position:relative;z-index:4;display:flex;align-items:flex-start;gap:10px;padding:14px 32px 22px;flex-shrink:0;border-top:1px solid rgba(77,255,136,.16)}
+.mail-tray[hidden]{display:none}
+.mail-prompt{font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;color:#4dff88;white-space:nowrap;flex-shrink:0;text-shadow:0 0 7px rgba(90,255,160,.32)}
+.mail-input{flex:1;background:none;border:none;outline:none;color:#7dffa8;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.7;caret-color:#4dff88;text-shadow:0 0 7px rgba(90,255,160,.32);min-width:0}
+.mail-input::placeholder{color:rgba(125,255,168,.22)}
+.mail-area{resize:none;min-height:88px;line-height:1.6}
+.mail-send{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;padding:8px 16px;border:1px solid rgba(77,255,136,.5);border-radius:3px;background:rgba(77,255,136,.06);color:#4dff88;cursor:pointer;transition:all .2s}
+.mail-send:hover{background:rgba(77,255,136,.16);box-shadow:0 0 18px rgba(77,255,136,.3)}
+.mail-send[hidden]{display:none}
+.mail-exit{position:absolute;top:14px;right:16px;z-index:6;background:none;border:1px solid rgba(77,255,136,.4);border-radius:3px;color:#4dff88;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;padding:6px 12px;cursor:pointer;opacity:.75;transition:all .2s}
+.mail-exit:hover{opacity:1;background:rgba(77,255,136,.12);box-shadow:0 0 16px rgba(77,255,136,.3)}
+@media(max-width:720px){.mail-body{padding:20px;font-size:12px}.mail-tray{padding:12px 20px 18px}.mail-prompt{font-size:12px}.mail-input{font-size:12px}.mail-exit{top:10px;right:12px}}
 /* ============ 站内播放：底部迷你音乐条 ============ */
 #mp-bar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,150%);z-index:1100;width:min(540px,calc(100vw - 32px));padding:12px 16px 9px;border:1px solid var(--c-line);border-radius:18px;background:rgba(12,12,26,.72);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 18px 50px rgba(0,0,0,.45);transition:transform .55s cubic-bezier(.16,1,.3,1),background-color .5s ease,border-color .5s ease}
 [data-theme="light"] #mp-bar{background:rgba(255,255,255,.8);box-shadow:0 18px 50px rgba(0,0,0,.18)}
@@ -766,31 +782,22 @@ html.crt-lock{overflow:hidden}
   </div>
 </div>
 
-<!-- 隐藏：私密来信（不挂导航，连续点击左上角 LOGO 5 次触发） -->
-<div class="mail-modal" id="mail-modal" hidden>
-  <div class="mail-card">
-    <div class="mail-head">
-      <span class="mail-title">PRIVATE MESSAGE</span>
-      <button class="mail-close" id="mail-close" aria-label="关闭">✕</button>
+<!-- 隐藏：私密来信（不挂导航 · 连续点击左上角 LOGO 5 次触发 · MS-DOS 终端） -->
+<div class="mail-term" id="mail-term" hidden>
+  <div class="mail-screen">
+    <div class="mail-beam"></div>
+    <div class="mail-boot" id="mail-boot" hidden>
+      <div class="boot-logo">MAKE MAIL</div>
+      <div class="boot-sub">PRIVATE UPLINK // EST. 2026</div>
     </div>
-    <form class="mail-form" id="mail-form" novalidate>
-      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none">
-      <input type="hidden" name="_subject" value="来自官网隐藏来信">
-      <label class="mail-field">
-        <span class="mail-lbl">昵称 <i>可选</i></span>
-        <input class="mail-input" name="name" type="text" autocomplete="name" placeholder="怎么称呼你">
-      </label>
-      <label class="mail-field">
-        <span class="mail-lbl">回信邮箱 <i>可选，方便我回复</i></span>
-        <input class="mail-input" name="email" type="email" autocomplete="email" placeholder="you@example.com">
-      </label>
-      <label class="mail-field">
-        <span class="mail-lbl">想说的话 <i>必填</i></span>
-        <textarea class="mail-input mail-area" name="message" rows="5" required placeholder="写点什么..."></textarea>
-      </label>
-      <button class="mail-submit" type="submit" id="mail-submit">SEND &#8594;</button>
-      <p class="mail-status" id="mail-status" role="status" aria-live="polite"></p>
-    </form>
+    <div class="mail-body" id="mail-body" aria-live="polite"></div>
+    <div class="mail-tray" id="mail-tray" hidden>
+      <span class="mail-prompt" id="mail-prompt">&gt;</span>
+      <input class="mail-input" id="mail-input" type="text" autocomplete="off" spellcheck="false" placeholder="">
+      <textarea class="mail-input mail-area" id="mail-area" rows="3" spellcheck="false"></textarea>
+      <button class="mail-send" id="mail-send" type="button" hidden>[ SEND ]</button>
+    </div>
+    <button class="mail-exit" id="mail-close" type="button" aria-label="退出">[EXIT]</button>
   </div>
 </div>
 
@@ -1326,67 +1333,275 @@ html.crt-lock{overflow:hidden}
 </script>
 
 <script>
-/* 隐藏：私密来信（连续点击左上角 LOGO 5 次触发 + Formspree 提交） */
+/* 隐藏：私密来信（连点 LOGO 5 次 · MS-DOS 终端 · Formspree 提交） */
 (function(){
   'use strict';
-  var ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'; /* TODO: 替换成你的 form ID */
+  var ENDPOINT = 'https://formspree.io/f/mljelzge';
   var NEED = 5, RESET_MS = 3000;
-  var logo = document.querySelector('.nav-logo');
-  var modal = document.getElementById('mail-modal');
-  var form = document.getElementById('mail-form');
-  var statusEl = document.getElementById('mail-status');
-  var submit = document.getElementById('mail-submit');
-  var closeBtn = document.getElementById('mail-close');
-  var clicks = 0, timer = null;
 
+  var logo = document.querySelector('.nav-logo');
+  var term = document.getElementById('mail-term');
+  var boot = document.getElementById('mail-boot');
+  var body = document.getElementById('mail-body');
+  var tray = document.getElementById('mail-tray');
+  var promptEl = document.getElementById('mail-prompt');
+  var input = document.getElementById('mail-input');
+  var area = document.getElementById('mail-area');
+  var sendBtn = document.getElementById('mail-send');
+  var closeBtn = document.getElementById('mail-close');
+
+  var clicks = 0, timer = null;
+  var gen = 0;                 /* 会话代号：open/close 自增以取消旧动画 */
+  var visible = false;
+  var phase = null;            /* null | name | email | message | transmit | retry | done */
+  var data = { name:'', email:'', message:'' };
+
+  /* ---- 基础工具 ---- */
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  function appendLine(el){ body.appendChild(el); body.scrollTop = body.scrollHeight; return el; }
+  function line(cls, text){
+    var d = document.createElement('div');
+    d.className = 'mail-line' + (cls ? ' ' + cls : '');
+    d.textContent = text || '';
+    return appendLine(d);
+  }
+  function typeLine(text, cls){
+    var g = gen;
+    return new Promise(function(res){
+      if(!text || g !== gen){ res(); return; }
+      var d = document.createElement('div');
+      d.className = 'mail-line' + (cls ? ' ' + cls : '');
+      appendLine(d);
+      var cur = document.createElement('span');
+      cur.className = 'mail-cursor';
+      d.appendChild(cur);
+      var i = 0;
+      (function step(){
+        if(g !== gen){ d.remove(); body.scrollTop = body.scrollHeight; res(); return; }
+        if(i >= text.length){ cur.remove(); body.scrollTop = body.scrollHeight; res(); return; }
+        d.insertBefore(document.createTextNode(text.charAt(i)), cur);
+        i++; body.scrollTop = body.scrollHeight;
+        setTimeout(step, 12 + Math.random() * 14);
+      })();
+    });
+  }
+
+  /* ---- 音效 ---- */
+  var AC = null;
+  function ensureAudio(){
+    try{
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      if(AC.state === 'suspended') AC.resume();
+    }catch(e){}
+  }
+  function tone(type, f0, f1, dur, vol, delay){
+    try{
+      ensureAudio();
+      if(!AC) return;
+      var t = AC.currentTime + (delay || 0);
+      var o = AC.createOscillator(), g = AC.createGain();
+      o.type = type;
+      if(f1 && f1 !== f0){ o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur); }
+      else o.frequency.setValueAtTime(f0, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.05, t + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(AC.destination);
+      o.start(t); o.stop(t + dur + 0.06);
+    }catch(e){}
+  }
+  function noise(dur, vol, delay){
+    try{
+      ensureAudio();
+      if(!AC) return;
+      var t = AC.currentTime + (delay || 0);
+      var len = Math.max(1, Math.floor(AC.sampleRate * dur));
+      var buf = AC.createBuffer(1, len, AC.sampleRate);
+      var ch = buf.getChannelData(0);
+      for(var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      var src = AC.createBufferSource(); src.buffer = buf;
+      var f = AC.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 6000;
+      var g = AC.createGain();
+      g.gain.setValueAtTime(vol || 0.03, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(f); f.connect(g); g.connect(AC.destination);
+      src.start(t); src.stop(t + dur + 0.05);
+    }catch(e){}
+  }
+  function playBoot(){
+    tone('sine', 50, 60, 0.6, 0.05, 0);
+    noise(0.2, 0.05, 0);
+    tone('square', 990, 990, 0.12, 0.06, 0.35);
+  }
+  function playSend(){ tone('square', 1180, 1180, 0.05, 0.05, 0); }
+
+  /* ---- 表单各阶段 ---- */
+  function showControls(opts){
+    opts = opts || {};
+    input.hidden = !opts.input;
+    area.hidden = !opts.area;
+    sendBtn.hidden = !opts.send;
+    tray.hidden = false;
+    if(opts.input) input.value = '';
+    if(opts.area) area.value = '';
+    if(opts.placeholder) input.placeholder = opts.placeholder;
+  }
+  function focusInput(){ setTimeout(function(){ if(visible && !input.hidden) input.focus(); }, 30); }
+  function focusArea(){ setTimeout(function(){ if(visible && !area.hidden) area.focus(); }, 30); }
+
+  function promptName(){ phase = 'name'; promptEl.textContent = '>'; showControls({input:true, placeholder:'CALLSIGN_（回车跳过）'}); focusInput(); }
+  function promptEmail(){ phase = 'email'; promptEl.textContent = '>'; showControls({input:true, placeholder:'you@example.com（回车跳过）'}); focusInput(); }
+  function promptMsg(){ phase = 'message'; promptEl.textContent = '>'; showControls({area:true, send:true}); focusArea(); }
+
+  /* ---- 启动序列（复古开机自检） ---- */
+  async function bootSequence(){
+    var g = gen;
+    playBoot();
+    boot.hidden = false;
+    await wait(1650);
+    if(g !== gen) return;
+    boot.hidden = true;
+
+    await typeLine('MAKE STUDIO PRIVATE UPLINK v1.0', 'ok');
+    await typeLine('(C) 2026 MAKE STUDIO // 未加密信道不予受理', 'dim');
+    await typeLine('');
+    await typeLine('Initializing secure tunnel ...', 'dim');
+    await wait(340);
+    await typeLine('Handshake with relay ......... OK', 'ok');
+    await wait(140);
+    await typeLine('Cipher :: X25519 + AES-256-GCM');
+    await typeLine('Channel :: POINT-TO-POINT / ESTABLISHED');
+    await typeLine('');
+    await wait(120);
+    await typeLine('此信道不记录、不存档、不实名。', 'hint');
+    await typeLine('按提示输入，回车确认；留完即走。', 'dim');
+    await typeLine('──────────────────────────', 'dim');
+    await typeLine('');
+    if(g !== gen) return;
+    line('hint', '> 你的称呼（可空 · 回车跳过）');
+    promptName();
+  }
+
+  /* ---- 发送 ---- */
+  async function transmit(){
+    var g = gen;
+    phase = 'transmit';
+    tray.hidden = true;
+    line('', '');
+    line('accent', '── 加密并发送中 ──');
+    await wait(560);
+    if(g !== gen) return;
+
+    var fd = new FormData();
+    fd.append('_gotcha', '');
+    fd.append('_subject', '来自官网隐藏来信');
+    fd.append('name', data.name || '');
+    fd.append('email', data.email || '');
+    fd.append('message', data.message || '');
+
+    var failed = false;
+    try{
+      var r = await fetch(ENDPOINT, { method:'POST', body: fd, headers:{ 'Accept':'application/json' } });
+      if(g !== gen) return;
+      if(!r.ok){ var err = {}; try{ err = await r.json(); }catch(e){} throw err; }
+    }catch(e){ failed = true; }
+
+    if(g !== gen) return;
+    if(failed){
+      line('err', '× 发送失败，信道抖动。');
+      line('dim', '按 Enter 重试 · Esc 离开');
+      phase = 'retry';
+      tray.hidden = true;
+    }else{
+      playSend();
+      line('ok', '✓ 已送达，感谢来信。');
+      line('dim', '本条消息已从本机内存中抹除。');
+      line('hint', '按 Enter 再写一封 · Esc 离开');
+      phase = 'done';
+      tray.hidden = true;
+    }
+  }
+  function submitMessage(){
+    if(phase !== 'message') return;
+    var v = area.value.replace(/\s+$/, '');
+    if(!v.trim()){
+      line('err', '！ 消息不能为空。');
+      focusArea();
+      return;
+    }
+    data.message = v.trim();
+    line('', '  ' + v.replace(/\n/g, ' ↵ '));
+    transmit();
+  }
+
+  /* ---- 打开 / 关闭 ---- */
   function open(){
-    if(!modal) return;
-    modal.hidden = false;
-    requestAnimationFrame(function(){ modal.classList.add('show'); });
-    var fn = form && form.elements['name'];
-    if(fn) fn.focus();
+    if(visible) return;
+    visible = true;
+    gen++;
+    phase = null;
+    data = { name:'', email:'', message:'' };
+    body.innerHTML = '';
+    tray.hidden = true;
+    input.value = ''; area.value = '';
+    term.hidden = false;
+    requestAnimationFrame(function(){ term.classList.add('show'); });
+    bootSequence();
   }
   function close(){
-    if(!modal) return;
-    modal.classList.remove('show');
-    setTimeout(function(){ modal.hidden = true; }, 300);
+    if(!visible) return;
+    visible = false;
+    gen++;                    /* 取消进行中的动画 */
+    term.classList.remove('show');
+    setTimeout(function(){ if(!visible){ term.hidden = true; body.innerHTML = ''; } }, 450);
   }
 
+  /* ---- 触发：连点 LOGO ---- */
   if(logo){
     logo.addEventListener('click', function(){
       clicks++;
       clearTimeout(timer);
-      if(clicks >= NEED){ clicks = 0; open(); }
-      else{ timer = setTimeout(function(){ clicks = 0; }, RESET_MS); }
+      if(clicks >= NEED){ clicks = 0; clearTimeout(timer); open(); }
+      else timer = setTimeout(function(){ clicks = 0; }, RESET_MS);
     });
   }
 
   if(closeBtn) closeBtn.addEventListener('click', close);
-  if(modal) modal.addEventListener('click', function(e){ if(e.target === modal) close(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal && !modal.hidden) close(); });
 
-  if(form){
-    form.addEventListener('submit', function(e){
+  /* ---- 输入事件 ---- */
+  input.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    e.preventDefault();
+    if(phase === 'name'){
+      data.name = input.value.trim();
+      line('dim', '  ' + (data.name || '(anonymous)'));
+      line('hint', '> 回信地址（可空 · 回车跳过）');
+      promptEmail();
+    }else if(phase === 'email'){
+      data.email = input.value.trim();
+      line('dim', '  ' + (data.email || '(无)'));
+      line('hint', '> 想说的话（必填 · Ctrl+Enter 发送 / Enter 换行）');
+      promptMsg();
+    }
+  });
+
+  area.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){
       e.preventDefault();
-      if(submit) submit.disabled = true;
-      if(statusEl){ statusEl.textContent = '发送中…'; statusEl.className = 'mail-status'; }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      }).then(function(r){
-        if(!r.ok){ return r.json().then(function(err){ throw err; }); }
-        return r.json();
-      }).then(function(){
-        form.reset();
-        if(statusEl){ statusEl.textContent = '✓ 已送达，感谢来信。'; statusEl.className = 'mail-status ok'; }
-      }).catch(function(){
-        if(statusEl){ statusEl.textContent = '发送失败，请稍后再试。'; statusEl.className = 'mail-status err'; }
-      }).finally(function(){
-        if(submit) submit.disabled = false;
-      });
-    });
-  }
+      submitMessage();
+    }
+  });
+
+  if(sendBtn) sendBtn.addEventListener('click', submitMessage);
+
+  /* ---- 全局键盘（终端可见时） ---- */
+  document.addEventListener('keydown', function(e){
+    if(!visible) return;
+    if(e.key === 'Escape'){ e.preventDefault(); close(); return; }
+    if(phase === 'done' && e.key === 'Enter'){ e.preventDefault(); close(); }
+    else if(phase === 'retry' && e.key === 'Enter'){ e.preventDefault(); transmit(); }
+  });
 })();
 </script>
 
