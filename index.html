@@ -429,40 +429,11 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .vid-stage{position:relative;width:100%;aspect-ratio:16/9;background:#000}
 .vid-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 @media(max-width:720px){#vid-modal{padding:12px}.vid-head{padding:10px 14px}.vid-title{font-size:12px}}
-/* 整个网页 CRT 模式：只缩放内容容器（U 型缓动）。fixed 背景与导航全程原地不动，零漂移零重排 */
-#crt-scale{will-change:transform;transition:transform .95s cubic-bezier(.65,0,.35,1)}
-#crt-scale.s{transform:scale(.86)}
-/* CRT 序列期间冻结页面全部动画（粒子由 JS 暂停；覆盖层子树靠例外规则保持活力） */
-body.crt-frozen *{animation-play-state:paused!important}
-body.crt-frozen .crt-overlay,body.crt-frozen .crt-overlay *{animation-play-state:running!important}
-/* 动态背景层：CRT 期间淡出隐场，把舞台留给屏幕；结束时 2s 渐显回归 */
-body.crt-frozen #bg-canvas,body.crt-frozen .aurora,body.crt-frozen .grid-overlay{transition:opacity 2s ease}
-body.crt-hidebg #bg-canvas,body.crt-hidebg .aurora,body.crt-hidebg .grid-overlay{opacity:0}
-/* CRT 播放期间锁定滚动（JS 挂到 html 上） */
-html.crt-lock{overflow:hidden}
-/* CRT 覆盖层（锚定视口：黑白滤镜 + 凸面 + 扫描线 + 彩蛋文字，网站内容透过来）。
-   滤镜与缩放错峰执行：缩放只在全彩/黑白静止画面上进行，全程没有“变灰 + 缩放”同帧重绘 */
-.crt-overlay{position:fixed;inset:0;z-index:1300;pointer-events:none;opacity:0;backdrop-filter:none;-webkit-backdrop-filter:none;transition:opacity .7s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease}
-.crt-overlay[hidden]{display:none}
-/* 进入：先淡入 CRT 框架（此时只有缩放、滤镜未动）；画面安定后由 .g 单独渐变变灰 */
-.crt-overlay.on{opacity:1;pointer-events:auto;user-select:none}
-.crt-overlay.g{backdrop-filter:grayscale(1) contrast(1.07) brightness(.84);-webkit-backdrop-filter:grayscale(1) contrast(1.07) brightness(.84)}
-/* 凸面玻璃高光 + 球面暗角（整个视口凸出来） */
-.crt-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(255,255,255,.08),transparent 58%),radial-gradient(ellipse at 50% 50%,transparent 52%,rgba(0,0,0,.68) 100%);z-index:1}
-/* 静态扫描线 */
-.crt-overlay::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 4px);z-index:2}
-/* 动态扫描亮线 */
-.crt-scanbeam{position:absolute;left:0;right:0;height:70px;top:-70px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.14),transparent);animation:crtBeam 2.8s linear infinite;z-index:3}
-@keyframes crtBeam{0%{top:-70px}100%{top:100%}}
-/* 彩蛋文字 */
-.crt-text{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:clamp(16px,3.5vw,26px);color:#7dffa8;letter-spacing:.12em;text-shadow:0 0 12px rgba(90,255,160,.85),0 0 38px rgba(90,255,160,.4)}
-.crt-text .crt-line{opacity:0;transition:opacity .25s ease}
-.crt-text .crt-line.show{opacity:1}
 
 /* ============ 成就系统 ============ */
 .ach-toast-stack{position:fixed;top:calc(18px + env(safe-area-inset-top));right:18px;z-index:1400;display:flex;flex-direction:column;gap:12px;pointer-events:none}
-.ach-toast{pointer-events:auto;width:min(320px,calc(100vw - 36px));background:#000;border:1px solid rgba(77,255,136,.45);box-shadow:0 0 32px rgba(77,255,136,.18),inset 0 0 24px rgba(77,255,136,.04);transform:translateX(120%);opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .45s ease;position:relative;overflow:hidden}
-.ach-toast.show{transform:translateX(0);opacity:1}
+.ach-toast{pointer-events:auto;width:min(320px,calc(100vw - 36px));background:#000;border:1px solid rgba(77,255,136,.45);box-shadow:0 0 32px rgba(77,255,136,.18),inset 0 0 24px rgba(77,255,136,.04);opacity:0;transform:translateY(-6px);transition:opacity .6s ease,transform .6s ease;position:relative;overflow:hidden}
+.ach-toast.show{opacity:1;transform:translateY(0)}
 .ach-toast::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.14) 2px,rgba(0,0,0,.14) 4px);pointer-events:none;z-index:2}
 .ach-ti{display:flex;align-items:center;gap:8px;padding:11px 14px 9px;border-bottom:1px solid rgba(77,255,136,.18);position:relative;z-index:1}
 .ach-ti .ach-star{color:#ffd166;font-size:13px;text-shadow:0 0 8px rgba(255,209,102,.6)}
@@ -784,11 +755,6 @@ html.crt-lock{overflow:hidden}
   </div>
 </div>
 
-<div class="crt-overlay" id="crt-overlay" hidden>
-  <div class="crt-scanbeam"></div>
-  <div class="crt-text" id="crt-text"></div>
-</div>
-
 <!-- 站内播放：底部迷你音乐条 -->
 <div id="mp-bar" role="region" aria-label="音乐播放器">
   <div class="mp-main">
@@ -959,116 +925,6 @@ html.crt-lock{overflow:hidden}
     if(!hov||hov.hidden)return;
     hov.style.opacity=document.hidden?'0':'1';
   });
-
-  var KEY='make-studio-crt';
-  var overlay=document.getElementById('crt-overlay');
-  var text=document.getElementById('crt-text');
-  if(!overlay||!text)return;
-  try{if(localStorage.getItem(KEY)==='1')return}catch(e){}
-  var lines=['C:\\MAKE>_','> ACCESS GRANTED','signal lost...','> who is there?'];
-  var lineEls=[];
-  lines.forEach(function(l){
-    var d=document.createElement('div');
-    d.className='crt-line';
-    text.appendChild(d);
-    lineEls.push(d);
-  });
-  function typeLine(el,str,done){
-    var i=0;
-    var timer=setInterval(function(){
-      i++;
-      el.textContent=str.slice(0,i);
-      if(i>=str.length){clearInterval(timer);setTimeout(done,1000)}
-    },85);
-  }
-  function runLine(idx){
-    if(idx>=lineEls.length){
-      setTimeout(function(){exit()},3000);
-      return;
-    }
-    lineEls[idx].classList.add('show');
-    typeLine(lineEls[idx],lines[idx],function(){runLine(idx+1)});
-  }
-  /* 进入 CRT：锁定滚动与交互；只缩放内容容器，背景与导航零漂移 */
-  var docEl=document.documentElement;
-  var ct=document.getElementById('ct');
-  var nav=document.getElementById('nav');
-  var mpBar=document.getElementById('mp-bar');
-  var vidModal=document.getElementById('vid-modal');
-  var wrap=null;
-  function lockUI(){
-    docEl.classList.add('crt-lock');
-    if(ct)ct.inert=true;
-    if(nav)nav.inert=true;
-    if(mpBar)mpBar.inert=true;
-    if(vidModal)vidModal.inert=true;
-    if(document.activeElement)document.activeElement.blur();
-  }
-  function unlockUI(){
-    docEl.classList.remove('crt-lock');
-    if(ct)ct.inert=false;
-    if(nav)nav.inert=false;
-    if(mpBar)mpBar.inert=false;
-    if(vidModal)vidModal.inert=false;
-  }
-  function freezeBg(){
-    document.body.classList.add('crt-frozen');
-    if(window.__bgPause)window.__bgPause(true);
-  }
-  function unfreezeBg(){
-    document.body.classList.remove('crt-frozen');
-    if(window.__bgPause)window.__bgPause(false);
-  }
-  function enter(){
-    /* 触发即写入标记：即使中途刷新，彩蛋也不再播放第二次 */
-    try{localStorage.setItem(KEY,'1')}catch(e){}
-    if(window.__ach) window.__ach.unlock('crt_mode');
-    var y=window.scrollY||window.pageYOffset||0;
-    var vh=window.innerHeight;
-    lockUI();
-    freezeBg();
-    document.body.classList.add('crt-hidebg'); /* 动态背景层淡出隐场 */
-    /* 把页面内容装进独立容器：缩放只作用于内容，fixed 背景层/导航全程原地不动 */
-    wrap=document.createElement('div');
-    wrap.id='crt-scale';
-    wrap.style.transformOrigin='50% '+(y+vh/2)+'px';
-    var hero=document.getElementById('hero');
-    if(hero)wrap.appendChild(hero);
-    if(ct)wrap.appendChild(ct);
-    document.body.appendChild(wrap);
-    overlay.hidden=false;
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        wrap.classList.add('s');      /* U 型拉远（静止全彩画面，无滤镜重绘） */
-        overlay.classList.add('on');  /* 淡入 CRT 框架 */
-        /* 缩放安定后画面已完全静止，再渐变变灰并开始逐行打字 */
-        setTimeout(function(){
-          overlay.classList.add('g');
-          runLine(0);
-        },1000);
-      });
-    });
-  }
-  function exit(done){
-    /* 第一步：画面静止时先把颜色还原（0.45s），此时没有任何变换在跑 */
-    overlay.classList.remove('g');
-    setTimeout(function(){
-      /* 第二步：拉回原位 + 淡出 CRT 框架（静止黑白画面，无滤镜重绘） */
-      wrap.classList.remove('s');
-      overlay.classList.remove('on');
-      setTimeout(function(){
-        overlay.hidden=true;
-        /* 先撤隐场：背景层开始 2s 渐显（此时冻结类还在，渐显时长恒定 2s） */
-        document.body.classList.remove('crt-hidebg');
-        /* 下一帧恢复背景动画：边渐显边动，无跳变 */
-        requestAnimationFrame(unfreezeBg);
-        unlockUI();
-        wrap.style.willChange='auto';
-        if(done)done();
-      },1000);
-    },500);
-  }
-  setTimeout(enter,6000);
 })();
 
 /* Theme toggle */
@@ -1680,12 +1536,13 @@ html.crt-lock{overflow:hidden}
 
   var DEF = [
     {id:'mail_terminal', name:'老机器的秘密', desc:'发现墙角的收信终端', secret:false},
-    {id:'crt_mode',       name:'复古显像管',   desc:'触发全站 CRT 显示模式', secret:false},
     {id:'hack_log',       name:'系统入侵',     desc:'在更新日志里窥见被拦截的信号', secret:false},
     {id:'play_all',       name:'从头到尾',     desc:'听完整站每一首歌', secret:false},
     {id:'theme_master',   name:'明暗之间',     desc:'切换主题 10 次', secret:false},
     {id:'hidden_konami',  name:'上上下下',     desc:'经典秘籍，心照不宣', secret:true},
-    {id:'hidden_lurker',  name:'耐心的潜伏者', desc:'在这个页面安静停留一分钟', secret:true}
+    {id:'hidden_lurker',  name:'耐心的潜伏者', desc:'在这个页面安静停留一分钟', secret:true},
+    {id:'hidden_clock',   name:'时间旅人',     desc:'在时间的刻度上敲了三下', secret:true},
+    {id:'hidden_brand',   name:'署名之后',     desc:'反复读过工作室的铭牌', secret:true}
   ];
 
   var state = { achievements: [], totalUnlocked: 0, lastChecked: 0 };
@@ -1881,11 +1738,35 @@ html.crt-lock{overflow:hidden}
     }, 1000);
   })();
 
-  /* ---- 迁移：识别已完成的旧彩蛋 ----
-     旧彩蛋为一次性（CRT / 入侵），返回用户需据此补回成就 */
+  /* ---- 隐藏成就：连点导航时钟 3 次 ---- */
+  (function(){
+    var el = document.getElementById('clk');
+    if(!el) return;
+    var n = 0, t = null;
+    el.addEventListener('click', function(){
+      n++;
+      clearTimeout(t);
+      if(n >= 3){ n = 0; unlock('hidden_clock'); }
+      else t = setTimeout(function(){ n = 0; }, 2000);
+    });
+  })();
+
+  /* ---- 隐藏成就：连点页脚品牌铭牌 5 次 ---- */
+  (function(){
+    var el = document.querySelector('.foot .brand');
+    if(!el) return;
+    var n = 0, t = null;
+    el.addEventListener('click', function(){
+      n++;
+      clearTimeout(t);
+      if(n >= 5){ n = 0; unlock('hidden_brand'); }
+      else t = setTimeout(function(){ n = 0; }, 2000);
+    });
+  })();
+
+  /* ---- 迁移：识别已完成的一次性旧彩蛋 ---- */
   function migrate(){
     try{
-      if(localStorage.getItem('make-studio-crt') === '1') unlock('crt_mode', {silent:true});
       if(localStorage.getItem('make-studio-hack') === '1') unlock('hack_log', {silent:true});
     }catch(e){}
   }
