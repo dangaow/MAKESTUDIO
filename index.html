@@ -506,49 +506,17 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
-/* ===== ARG 终局 · 全屏活动层 ===== */
-#arg-final{position:fixed;inset:0;z-index:1300;background:var(--c-bg);display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s ease}
-#arg-final.show{opacity:1;visibility:visible}
-.arg-scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 5px);z-index:1}
-.arg-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.55) 100%);z-index:1}
-.arg-exit{position:absolute;top:22px;right:22px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card-bg);color:var(--c-fg-dim);font-size:16px;transition:all .3s ease}
-.arg-exit:hover{color:var(--c-fg);border-color:rgba(129,140,248,.35)}
-.arg-panel{position:relative;z-index:2;width:min(472px,calc(100vw - 32px));text-align:center;padding:12px 8px;max-height:calc(100vh - 36px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--c-line) transparent}
-.arg-glyph{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(34px,9vw,72px);line-height:1.08;letter-spacing:.1em;color:var(--c-fg);opacity:.94;white-space:pre-line}
-.arg-status{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:8px 18px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:var(--c-fg-dim)}
-.arg-dot{width:7px;height:7px;border-radius:50%;background:var(--c-yellow);box-shadow:0 0 12px var(--c-yellow);animation:argBlink 1.6s ease-in-out infinite}
-@keyframes argBlink{0%,100%{opacity:1}50%{opacity:.25}}
-.arg-msg{margin-top:16px;font-size:13px;letter-spacing:.12em;color:var(--c-fg-mute)}
-.arg-form{margin-top:30px;opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;visibility:hidden}
-.arg-form.live{opacity:1;transform:none;visibility:visible}
-.arg-input{width:100%;padding:14px 16px;background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:8px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.12em;text-align:center;outline:none;-webkit-user-select:text;user-select:text}
-.arg-input::placeholder{color:var(--c-fg-mute)}
-.arg-input:focus{border-color:var(--c-cyan)}
-.arg-err{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#ff6b7a}
-.arg-btn{margin-top:18px;padding:12px 34px;border:1px solid var(--c-cyan);border-radius:999px;color:var(--c-cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.24em;transition:all .3s ease}
-.arg-btn:hover{background:var(--c-cyan);color:#04121a}
-.arg-reveal{margin-top:30px;opacity:0;transition:opacity 1.2s ease;visibility:hidden}
-.arg-reveal.show{opacity:1;visibility:visible}
-.arg-reveal-title{font-family:'Orbitron',monospace;font-weight:700;font-size:18px;letter-spacing:.16em;color:var(--c-fg)}
-.arg-reveal-sub{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--c-fg-mute)}
-.arg-reveal-frame{margin-top:20px;height:180px;border:1px dashed var(--c-line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--c-fg-mute);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em}
-
-/* 信号手账：沿途碎片收集 */
-.arg-brief{margin-top:26px;text-align:left;border-top:1px solid var(--c-line);padding-top:20px}
-.arg-brief-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--c-fg-dim);text-align:center}
-.arg-frag{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--c-line);border-radius:10px;background:var(--c-card-bg);transition:border-color .35s ease}
-.arg-frag.done{border-color:rgba(52,211,153,.38)}
-.arg-frag-idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-fg-mute);letter-spacing:.1em;flex-shrink:0}
-.arg-frag-body{flex:1;min-width:0}
-.arg-frag-name{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-fg)}
-.arg-frag-desc{font-size:11px;line-height:1.55;color:var(--c-fg-mute);margin-top:2px}
-.arg-frag-input{width:84px;padding:8px 9px;background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-align:center;outline:none;-webkit-user-select:text;user-select:text}
-.arg-frag-input:focus{border-color:var(--c-cyan)}
-.arg-frag-input:disabled{opacity:.45;cursor:default;border-color:rgba(52,211,153,.25);color:var(--c-green)}
-.arg-frag-state{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--c-fg-mute);flex-shrink:0;min-width:60px;text-align:right}
-.arg-frag.done .arg-frag-state{color:var(--c-green)}
-.arg-brief-hint{margin-top:14px;min-height:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--c-green);opacity:0;transition:opacity .5s ease;text-align:center}
-.arg-brief-hint.show{opacity:1}
+/* ===== 终局入口 FAB + 第五首歌揭示 ===== */
+#final-fab{position:fixed;right:20px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:1200;display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid rgba(34,211,238,.45);border-radius:999px;background:rgba(5,5,11,.82);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#22d3ee;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-decoration:none;box-shadow:0 0 24px rgba(34,211,238,.16);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease,visibility .6s ease}
+#final-fab.show{opacity:1;visibility:visible;transform:none}
+#final-fab:hover{background:rgba(34,211,238,.12);box-shadow:0 0 32px rgba(34,211,238,.32)}
+#final-fab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#track-final{opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s ease}
+#track-final.show{opacity:1;transform:none}
+.trk-play.trk-soon{cursor:default;opacity:.55}
+.trk-play.trk-soon:hover{background:var(--c-card-bg);border-color:var(--c-line);color:var(--c-fg);box-shadow:none}
+.trk-play.trk-soon:hover svg{transform:none}
+@media(max-width:720px){#final-fab{right:14px;bottom:calc(84px + env(safe-area-inset-bottom));padding:10px 15px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -644,6 +612,12 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="trk-cover"><svg viewBox="0 0 24 24" fill="currentColor" opacity=".9"><path d="M12 3a9 9 0 0 1 9 9h-2a7 7 0 0 0-14 0H3a9 9 0 0 1 9-9z"></path><path d="M12 7a5 5 0 0 1 5 5h-2a3 3 0 0 0-6 0H7a5 5 0 0 1 5-5z"></path><circle cx="12" cy="14" r="1.5"></circle></svg></div>
       <div class="trk-i"><div class="trk-n">FLY</div><div class="trk-m">2026 · 01:34 <span class="tag mv">MV</span> <span class="tag">BILIBILI</span></div></div>
       <a class="trk-play" data-video="fly" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="播放 FLY"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56-.374-.933-.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"></path></svg></a>
+    </div>
+    <div class="trk" id="track-final">
+      <div class="trk-num">05</div>
+      <div class="trk-cover dark-cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-5.4 6-8.1 9-8.1s7 2.7 9 8.1"></path><path d="M7 12c1.2-2.6 3.2-3.9 5-3.9s3.8 1.3 5 3.9"></path><path d="M11 12c.4-.8 1-1.2 1.6-1.2s1.2.4 1.6 1.2"></path></svg></div>
+      <div class="trk-i"><div class="trk-n">真假？？</div><div class="trk-m">2026 · 即将发布 <span class="tag">SINGLE</span></div></div>
+      <span class="trk-play trk-soon" aria-label="即将发布"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 6h14M5 18h14"></path></svg></span>
     </div>
   </section>
 
@@ -849,6 +823,12 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   </div>
 </div>
 
+<!-- 终局入口 FAB（仅破解用户可见） -->
+<a id="final-fab" href="final.html" aria-label="进入终局解密页">
+  <svg viewBox="0 0 24 24"><path d="M5 7l5 5-5 5"></path><path d="M13 17h6"></path></svg>
+  <span>FINAL</span>
+</a>
+
 <!-- 成就系统：解锁提示条 + 总览面板 -->
 <div class="ach-toast-stack" id="ach-toasts" aria-live="polite"></div>
 
@@ -864,64 +844,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <div class="ach-track"><div class="ach-fill" id="ach-fill"></div></div>
       </div>
       <div id="ach-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ARG 终局 · 全屏活动层（结局默认锁定，发歌时开启） -->
-<div id="arg-final" aria-hidden="true">
-  <div class="arg-scan"></div>
-  <div class="arg-vignette"></div>
-  <button class="arg-exit" id="arg-final-exit" type="button" aria-label="退出">✕</button>
-  <div class="arg-panel">
-    <div class="arg-glyph" id="arg-glyph"></div>
-    <div class="arg-status"><span class="arg-dot"></span><span id="arg-status-txt"></span></div>
-    <p class="arg-msg" id="arg-msg"></p>
-
-    <div class="arg-brief">
-      <div class="arg-brief-title" id="arg-brief-title">SIGNAL FRAGMENTS · 信号碎片</div>
-
-      <div class="arg-frag" id="frag-signal">
-        <span class="arg-frag-idx">01</span>
-        <div class="arg-frag-body">
-          <div class="arg-frag-name">频率</div>
-          <div class="arg-frag-desc">该信道尚未开启，等待更新后自动点亮</div>
-        </div>
-        <span class="arg-frag-state" id="frag-signal-state">○ 未捕获</span>
-      </div>
-
-      <div class="arg-frag" id="frag-radio">
-        <span class="arg-frag-idx">02</span>
-        <div class="arg-frag-body">
-          <div class="arg-frag-name">电台回执码</div>
-          <div class="arg-frag-desc">该信道尚未开启，等待更新</div>
-        </div>
-        <input class="arg-frag-input" id="frag-radio-input" maxlength="8" placeholder="回执码" autocomplete="off" spellcheck="false">
-        <span class="arg-frag-state" id="frag-radio-state">○ 未捕获</span>
-      </div>
-
-      <div class="arg-frag" id="frag-stegan">
-        <span class="arg-frag-idx">03</span>
-        <div class="arg-frag-body">
-          <div class="arg-frag-name">隐写坐标码</div>
-          <div class="arg-frag-desc">该信道尚未开启，等待更新</div>
-        </div>
-        <input class="arg-frag-input" id="frag-stegan-input" maxlength="8" placeholder="坐标码" autocomplete="off" spellcheck="false">
-        <span class="arg-frag-state" id="frag-stegan-state">○ 未捕获</span>
-      </div>
-
-      <div class="arg-brief-hint" id="arg-brief-hint"></div>
-    </div>
-
-    <div class="arg-form" id="arg-form">
-      <input class="arg-input" id="arg-input" type="text" autocomplete="off" spellcheck="false" placeholder="输入沿途拼出的密钥 / 坐标">
-      <div class="arg-err" id="arg-err" hidden>校验失败，信号仍锁着。</div>
-      <button class="arg-btn" id="arg-submit" type="button">[ 校验信号 ]</button>
-    </div>
-    <div class="arg-reveal" id="arg-reveal">
-      <div class="arg-reveal-title">第五首歌 · 已接收</div>
-      <div class="arg-reveal-sub">TRANSMISSION COMPLETE // 2026</div>
-      <div class="arg-reveal-frame">此处为第五首歌的播放占位（发歌时替换为真实音频）</div>
     </div>
   </div>
 </div>
@@ -1594,7 +1516,16 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     if(e.key !== 'Enter') return;
     e.preventDefault();
     if(phase === 'name'){
-      data.name = input.value.trim();
+      var nameVal = input.value.trim();
+      if(nameVal.toLowerCase() === 'final'){
+        input.value = '';
+        if(window.__finalEntry) window.__finalEntry();
+        line('accent', '  ACCESS GRANTED // 终局节点已亮起');
+        line('hint', '  返回官网后，右下角会出现 FINAL 入口。');
+        setTimeout(close, 1400);
+        return;
+      }
+      data.name = nameVal;
       line('dim', '  ' + (data.name || '(anonymous)'));
       line('hint', '> 回信地址（必填 · 用于收取回信）');
       promptEmail();
@@ -1916,187 +1847,41 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 </script>
 
 <script>
-/* ============ ARG · 全屏活动层（信号手账 + 终局校验，结局默认锁定） ============ */
+/* ============ 终局入口 / 第五首歌：渐进揭示 ============ */
 (function(){
   'use strict';
+  var SOLVED_KEY = 'make-studio-arg-final';      /* 第五首歌已解出（final 密钥已输入） */
+  var ENTRY_KEY  = 'make-studio-arg-final-btn';  /* 已输入终局口令，显示 FINAL 入口 */
 
-  var PUZ = {
-    open: true,
-    openAt: 0,
-    radioHash:  atob('MDdkZjQ3ZjQ4NTcyMjk4MDUzMzNhM2RlMTQxYjYzMThiNjk5ZTRhZTUyYTg2MGM5OTIzZGI2ZGU5YThiZjE2Yw=='),
-    steganHash: atob('MjUxZDI5ODExNmUzMWZkZGNhMTU4YzQwMGZjMDcwZTJlNmMzMzMzZWEwZmNkMTNjNzc4ZjQ1MzkwZTk2ZjZmOQ=='),
-    finalHash:  atob('MjllZmUxNTdiZjJiMzdiMDM2NzczZDJhNmQwZDBmMTMzNjE2ZmI3ODM4ZGQxZjdkZTY2NjE5MGNkNmQ3N2NmNw=='),
-    unlockKey:  'make-studio-arg-final'
+  function flag(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function setFlag(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+
+  function updateFinalUI(){
+    var solved = flag(SOLVED_KEY) === '1';
+    var entry  = flag(ENTRY_KEY)  === '1';
+    var fab = document.getElementById('final-fab');
+    var track = document.getElementById('track-final');
+    if(fab){
+      if(entry && !solved) fab.classList.add('show');
+      else fab.classList.remove('show');
+    }
+    if(track){
+      if(solved){
+        track.classList.add('show');
+        if(window.__ach) window.__ach.unlock('arg_final');
+      } else {
+        track.classList.remove('show');
+      }
+    }
+  }
+
+  /* 终端口令 "final" 揭示 FINAL 入口 */
+  window.__finalEntry = function(){
+    setFlag(ENTRY_KEY, '1');
+    updateFinalUI();
   };
 
-  var el = document.getElementById('arg-final');
-  if(!el) return;
-  var glyph = document.getElementById('arg-glyph');
-  var statusTxt = document.getElementById('arg-status-txt');
-  var msg = document.getElementById('arg-msg');
-  var form = document.getElementById('arg-form');
-  var input = document.getElementById('arg-input');
-  var errEl = document.getElementById('arg-err');
-  var reveal = document.getElementById('arg-reveal');
-  var submitBtn = document.getElementById('arg-submit');
-  var exitBtn = document.getElementById('arg-final-exit');
-
-  var fragSignal = document.getElementById('frag-signal');
-  var fragSignalState = document.getElementById('frag-signal-state');
-  var fragRadio = document.getElementById('frag-radio');
-  var fragRadioInput = document.getElementById('frag-radio-input');
-  var fragRadioState = document.getElementById('frag-radio-state');
-  var fragStegan = document.getElementById('frag-stegan');
-  var fragSteganInput = document.getElementById('frag-stegan-input');
-  var fragSteganState = document.getElementById('frag-stegan-state');
-  var briefHint = document.getElementById('arg-brief-hint');
-  var briefTitle = document.getElementById('arg-brief-title');
-
-  /* ---- 进度：三片信号碎片 ---- */
-  var prog = { signal:false, radio:false, stegan:false };
-  try{
-    var acts = JSON.parse(localStorage.getItem('make-studio-actions') || '{}');
-    if(acts.signal) prog.signal = true;
-    if(acts.radio) prog.radio = true;
-    if(acts.stegan) prog.stegan = true;
-  }catch(e){}
-  try{
-    var saved = JSON.parse(localStorage.getItem('make-studio-arg') || '{}');
-    if(saved.signal) prog.signal = true;
-    if(saved.radio) prog.radio = true;
-    if(saved.stegan) prog.stegan = true;
-  }catch(e){}
-  function saveProg(){
-    try{ localStorage.setItem('make-studio-arg', JSON.stringify(prog)); }catch(e){}
-  }
-
-  function sha256(text){
-    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function(buf){
-      return Array.prototype.map.call(new Uint8Array(buf), function(b){
-        return ('0' + b.toString(16)).slice(-2);
-      }).join('');
-    });
-  }
-  function normalize(s){ return String(s).trim().replace(/\s+/g, ''); }
-
-  /* ---- 手账渲染 ---- */
-  function setFrag(node, stateEl, on){
-    if(on){ node.classList.add('done'); stateEl.textContent = '● 已捕获'; }
-    else { node.classList.remove('done'); stateEl.textContent = '○ 未捕获'; }
-  }
-  function renderBrief(){
-    var count = (prog.signal ? 1 : 0) + (prog.radio ? 1 : 0) + (prog.stegan ? 1 : 0);
-    setFrag(fragSignal, fragSignalState, prog.signal);
-    setFrag(fragRadio, fragRadioState, prog.radio);
-    setFrag(fragStegan, fragSteganState, prog.stegan);
-    if(fragRadioInput) fragRadioInput.disabled = prog.radio;
-    if(fragSteganInput) fragSteganInput.disabled = prog.stegan;
-    if(briefTitle) briefTitle.textContent = 'SIGNAL FRAGMENTS · 信号碎片  ' + count + '/3';
-    if(prog.signal && prog.radio && prog.stegan){
-      briefHint.textContent = '■ 三线闭合 · 密钥已在手：依次拼接 频率 · 回执码 · 坐标码';
-    }else{
-      briefHint.textContent = '已捕获 ' + count + '/3 · 把其余碎片带回这里';
-    }
-    briefHint.classList.add('show');
-  }
-
-  function checkFragment(which){
-    var inp = which === 'radio' ? fragRadioInput : fragSteganInput;
-    var target = which === 'radio' ? PUZ.radioHash : PUZ.steganHash;
-    if(!inp) return;
-    var val = normalize(inp.value);
-    if(!val) return;
-    sha256(val).then(function(h){
-      if(h === target){
-        prog[which] = true;
-        saveProg();
-        inp.value = '';
-        renderBrief();
-        if(window.__ach) window.__ach.unlock(which === 'radio' ? 'arg_radio' : 'arg_stegan');
-      }else{
-        inp.value = '';
-        inp.placeholder = '× 无效';
-        inp.focus();
-      }
-    });
-  }
-  if(fragRadioInput) fragRadioInput.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){ e.preventDefault(); checkFragment('radio'); }
-  });
-  if(fragSteganInput) fragSteganInput.addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){ e.preventDefault(); checkFragment('stegan'); }
-  });
-
-  var answered = false;
-  try{ answered = localStorage.getItem(PUZ.unlockKey) === '1'; }catch(e){}
-
-  function isOpen(){
-    if(PUZ.open) return true;
-    if(PUZ.openAt && Date.now() >= PUZ.openAt) return true;
-    return false;
-  }
-
-  function renderLocked(){
-    glyph.textContent = 'SIGNAL\nLOCKED';
-    statusTxt.textContent = 'STANDBY · 请等待更新';
-    msg.textContent = '结局信号还在路上，先把手账里的三片碎片集齐。';
-    form.classList.remove('live');
-    reveal.classList.remove('show');
-  }
-  function renderOpen(){
-    glyph.textContent = 'SIGNAL\nAWAITING';
-    statusTxt.textContent = 'CHANNEL OPEN · 等待密钥';
-    msg.textContent = '信号已抵达。输入你沿途拼出的全长密钥。';
-    form.classList.add('live');
-    reveal.classList.remove('show');
-  }
-  function renderUnlocked(){
-    glyph.textContent = 'SIGNAL\nRECEIVED';
-    statusTxt.textContent = 'TRANSMISSION COMPLETE';
-    msg.textContent = '第五首歌，首次公开。';
-    form.classList.remove('live');
-    reveal.classList.add('show');
-    if(window.__ach) window.__ach.unlock('arg_final');
-  }
-
-  function refresh(){
-    renderBrief();
-    if(answered) renderUnlocked();
-    else if(isOpen()) renderOpen();
-    else renderLocked();
-  }
-
-  function open(){ el.classList.add('show'); el.setAttribute('aria-hidden','false'); refresh(); }
-  function close(){ el.classList.remove('show'); el.setAttribute('aria-hidden','true'); }
-
-  function submit(){
-    if(!isOpen() || answered) return;
-    var val = normalize(input.value);
-    if(!val){ errEl.hidden = true; return; }
-    sha256(val).then(function(h){
-      if(h === PUZ.finalHash){
-        answered = true;
-        try{ localStorage.setItem(PUZ.unlockKey, '1'); }catch(e){}
-        errEl.hidden = true;
-        input.value = '';
-        refresh();
-      }else{
-        errEl.hidden = false;
-        input.focus();
-      }
-    });
-  }
-
-  if(submitBtn) submitBtn.addEventListener('click', submit);
-  if(input) input.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); submit(); } });
-  if(exitBtn) exitBtn.addEventListener('click', close);
-  el.addEventListener('click', function(e){ if(e.target === el) close(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && el.classList.contains('show')) close(); });
-
-  refresh();
-  if(location.hash === '#final') setTimeout(open, 300);
-
-  window.__ARG = { open: open, close: close, refresh: refresh };
+  updateFinalUI();
 })();
 </script>
 
