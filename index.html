@@ -544,6 +544,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .arg-frag-desc{font-size:11px;line-height:1.55;color:var(--c-fg-mute);margin-top:2px}
 .arg-frag-input{width:84px;padding:8px 9px;background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-align:center;outline:none;-webkit-user-select:text;user-select:text}
 .arg-frag-input:focus{border-color:var(--c-cyan)}
+.arg-frag-input:disabled{opacity:.45;cursor:default;border-color:rgba(52,211,153,.25);color:var(--c-green)}
 .arg-frag-state{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--c-fg-mute);flex-shrink:0;min-width:60px;text-align:right}
 .arg-frag.done .arg-frag-state{color:var(--c-green)}
 .arg-brief-hint{margin-top:14px;min-height:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--c-green);opacity:0;transition:opacity .5s ease;text-align:center}
@@ -883,7 +884,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <p class="arg-msg" id="arg-msg"></p>
 
     <div class="arg-brief">
-      <div class="arg-brief-title">SIGNAL FRAGMENTS · 信号碎片</div>
+      <div class="arg-brief-title" id="arg-brief-title">SIGNAL FRAGMENTS · 信号碎片</div>
 
       <div class="arg-frag" id="frag-signal">
         <span class="arg-frag-idx">01</span>
@@ -898,7 +899,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <span class="arg-frag-idx">02</span>
         <div class="arg-frag-body">
           <div class="arg-frag-name">电台回执码</div>
-          <div class="arg-frag-desc">给电台发信，自动回信里藏着 4 位回执码</div>
+          <div class="arg-frag-desc">连点 LOGO 五次 · 留邮箱发信，回信里藏着 4 位回执码</div>
         </div>
         <input class="arg-frag-input" id="frag-radio-input" maxlength="8" placeholder="回执码" autocomplete="off" spellcheck="false">
         <span class="arg-frag-state" id="frag-radio-state">○ 未捕获</span>
@@ -1472,7 +1473,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   function focusArea(){ setTimeout(function(){ if(visible && !area.hidden) area.focus(); }, 30); }
 
   function promptName(){ phase = 'name'; promptEl.textContent = '>'; showControls({input:true, placeholder:'CALLSIGN_（回车跳过）'}); focusInput(); }
-  function promptEmail(){ phase = 'email'; promptEl.textContent = '>'; showControls({input:true, placeholder:'you@example.com（回车跳过）'}); focusInput(); }
+  function promptEmail(){ phase = 'email'; promptEl.textContent = '>'; showControls({input:true, placeholder:'you@example.com（必填）'}); focusInput(); }
   function promptMsg(){ phase = 'message'; promptEl.textContent = '>'; showControls({area:true, send:true}); focusArea(); }
 
   /* ---- 启动序列（复古开机自检） ---- */
@@ -1601,11 +1602,22 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     if(phase === 'name'){
       data.name = input.value.trim();
       line('dim', '  ' + (data.name || '(anonymous)'));
-      line('hint', '> 回信地址（可空 · 回车跳过）');
+      line('hint', '> 回信地址（必填 · 用于收取回信）');
       promptEmail();
     }else if(phase === 'email'){
-      data.email = input.value.trim();
-      line('dim', '  ' + (data.email || '(无)'));
+      var em = input.value.trim();
+      if(!em){
+        line('err', '！ 回信邮箱为必填，否则没法给你回信。');
+        focusInput();
+        return;
+      }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){
+        line('err', '！ 邮箱格式好像不对，再核对一下。');
+        focusInput();
+        return;
+      }
+      data.email = em;
+      line('dim', '  ' + em);
       line('hint', '> 想说的话（必填 · Ctrl+Enter 发送 / Enter 换行）');
       promptMsg();
     }
@@ -1951,6 +1963,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   var fragSteganInput = document.getElementById('frag-stegan-input');
   var fragSteganState = document.getElementById('frag-stegan-state');
   var briefHint = document.getElementById('arg-brief-hint');
+  var briefTitle = document.getElementById('arg-brief-title');
 
   /* ---- 进度：三片信号碎片 ---- */
   var prog = { signal:false, radio:false, stegan:false };
@@ -1985,16 +1998,19 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     else { node.classList.remove('done'); stateEl.textContent = '○ 未捕获'; }
   }
   function renderBrief(){
+    var count = (prog.signal ? 1 : 0) + (prog.radio ? 1 : 0) + (prog.stegan ? 1 : 0);
     setFrag(fragSignal, fragSignalState, prog.signal);
     setFrag(fragRadio, fragRadioState, prog.radio);
     setFrag(fragStegan, fragSteganState, prog.stegan);
+    if(fragRadioInput) fragRadioInput.disabled = prog.radio;
+    if(fragSteganInput) fragSteganInput.disabled = prog.stegan;
+    if(briefTitle) briefTitle.textContent = 'SIGNAL FRAGMENTS · 信号碎片  ' + count + '/3';
     if(prog.signal && prog.radio && prog.stegan){
-      briefHint.textContent = '■ 三线闭合 · 密钥已在手，去终局信道顺次拼接 frequency · radio · stegan';
-      briefHint.classList.add('show');
+      briefHint.textContent = '■ 三线闭合 · 密钥已在手：依次拼接 频率 · 回执码 · 坐标码';
     }else{
-      briefHint.textContent = '';
-      briefHint.classList.remove('show');
+      briefHint.textContent = '已捕获 ' + count + '/3 · 把其余碎片带回这里';
     }
+    briefHint.classList.add('show');
   }
 
   function checkFragment(which){
