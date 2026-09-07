@@ -331,7 +331,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @keyframes hackJit{0%{transform:translate(0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(0)}}
 .log-foot{margin-top:16px;letter-spacing:.1em}
 @media(max-width:720px){.log-card{max-height:85vh}.log-body{font-size:11px}}
-/* ============ 隐藏：私密来信（连点 LOGO 5 次触发 · MS-DOS 终端） ============ */
+/* ============ 隐藏来信（终端样式） ============ */
 .mail-term{position:fixed;inset:0;z-index:1260;background:#000;opacity:0;pointer-events:none;transition:opacity .45s ease}
 .mail-term[hidden]{display:none}
 .mail-term.show{opacity:1;pointer-events:auto}
@@ -760,10 +760,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
       <div class="log-ver-row"><span class="log-ver">v3.5.0</span><span class="log-date">2026-09-05</span></div>
-      <div class="log-item">+ 墙角悄悄多了一台会收信的老机器</div>
-      <div class="log-item">+ 在同一处轻轻敲五下，荧幕才肯亮起</div>
-      <div class="log-item">* 电流声很小，别惊动路过的人</div>
-      <div class="log-line dim" id="arg-seed" style="letter-spacing:.1em">74 68 65 20 66 69 66 74 68 20 74 72 61 63 6B 20 73 6C 65 65 70 73 20 61 74 20 2F 73 69 67 6E 61 6C</div>
+      <div class="log-item">* 站点内部调整与细节优化</div>
       <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
       <div class="log-item">+ 新增「历程时间线」区块（TIMELINE）</div>
       <div class="log-item">+ 新增「设备器材」区块（STUDIO GEAR）</div>
@@ -785,10 +782,8 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="log-item">* 优化性能，压缩代码体积</div>
       <div class="log-ver-row"><span class="log-ver">v3.0.0</span><span class="log-date">2026-08-25</span></div>
       <div class="log-item">+ 第四首单曲《FLY》正式发布</div>
-      <div class="log-item">- 解密活动结束，信号通道关闭</div>
       <div class="log-ver-row"><span class="log-ver">v2.0.0</span><span class="log-date">2026-08-24</span></div>
-      <div class="log-item">+ 隐藏解密终端（MAKE STUDIO OS）上线</div>
-      <div class="log-item">+ 三层信号谜题</div>
+      <div class="log-item">+ 站点视觉与体验改版</div>
       <div class="log-ver-row"><span class="log-ver">v1.0.0</span><span class="log-date">2026</span></div>
       <div class="log-item">+ MAKE STUDIO 工作室官网上线</div>
       <div class="log-line dim log-foot">— 神秘的东西，还在某个角落。</div>
@@ -835,7 +830,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   </div>
 </div>
 
-<!-- 隐藏：私密来信（不挂导航 · 连续点击左上角 LOGO 5 次触发 · MS-DOS 终端） -->
+<!-- 隐藏来信（终端样式） -->
 <div class="mail-term" id="mail-term" hidden>
   <div class="mail-screen">
     <div class="mail-beam"></div>
@@ -890,7 +885,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <span class="arg-frag-idx">01</span>
         <div class="arg-frag-body">
           <div class="arg-frag-name">频率</div>
-          <div class="arg-frag-desc">从噪点里读出那串频率（/signal 完成后自动点亮）</div>
+          <div class="arg-frag-desc">该信道尚未开启，等待更新后自动点亮</div>
         </div>
         <span class="arg-frag-state" id="frag-signal-state">○ 未捕获</span>
       </div>
@@ -899,7 +894,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <span class="arg-frag-idx">02</span>
         <div class="arg-frag-body">
           <div class="arg-frag-name">电台回执码</div>
-          <div class="arg-frag-desc">连点 LOGO 五次 · 留邮箱发信，回信里藏着 4 位回执码</div>
+          <div class="arg-frag-desc">该信道尚未开启，等待更新</div>
         </div>
         <input class="arg-frag-input" id="frag-radio-input" maxlength="8" placeholder="回执码" autocomplete="off" spellcheck="false">
         <span class="arg-frag-state" id="frag-radio-state">○ 未捕获</span>
@@ -909,7 +904,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <span class="arg-frag-idx">03</span>
         <div class="arg-frag-body">
           <div class="arg-frag-name">隐写坐标码</div>
-          <div class="arg-frag-desc">下载社交媒体的图，抽 LSB 得到 4 位坐标码</div>
+          <div class="arg-frag-desc">该信道尚未开启，等待更新</div>
         </div>
         <input class="arg-frag-input" id="frag-stegan-input" maxlength="8" placeholder="坐标码" autocomplete="off" spellcheck="false">
         <span class="arg-frag-state" id="frag-stegan-state">○ 未捕获</span>
@@ -1355,10 +1350,10 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 </script>
 
 <script>
-/* 隐藏：私密来信（连点 LOGO 5 次 · MS-DOS 终端 · Formspree 提交） */
 (function(){
   'use strict';
   var ENDPOINT = 'https://formspree.io/f/mljelzge';
+  var ENABLED = false;   /* 终端总闸 · 活动开启时置 true */
   var NEED = 5, RESET_MS = 3000;
 
   var logo = document.querySelector('.nav-logo');
@@ -1562,7 +1557,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 
   /* ---- 打开 / 关闭 ---- */
   function open(){
-    if(visible) return;
+    if(!ENABLED || visible) return;
     visible = true;
     gen++;
     phase = null;
@@ -1583,7 +1578,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     setTimeout(function(){ if(!visible){ term.hidden = true; body.innerHTML = ''; } }, 450);
   }
 
-  /* ---- 触发：连点 LOGO ---- */
   if(logo){
     logo.addEventListener('click', function(){
       clicks++;
@@ -1856,7 +1850,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     }, 1000);
   })();
 
-  /* ---- 隐藏成就：连点导航时钟 3 次 ---- */
   (function(){
     var el = document.getElementById('clk');
     if(!el) return;
@@ -1869,7 +1862,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     });
   })();
 
-  /* ---- 隐藏成就：连点页脚品牌铭牌 5 次 ---- */
   (function(){
     var el = document.querySelector('.foot .brand');
     if(!el) return;
@@ -1928,17 +1920,12 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 (function(){
   'use strict';
 
-  /* ---- 发歌时在此处配置（三片碎片拼成全长密钥）：
-   *  1) open 改为 true，或 openAt 填到期毫秒时间戳
-   *  2) 三片碎片校验哈希 + 终局密钥哈希已按默认答案预生成：
-   *       频率 887 + 电台回执码 4410 + 隐写坐标码 5114 = 全长密钥 88744105114
-   *     换你自己的答案时，用 sha256 重新生成（明文别写进源码） */
   var PUZ = {
     open: false,
     openAt: 0,
-    radioHash:  '07df47f4857229805333a3de141b6318b699e4ae52a860c9923db6de9a8bf16c',  // "4410"
-    steganHash: '251d298116e31fddca158c400fc070e2e6c3333ea0fcd13c778f45390e96f6f9', // "5114"
-    finalHash:  '29efe157bf2b37b036773d2a6d0d0f133616fb7838dd1f7de666190cd6d77cf7', // "88744105114"
+    radioHash:  atob('MDdkZjQ3ZjQ4NTcyMjk4MDUzMzNhM2RlMTQxYjYzMThiNjk5ZTRhZTUyYTg2MGM5OTIzZGI2ZGU5YThiZjE2Yw=='),
+    steganHash: atob('MjUxZDI5ODExNmUzMWZkZGNhMTU4YzQwMGZjMDcwZTJlNmMzMzMzZWEwZmNkMTNjNzc4ZjQ1MzkwZTk2ZjZmOQ=='),
+    finalHash:  atob('MjllZmUxNTdiZjJiMzdiMDM2NzczZDJhNmQwZDBmMTMzNjE2ZmI3ODM4ZGQxZjdkZTY2NjE5MGNkNmQ3N2NmNw=='),
     unlockKey:  'make-studio-arg-final'
   };
 
@@ -2129,4 +2116,16 @@ init({
 </script>
 
 
+<script>
+/* 软防护：拦右键 / F12 / 查看源码快捷键（可被高级手段绕过，仅挡随手窥探） */
+(function(){
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase(), c = e.ctrlKey || e.metaKey;
+    if(e.key === 'F12' || (c && e.shiftKey && (k==='i'||k==='j'||k==='c')) || (c && k==='u')){
+      e.preventDefault(); e.stopPropagation(); return false;
+    }
+  }, true);
+})();
+</script>
 </body></html>

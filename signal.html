@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>SIGNAL // 第 0 号节点</title>
+<title>SIGNAL // 节点未开放</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
 :root{
   --c-bg:#05050b;--c-fg:#eef1fa;
   --c-fg-dim:rgba(238,241,250,.6);--c-fg-mute:rgba(238,241,250,.28);
   --c-line:rgba(255,255,255,.08);
-  --c-cyan:#22d3ee;--c-red:#ff4d63;--c-green:#34d399;--c-yellow:#fcd34d;
+  --c-cyan:#22d3ee;--c-red:#ff4d63;
   --c-card:rgba(255,255,255,.02);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -24,32 +24,13 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;letter-
 .led{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:6px 14px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--c-fg-dim)}
 .led i{width:7px;height:7px;border-radius:50%;background:var(--c-red);box-shadow:0 0 12px var(--c-red);animation:blink 1.4s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-
 .stage{margin-top:40px}
-.screen{border:1px solid var(--c-line);border-radius:10px;overflow:hidden;background:var(--c-card);position:relative}
-#noise{display:block;width:100%;height:auto;filter:grayscale(1) contrast(1.25);transition:filter .5s ease}
-#noise.separated{filter:none}
-.scanbar{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--c-cyan),transparent);opacity:.35;animation:scan 3.2s linear infinite;pointer-events:none}
-@keyframes scan{0%{top:0}100%{top:100%}}
-
-.controls{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.btn{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;padding:12px 26px;border-radius:999px;border:1px solid var(--c-line);background:transparent;color:var(--c-fg-dim);cursor:pointer;transition:all .3s ease}
-.btn:hover{color:var(--c-fg);border-color:rgba(34,211,238,.4)}
-.btn.primary{border-color:var(--c-cyan);color:var(--c-cyan)}
-.btn.primary:hover{background:var(--c-cyan);color:#04121a}
-
-.reveal{margin-top:28px;opacity:0;transform:translateY(8px);visibility:hidden;transition:opacity .8s ease,transform .8s ease,visibility .8s ease}
-.reveal.show{opacity:1;transform:none;visibility:visible}
-.card{border:1px solid var(--c-line);border-radius:10px;padding:22px;background:var(--c-card)}
-.card .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.24em;color:var(--c-red)}
-.card .freq{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:.1em;margin-top:10px;color:var(--c-fg)}
-.card .mail{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.06em;margin-top:8px;color:var(--c-cyan)}
-.card .hint{margin-top:16px;font-size:13px;line-height:1.9;color:var(--c-fg-dim)}
-.divider{height:1px;background:var(--c-line);margin:22px 0}
+.card{border:1px solid var(--c-line);border-radius:10px;padding:34px 26px;background:var(--c-card);text-align:center}
+.card .glyph{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:.24em;color:var(--c-fg-mute)}
+.card .msg{margin-top:18px;font-size:14px;line-height:2;color:var(--c-fg-dim)}
+.divider{height:1px;background:var(--c-line);margin:24px 0}
 .note{font-size:12px;line-height:1.9;color:var(--c-fg-mute);text-align:center}
 .note a{color:var(--c-cyan);text-decoration:none;border-bottom:1px solid rgba(34,211,238,.4)}
-.lognote{display:none;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--c-green);opacity:0;transition:opacity .6s ease}
-.lognote.show{display:block;opacity:1}
 </style>
 </head>
 <body>
@@ -57,115 +38,22 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;letter-
   <div class="head">
     <div class="kicker">ARG // NODE 00</div>
     <h1>SIGNAL OFFLINE</h1>
-    <p class="sub">这是一段被拦截的广播。画面上方的噪点里，藏着两行本该被抹掉的内容。</p>
-    <div class="led"><i></i>CHANNEL 88.7 — CARRIER DETECTED</div>
+    <p class="sub">这条信道尚未开启，请等待更新。</p>
+    <div class="led"><i></i>CHANNEL — NO CARRIER</div>
   </div>
 
   <div class="stage">
-    <div class="screen">
-      <canvas id="noise"></canvas>
-      <div class="scanbar"></div>
-    </div>
-    <div class="controls">
-      <button class="btn" id="btn-reset" type="button">[ 恢复噪点 ]</button>
-      <button class="btn primary" id="btn-separate" type="button">[ 分离红色通道 ]</button>
-    </div>
-  </div>
-
-  <div class="reveal" id="reveal">
     <div class="card">
-      <div class="tag">DECODED TRANSMISSION</div>
-      <div class="freq">88.7 MHz</div>
-      <div class="mail">UPLINK · 官网 LOGO ×5</div>
-      <p class="hint">
-        频率对上了，但载波还是空的。真正的收信机不挂在天上，它藏在官网的角落里——连续点左上角 LOGO 五次，那台老终端会自己亮起来。
+      <div class="glyph">■ LOCKED</div>
+      <p class="msg">
+        信号通道暂时关闭。<br>
+        等到指定时间，这里会重新亮起来。
       </p>
     </div>
-    <div class="controls" style="margin-top:16px">
-      <a class="btn primary" id="btn-mail" href="index.html" style="text-decoration:none">[ 返回官网 · 点亮收信机 ]</a>
-    </div>
-    <div class="lognote" id="lognote">✓ 信号节点已录得 · 回官网点亮收信机，回信会带来 回执码，拿到后去 #final 的「信号手账」登记</div>
   </div>
 
   <div class="divider"></div>
-  <p class="note">
-    这只是第 0 号节点。更多信号散落在别处……<br>
-    返回 <a href="index.html">官网</a> 查看成就，或跳去 <a href="index.html#final">终局信道</a>。
-  </p>
+  <p class="note">返回 <a href="index.html">官网</a></p>
 </div>
-
-<script>
-(function(){
-  'use strict';
-  var canvas = document.getElementById('noise');
-  if(!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var W = 720, H = 260;
-  canvas.width = W; canvas.height = H;
-
-  function seed(){
-    var img = ctx.createImageData(W, H);
-    var d = img.data;
-    for(var i = 0; i < d.length; i += 4){
-      d[i]     = Math.random() * 255 | 0;
-      d[i + 1] = Math.random() * 255 | 0;
-      d[i + 2] = Math.random() * 255 | 0;
-      d[i + 3] = 255;
-    }
-    ctx.putImageData(img, 0, 0);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ff0011';
-    ctx.font = 'bold 54px "JetBrains Mono", monospace';
-    ctx.fillText('88.7 MHz', W / 2, H / 2 - 36);
-    ctx.font = 'bold 26px "JetBrains Mono", monospace';
-    ctx.fillText('UPLINK · LOGO ×5', W / 2, H / 2 + 44);
-  }
-
-  function separate(){
-    var img = ctx.getImageData(0, 0, W, H);
-    var d = img.data;
-    for(var i = 0; i < d.length; i += 4){
-      var r = d[i], g = d[i + 1], b = d[i + 2];
-      if(r > 130 && g < 100 && b < 100){
-        d[i] = 255; d[i + 1] = 46; d[i + 2] = 46;
-      }else{
-        d[i] = 0; d[i + 1] = 0; d[i + 2] = 0;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
-    canvas.classList.add('separated');
-  }
-
-  function setAction(key){
-    var acts = {};
-    try{ acts = JSON.parse(localStorage.getItem('make-studio-actions') || '{}'); }catch(e){}
-    acts[key] = true;
-    try{ localStorage.setItem('make-studio-actions', JSON.stringify(acts)); }catch(e){}
-  }
-
-  var reveal = document.getElementById('reveal');
-  var lognote = document.getElementById('lognote');
-  var separated = false;
-
-  document.getElementById('btn-separate').addEventListener('click', function(){
-    separate();
-    if(!separated){
-      separated = true;
-      setAction('signal');
-      reveal.classList.add('show');
-      setTimeout(function(){ lognote.classList.add('show'); }, 900);
-    }
-  });
-
-  document.getElementById('btn-reset').addEventListener('click', function(){
-    seed();
-    canvas.classList.remove('separated');
-  });
-
-  var mailBtn = document.getElementById('btn-mail');
-  if(mailBtn) mailBtn.addEventListener('click', function(){ setAction('signal'); });
-})();
-</script>
 </body>
 </html>
