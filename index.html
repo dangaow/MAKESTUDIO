@@ -513,7 +513,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .arg-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.55) 100%);z-index:1}
 .arg-exit{position:absolute;top:22px;right:22px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card-bg);color:var(--c-fg-dim);font-size:16px;transition:all .3s ease}
 .arg-exit:hover{color:var(--c-fg);border-color:rgba(129,140,248,.35)}
-.arg-panel{position:relative;z-index:2;width:min(460px,calc(100vw - 44px));text-align:center;padding:0 4px}
+.arg-panel{position:relative;z-index:2;width:min(472px,calc(100vw - 32px));text-align:center;padding:12px 8px;max-height:calc(100vh - 36px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--c-line) transparent}
 .arg-glyph{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(34px,9vw,72px);line-height:1.08;letter-spacing:.1em;color:var(--c-fg);opacity:.94;white-space:pre-line}
 .arg-status{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:8px 18px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:var(--c-fg-dim)}
 .arg-dot{width:7px;height:7px;border-radius:50%;background:var(--c-yellow);box-shadow:0 0 12px var(--c-yellow);animation:argBlink 1.6s ease-in-out infinite}
@@ -532,6 +532,22 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .arg-reveal-title{font-family:'Orbitron',monospace;font-weight:700;font-size:18px;letter-spacing:.16em;color:var(--c-fg)}
 .arg-reveal-sub{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--c-fg-mute)}
 .arg-reveal-frame{margin-top:20px;height:180px;border:1px dashed var(--c-line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--c-fg-mute);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em}
+
+/* 信号手账：沿途碎片收集 */
+.arg-brief{margin-top:26px;text-align:left;border-top:1px solid var(--c-line);padding-top:20px}
+.arg-brief-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--c-fg-dim);text-align:center}
+.arg-frag{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--c-line);border-radius:10px;background:var(--c-card-bg);transition:border-color .35s ease}
+.arg-frag.done{border-color:rgba(52,211,153,.38)}
+.arg-frag-idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-fg-mute);letter-spacing:.1em;flex-shrink:0}
+.arg-frag-body{flex:1;min-width:0}
+.arg-frag-name{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--c-fg)}
+.arg-frag-desc{font-size:11px;line-height:1.55;color:var(--c-fg-mute);margin-top:2px}
+.arg-frag-input{width:84px;padding:8px 9px;background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-align:center;outline:none;-webkit-user-select:text;user-select:text}
+.arg-frag-input:focus{border-color:var(--c-cyan)}
+.arg-frag-state{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--c-fg-mute);flex-shrink:0;min-width:60px;text-align:right}
+.arg-frag.done .arg-frag-state{color:var(--c-green)}
+.arg-brief-hint{margin-top:14px;min-height:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--c-green);opacity:0;transition:opacity .5s ease;text-align:center}
+.arg-brief-hint.show{opacity:1}
 </style>
 </head>
 <body>
@@ -865,6 +881,42 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <div class="arg-glyph" id="arg-glyph"></div>
     <div class="arg-status"><span class="arg-dot"></span><span id="arg-status-txt"></span></div>
     <p class="arg-msg" id="arg-msg"></p>
+
+    <div class="arg-brief">
+      <div class="arg-brief-title">SIGNAL FRAGMENTS · 信号碎片</div>
+
+      <div class="arg-frag" id="frag-signal">
+        <span class="arg-frag-idx">01</span>
+        <div class="arg-frag-body">
+          <div class="arg-frag-name">频率</div>
+          <div class="arg-frag-desc">从噪点里读出那串频率（/signal 完成后自动点亮）</div>
+        </div>
+        <span class="arg-frag-state" id="frag-signal-state">○ 未捕获</span>
+      </div>
+
+      <div class="arg-frag" id="frag-radio">
+        <span class="arg-frag-idx">02</span>
+        <div class="arg-frag-body">
+          <div class="arg-frag-name">电台回执码</div>
+          <div class="arg-frag-desc">给电台发信，自动回信里藏着 4 位回执码</div>
+        </div>
+        <input class="arg-frag-input" id="frag-radio-input" maxlength="8" placeholder="回执码" autocomplete="off" spellcheck="false">
+        <span class="arg-frag-state" id="frag-radio-state">○ 未捕获</span>
+      </div>
+
+      <div class="arg-frag" id="frag-stegan">
+        <span class="arg-frag-idx">03</span>
+        <div class="arg-frag-body">
+          <div class="arg-frag-name">隐写坐标码</div>
+          <div class="arg-frag-desc">下载社交媒体的图，抽 LSB 得到 4 位坐标码</div>
+        </div>
+        <input class="arg-frag-input" id="frag-stegan-input" maxlength="8" placeholder="坐标码" autocomplete="off" spellcheck="false">
+        <span class="arg-frag-state" id="frag-stegan-state">○ 未捕获</span>
+      </div>
+
+      <div class="arg-brief-hint" id="arg-brief-hint"></div>
+    </div>
+
     <div class="arg-form" id="arg-form">
       <input class="arg-input" id="arg-input" type="text" autocomplete="off" spellcheck="false" placeholder="输入沿途拼出的密钥 / 坐标">
       <div class="arg-err" id="arg-err" hidden>校验失败，信号仍锁着。</div>
@@ -1860,19 +1912,22 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 </script>
 
 <script>
-/* ============ ARG 终局 · 全屏活动层（结局默认锁定，发歌时开启） ============ */
+/* ============ ARG · 全屏活动层（信号手账 + 终局校验，结局默认锁定） ============ */
 (function(){
   'use strict';
 
-  /* ---- 发歌时在这几行开启结局：
-   *  1) open 改为 true（或设置 openAt 为到期毫秒时间戳）
-   *  2) answerHash 替换成真实密钥的 SHA-256（答案明文不写进源码，防翻源码）
-   *     当前占位答案明文：MAKE-STUDIO-FINAL-05                              */
-  var CFG = {
+  /* ---- 发歌时在此处配置（三片碎片拼成全长密钥）：
+   *  1) open 改为 true，或 openAt 填到期毫秒时间戳
+   *  2) 三片碎片校验哈希 + 终局密钥哈希已按默认答案预生成：
+   *       频率 887 + 电台回执码 4410 + 隐写坐标码 5114 = 全长密钥 88744105114
+   *     换你自己的答案时，用 sha256 重新生成（明文别写进源码） */
+  var PUZ = {
     open: false,
     openAt: 0,
-    answerHash: 'b038db3bcc807a9afe2e67ccd8b7cab1124af156f2c45aafa8eda42ce43762b7',
-    unlockKey: 'make-studio-arg-final'
+    radioHash:  '07df47f4857229805333a3de141b6318b699e4ae52a860c9923db6de9a8bf16c',  // "4410"
+    steganHash: '251d298116e31fddca158c400fc070e2e6c3333ea0fcd13c778f45390e96f6f9', // "5114"
+    finalHash:  '29efe157bf2b37b036773d2a6d0d0f133616fb7838dd1f7de666190cd6d77cf7', // "88744105114"
+    unlockKey:  'make-studio-arg-final'
   };
 
   var el = document.getElementById('arg-final');
@@ -1887,13 +1942,32 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   var submitBtn = document.getElementById('arg-submit');
   var exitBtn = document.getElementById('arg-final-exit');
 
-  var answered = false;
-  try{ answered = localStorage.getItem(CFG.unlockKey) === '1'; }catch(e){}
+  var fragSignal = document.getElementById('frag-signal');
+  var fragSignalState = document.getElementById('frag-signal-state');
+  var fragRadio = document.getElementById('frag-radio');
+  var fragRadioInput = document.getElementById('frag-radio-input');
+  var fragRadioState = document.getElementById('frag-radio-state');
+  var fragStegan = document.getElementById('frag-stegan');
+  var fragSteganInput = document.getElementById('frag-stegan-input');
+  var fragSteganState = document.getElementById('frag-stegan-state');
+  var briefHint = document.getElementById('arg-brief-hint');
 
-  function isOpen(){
-    if(CFG.open) return true;
-    if(CFG.openAt && Date.now() >= CFG.openAt) return true;
-    return false;
+  /* ---- 进度：三片信号碎片 ---- */
+  var prog = { signal:false, radio:false, stegan:false };
+  try{
+    var acts = JSON.parse(localStorage.getItem('make-studio-actions') || '{}');
+    if(acts.signal) prog.signal = true;
+    if(acts.radio) prog.radio = true;
+    if(acts.stegan) prog.stegan = true;
+  }catch(e){}
+  try{
+    var saved = JSON.parse(localStorage.getItem('make-studio-arg') || '{}');
+    if(saved.signal) prog.signal = true;
+    if(saved.radio) prog.radio = true;
+    if(saved.stegan) prog.stegan = true;
+  }catch(e){}
+  function saveProg(){
+    try{ localStorage.setItem('make-studio-arg', JSON.stringify(prog)); }catch(e){}
   }
 
   function sha256(text){
@@ -1905,17 +1979,71 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   }
   function normalize(s){ return String(s).trim().replace(/\s+/g, ''); }
 
+  /* ---- 手账渲染 ---- */
+  function setFrag(node, stateEl, on){
+    if(on){ node.classList.add('done'); stateEl.textContent = '● 已捕获'; }
+    else { node.classList.remove('done'); stateEl.textContent = '○ 未捕获'; }
+  }
+  function renderBrief(){
+    setFrag(fragSignal, fragSignalState, prog.signal);
+    setFrag(fragRadio, fragRadioState, prog.radio);
+    setFrag(fragStegan, fragSteganState, prog.stegan);
+    if(prog.signal && prog.radio && prog.stegan){
+      briefHint.textContent = '■ 三线闭合 · 密钥已在手，去终局信道顺次拼接 frequency · radio · stegan';
+      briefHint.classList.add('show');
+    }else{
+      briefHint.textContent = '';
+      briefHint.classList.remove('show');
+    }
+  }
+
+  function checkFragment(which){
+    var inp = which === 'radio' ? fragRadioInput : fragSteganInput;
+    var target = which === 'radio' ? PUZ.radioHash : PUZ.steganHash;
+    if(!inp) return;
+    var val = normalize(inp.value);
+    if(!val) return;
+    sha256(val).then(function(h){
+      if(h === target){
+        prog[which] = true;
+        saveProg();
+        inp.value = '';
+        renderBrief();
+        if(window.__ach) window.__ach.unlock(which === 'radio' ? 'arg_radio' : 'arg_stegan');
+      }else{
+        inp.value = '';
+        inp.placeholder = '× 无效';
+        inp.focus();
+      }
+    });
+  }
+  if(fragRadioInput) fragRadioInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); checkFragment('radio'); }
+  });
+  if(fragSteganInput) fragSteganInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); checkFragment('stegan'); }
+  });
+
+  var answered = false;
+  try{ answered = localStorage.getItem(PUZ.unlockKey) === '1'; }catch(e){}
+
+  function isOpen(){
+    if(PUZ.open) return true;
+    if(PUZ.openAt && Date.now() >= PUZ.openAt) return true;
+    return false;
+  }
+
   function renderLocked(){
     glyph.textContent = 'SIGNAL\nLOCKED';
     statusTxt.textContent = 'STANDBY · 请等待更新';
-    msg.textContent = '这一段信号还在路上，抵达后自会亮起。';
+    msg.textContent = '结局信号还在路上，先把手账里的三片碎片集齐。';
     form.classList.remove('live');
     reveal.classList.remove('show');
   }
   function renderOpen(){
     glyph.textContent = 'SIGNAL\nAWAITING';
     statusTxt.textContent = 'CHANNEL OPEN · 等待密钥';
-    msg.textContent = '信号已抵达。输入你沿途拼出的密钥或坐标。';
+    msg.textContent = '信号已抵达。输入你沿途拼出的全长密钥。';
     form.classList.add('live');
     reveal.classList.remove('show');
   }
@@ -1929,6 +2057,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   }
 
   function refresh(){
+    renderBrief();
     if(answered) renderUnlocked();
     else if(isOpen()) renderOpen();
     else renderLocked();
@@ -1942,9 +2071,9 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     var val = normalize(input.value);
     if(!val){ errEl.hidden = true; return; }
     sha256(val).then(function(h){
-      if(h === CFG.answerHash){
+      if(h === PUZ.finalHash){
         answered = true;
-        try{ localStorage.setItem(CFG.unlockKey, '1'); }catch(e){}
+        try{ localStorage.setItem(PUZ.unlockKey, '1'); }catch(e){}
         errEl.hidden = true;
         input.value = '';
         refresh();

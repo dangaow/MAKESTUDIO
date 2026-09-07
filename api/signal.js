@@ -23,6 +23,8 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const FROM_ADDRESS = 'noise@make-studio.example';
 const ARG_SOCIAL_URL = process.env.ARG_SOCIAL_URL || 'https://weibo.com/u/你的账号/隐写图片动态';
 const ARG_SOCIAL_HINT = process.env.ARG_SOCIAL_HINT || '一张看起来再普通不过的图，藏着一段没被放完的频率';
+// 电台回执码 —— 玩家拿到后回官网「信号手账」输入（与 index.html 里 PUZ.radioHash 校验的明文保持一致）
+const ARG_RADIO_CODE = process.env.ARG_RADIO_CODE || '4410';
 
 const REPLY_TEXT = (subject) => `收到。这不是自动回复。
 
@@ -32,8 +34,10 @@ ${ARG_SOCIAL_HINT}。
 去这里：
 ${ARG_SOCIAL_URL}
 
-把图下载下来，读它的「最低有效位」（least significant bit）。
-解出来的那一串东西，就是通往第五首歌的坐标。
+把图下载下来，读它的「最低有效位」（least significant bit），会得到一段坐标码。
+
+电台回执码：${ARG_RADIO_CODE}
+把这两样带回官网 #final 的「信号手账」里登记。
 
 —— 88.7
 `;

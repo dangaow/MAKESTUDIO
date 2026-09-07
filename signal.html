@@ -84,7 +84,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;letter-
     <div class="controls" style="margin-top:16px">
       <a class="btn primary" id="btn-mail" href="mailto:noise@make-studio.example?subject=SIGNAL" style="text-decoration:none">[ 向电台发信 ]</a>
     </div>
-    <div class="lognote" id="lognote">✓ 已录得信号节点，回到官网即可同步成就进度</div>
+    <div class="lognote" id="lognote">✓ 信号节点已录得 · 回执码将随回信送达，拿到后回官网 #final 的「信号手账」登记</div>
   </div>
 
   <div class="divider"></div>
@@ -164,7 +164,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;letter-
   });
 
   var mailBtn = document.getElementById('btn-mail');
-  if(mailBtn) mailBtn.addEventListener('click', function(){ setAction('radio'); });
+  if(mailBtn) mailBtn.addEventListener('click', function(){ setAction('signal'); });
 })();
 </script>
 </body>
