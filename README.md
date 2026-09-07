@@ -45,8 +45,14 @@ python -m http.server 8765
 
 ```
 .
-├── index.html                        # 主站点（全部样式与逻辑内置）
+├── index.html                        # 主站点（全部样式与逻辑内置，含 ARG 终局层）
+├── index.backup.html                 # 删除 CRT 彩蛋/成就前的备份，供回滚参考
+├── signal.html                       # ARG 第 0 号节点（噪点图 → 频率 + 邮箱）
 ├── make-studio-decrypt-backup.html   # 历史活动解密版本备份
+├── api/
+│   └── signal.js                     # ARG 第二幕：邮件自动回信（Vercel Function + Resend）
+├── tools/
+│   └── stego.py                      # ARG 第三幕：图像 LSB 隐写工具（Python）
 ├── assets/
 │   ├── cover-huijin.jpg              # 《灰烬》封面
 │   ├── cover-jiasuo.jpg              # 《枷锁》封面
@@ -81,16 +87,69 @@ python -m http.server 8765
 | 系统入侵 | 在更新日志里窥见被拦截的信号 |
 | 从头到尾 | 听完整站每一首歌 |
 | 明暗之间 | 切换主题 10 次 |
+| 信号接收者 | 从一片噪声里读出那串频率（ARG 节点） |
+| 电波猎手 | 向电台发信并等到了回音（ARG 节点） |
+| ???（隐藏） | ??? |
+| ???（隐藏） | ??? |
 | ???（隐藏） | ??? |
 | ???（隐藏） | ??? |
 | ???（隐藏） | ??? |
 | ???（隐藏） | ??? |
 
-隐藏成就共 4 个，解锁前以 `???` 代名、解锁方法不公开；解锁后即显示真实名称与说明。全部进度（含完成数、解锁状态与时间）保存于 `localStorage.make-studio-achievements`；如需重置，执行：
+隐藏成就共 6 个，解锁前以 `???` 代名、解锁方法不公开；解锁后即显示真实名称与说明。全部进度（含完成数、解锁状态与时间）保存于 `localStorage.make-studio-achievements`；如需重置，执行：
 
 ```js
 localStorage.removeItem('make-studio-achievements')
 ```
+
+## ARG · 「第五首歌」全链路骨架
+
+围绕"第五首歌"这条隐藏叙事线的跨平台替代现实游戏（MVP 骨架）。整条链路已打通，但结局（开歌）默认锁定，需要你在发歌时手动开启。
+
+### 节点链路
+
+| 节点 | 平台/载体 | 玩家动作 | 产出的线索 | 对应成就 |
+| --- | --- | --- | --- | --- |
+| 0 | 官网更新日志 | 打开 CHANGELOG，读一段十六进制 | 解码得 `/signal` | 系统入侵 |
+| 1 | `signal.html` | 分离噪点图红色通道 | `88.7 MHz` + 邮箱 `noise@make-studio.example` | 信号接收者 |
+| 2 | 邮件 | 给电台邮箱发任意主题信件 | 自动回信指向社交媒体隐写图 | 电波猎手 |
+| 3 | 微博 / B站动态 | 下载图片，抽 LSB 隐藏文本 | 得到坐标/密文 | 隐写术士（隐藏） |
+| 4 | 官网 `#final` 终局 | 输入沿途拼出的密钥 | 解锁第五首歌 | 终局之声（隐藏） |
+
+### 怎么启用结局（发歌前必做）
+
+打开 `index.html`，找到 `ARG 终局` 脚本里的 `CFG` 配置：
+
+```js
+var CFG = {
+  open: false,      // 改成 true 立即开放（或下面二选一）
+  openAt: 0,        // 或填到期毫秒时间戳，到期自动开放
+  answerHash: '…',  // 替换成真实密钥的 SHA-256（明文别写进源码）
+  unlockKey: 'make-studio-arg-final'
+};
+```
+
+- 未开启时，进入 `#final` 显示「STANDBY · 请等待更新」。
+- 开启后可输入密钥，命中 `answerHash` 即解锁并把 `arg_final` 成就点亮。
+- `answerHash` 的生成方式：`echo -n '你的密钥明文' | sha256sum`（答案固定即可，先别写进源码）。
+
+### 怎么接邮件自动回信
+
+1. 在 Resend 验证真实域名，把 `noise@...` 配到发信/收信地址，并把 Inbound Webhook 指向 `/api/signal.js`。
+2. 设置环境变量 `RESEND_API_KEY`、`SIGNAL_WEBHOOK_SECRET`、`ARG_SOCIAL_URL`、`ARG_SOCIAL_HINT`。
+3. 生产环境务必改掉 `api/signal.js` 里的占位邮箱 `make-studio.example` 与签名校验占位（见文件内 TODO）。
+
+### 怎么生成隐写图
+
+```bash
+# 把坐标藏进一张普通 PNG（发布到社交媒体）
+python tools/stego.py embed 原图.png 隐写图.png -m "N31_14_15_E121_28_30"
+
+# 玩家侧抽出隐藏文本
+python tools/stego.py extract 隐写图.png
+```
+
+载体内必须是无损 PNG，JPEG 会破坏 LSB。提示只给"光里有余音"，其余不下发，保持硬核。
 
 ## 常见问题
 

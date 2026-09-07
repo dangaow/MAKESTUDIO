@@ -505,33 +505,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
-
-/* ===== ARG 终局 · 全屏活动层 ===== */
-#arg-final{position:fixed;inset:0;z-index:1300;background:var(--c-bg);display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s ease}
-#arg-final.show{opacity:1;visibility:visible}
-.arg-scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 5px);z-index:1}
-.arg-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.55) 100%);z-index:1}
-.arg-exit{position:absolute;top:22px;right:22px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card-bg);color:var(--c-fg-dim);font-size:16px;transition:all .3s ease}
-.arg-exit:hover{color:var(--c-fg);border-color:rgba(129,140,248,.35)}
-.arg-panel{position:relative;z-index:2;width:min(460px,calc(100vw - 44px));text-align:center;padding:0 4px}
-.arg-glyph{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(34px,9vw,72px);line-height:1.08;letter-spacing:.1em;color:var(--c-fg);opacity:.94;white-space:pre-line}
-.arg-status{display:inline-flex;align-items:center;gap:9px;margin-top:22px;padding:8px 18px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:var(--c-fg-dim)}
-.arg-dot{width:7px;height:7px;border-radius:50%;background:var(--c-yellow);box-shadow:0 0 12px var(--c-yellow);animation:argBlink 1.6s ease-in-out infinite}
-@keyframes argBlink{0%,100%{opacity:1}50%{opacity:.25}}
-.arg-msg{margin-top:16px;font-size:13px;letter-spacing:.12em;color:var(--c-fg-mute)}
-.arg-form{margin-top:30px;opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;visibility:hidden}
-.arg-form.live{opacity:1;transform:none;visibility:visible}
-.arg-input{width:100%;padding:14px 16px;background:var(--c-card-bg);border:1px solid var(--c-line);border-radius:8px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.12em;text-align:center;outline:none;-webkit-user-select:text;user-select:text}
-.arg-input::placeholder{color:var(--c-fg-mute)}
-.arg-input:focus{border-color:var(--c-cyan)}
-.arg-err{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#ff6b7a}
-.arg-btn{margin-top:18px;padding:12px 34px;border:1px solid var(--c-cyan);border-radius:999px;color:var(--c-cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.24em;transition:all .3s ease}
-.arg-btn:hover{background:var(--c-cyan);color:#04121a}
-.arg-reveal{margin-top:30px;opacity:0;transition:opacity 1.2s ease;visibility:hidden}
-.arg-reveal.show{opacity:1;visibility:visible}
-.arg-reveal-title{font-family:'Orbitron',monospace;font-weight:700;font-size:18px;letter-spacing:.16em;color:var(--c-fg)}
-.arg-reveal-sub{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--c-fg-mute)}
-.arg-reveal-frame{margin-top:20px;height:180px;border:1px dashed var(--c-line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--c-fg-mute);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em}
 </style>
 </head>
 <body>
@@ -746,7 +719,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="log-item">+ 墙角悄悄多了一台会收信的老机器</div>
       <div class="log-item">+ 在同一处轻轻敲五下，荧幕才肯亮起</div>
       <div class="log-item">* 电流声很小，别惊动路过的人</div>
-      <div class="log-line dim" id="arg-seed" style="letter-spacing:.1em">74 68 65 20 66 69 66 74 68 20 74 72 61 63 6B 20 73 6C 65 65 70 73 20 61 74 20 2F 73 69 67 6E 61 6C</div>
       <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
       <div class="log-item">+ 新增「历程时间线」区块（TIMELINE）</div>
       <div class="log-item">+ 新增「设备器材」区块（STUDIO GEAR）</div>
@@ -852,28 +824,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
         <div class="ach-track"><div class="ach-fill" id="ach-fill"></div></div>
       </div>
       <div id="ach-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ARG 终局 · 全屏活动层（结局默认锁定，发歌时开启） -->
-<div id="arg-final" aria-hidden="true">
-  <div class="arg-scan"></div>
-  <div class="arg-vignette"></div>
-  <button class="arg-exit" id="arg-final-exit" type="button" aria-label="退出">✕</button>
-  <div class="arg-panel">
-    <div class="arg-glyph" id="arg-glyph"></div>
-    <div class="arg-status"><span class="arg-dot"></span><span id="arg-status-txt"></span></div>
-    <p class="arg-msg" id="arg-msg"></p>
-    <div class="arg-form" id="arg-form">
-      <input class="arg-input" id="arg-input" type="text" autocomplete="off" spellcheck="false" placeholder="输入沿途拼出的密钥 / 坐标">
-      <div class="arg-err" id="arg-err" hidden>校验失败，信号仍锁着。</div>
-      <button class="arg-btn" id="arg-submit" type="button">[ 校验信号 ]</button>
-    </div>
-    <div class="arg-reveal" id="arg-reveal">
-      <div class="arg-reveal-title">第五首歌 · 已接收</div>
-      <div class="arg-reveal-sub">TRANSMISSION COMPLETE // 2026</div>
-      <div class="arg-reveal-frame">此处为第五首歌的播放占位（发歌时替换为真实音频）</div>
     </div>
   </div>
 </div>
@@ -1592,11 +1542,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     {id:'hidden_konami',  name:'上上下下',     desc:'经典秘籍，心照不宣', secret:true},
     {id:'hidden_lurker',  name:'耐心的潜伏者', desc:'在这个页面安静停留一分钟', secret:true},
     {id:'hidden_clock',   name:'时间旅人',     desc:'在时间的刻度上敲了三下', secret:true},
-    {id:'hidden_brand',   name:'署名之后',     desc:'反复读过工作室的铭牌', secret:true},
-    {id:'arg_signal',     name:'信号接收者',   desc:'从一片噪声里读出了那串频率', secret:false},
-    {id:'arg_radio',      name:'电波猎手',     desc:'向电台发信，并等到了回音', secret:false},
-    {id:'arg_stegan',     name:'隐写术士',     desc:'从一张普通图片里抽出了隐藏的音频', secret:true},
-    {id:'arg_final',      name:'终局之声',     desc:'解开了第五首歌的封印', secret:true}
+    {id:'hidden_brand',   name:'署名之后',     desc:'反复读过工作室的铭牌', secret:true}
   ];
 
   var state = { achievements: [], totalUnlocked: 0, lastChecked: 0 };
@@ -1822,10 +1768,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   function migrate(){
     try{
       if(localStorage.getItem('make-studio-hack') === '1') unlock('hack_log', {silent:true});
-      var acts = JSON.parse(localStorage.getItem('make-studio-actions') || '{}');
-      if(acts.signal)  unlock('arg_signal',  {silent:true});
-      if(acts.radio)   unlock('arg_radio',   {silent:true});
-      if(acts.stegan)  unlock('arg_stegan',  {silent:true});
     }catch(e){}
   }
 
@@ -1856,115 +1798,6 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   render();
 
   window.__ach = { unlock: unlock };
-})();
-</script>
-
-<script>
-/* ============ ARG 终局 · 全屏活动层（结局默认锁定，发歌时开启） ============ */
-(function(){
-  'use strict';
-
-  /* ---- 发歌时在这几行开启结局：
-   *  1) open 改为 true（或设置 openAt 为到期毫秒时间戳）
-   *  2) answerHash 替换成真实密钥的 SHA-256（答案明文不写进源码，防翻源码）
-   *     当前占位答案明文：MAKE-STUDIO-FINAL-05                              */
-  var CFG = {
-    open: false,
-    openAt: 0,
-    answerHash: 'b038db3bcc807a9afe2e67ccd8b7cab1124af156f2c45aafa8eda42ce43762b7',
-    unlockKey: 'make-studio-arg-final'
-  };
-
-  var el = document.getElementById('arg-final');
-  if(!el) return;
-  var glyph = document.getElementById('arg-glyph');
-  var statusTxt = document.getElementById('arg-status-txt');
-  var msg = document.getElementById('arg-msg');
-  var form = document.getElementById('arg-form');
-  var input = document.getElementById('arg-input');
-  var errEl = document.getElementById('arg-err');
-  var reveal = document.getElementById('arg-reveal');
-  var submitBtn = document.getElementById('arg-submit');
-  var exitBtn = document.getElementById('arg-final-exit');
-
-  var answered = false;
-  try{ answered = localStorage.getItem(CFG.unlockKey) === '1'; }catch(e){}
-
-  function isOpen(){
-    if(CFG.open) return true;
-    if(CFG.openAt && Date.now() >= CFG.openAt) return true;
-    return false;
-  }
-
-  function sha256(text){
-    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function(buf){
-      return Array.prototype.map.call(new Uint8Array(buf), function(b){
-        return ('0' + b.toString(16)).slice(-2);
-      }).join('');
-    });
-  }
-  function normalize(s){ return String(s).trim().replace(/\s+/g, ''); }
-
-  function renderLocked(){
-    glyph.textContent = 'SIGNAL\nLOCKED';
-    statusTxt.textContent = 'STANDBY · 请等待更新';
-    msg.textContent = '这一段信号还在路上，抵达后自会亮起。';
-    form.classList.remove('live');
-    reveal.classList.remove('show');
-  }
-  function renderOpen(){
-    glyph.textContent = 'SIGNAL\nAWAITING';
-    statusTxt.textContent = 'CHANNEL OPEN · 等待密钥';
-    msg.textContent = '信号已抵达。输入你沿途拼出的密钥或坐标。';
-    form.classList.add('live');
-    reveal.classList.remove('show');
-  }
-  function renderUnlocked(){
-    glyph.textContent = 'SIGNAL\nRECEIVED';
-    statusTxt.textContent = 'TRANSMISSION COMPLETE';
-    msg.textContent = '第五首歌，首次公开。';
-    form.classList.remove('live');
-    reveal.classList.add('show');
-    if(window.__ach) window.__ach.unlock('arg_final');
-  }
-
-  function refresh(){
-    if(answered) renderUnlocked();
-    else if(isOpen()) renderOpen();
-    else renderLocked();
-  }
-
-  function open(){ el.classList.add('show'); el.setAttribute('aria-hidden','false'); refresh(); }
-  function close(){ el.classList.remove('show'); el.setAttribute('aria-hidden','true'); }
-
-  function submit(){
-    if(!isOpen() || answered) return;
-    var val = normalize(input.value);
-    if(!val){ errEl.hidden = true; return; }
-    sha256(val).then(function(h){
-      if(h === CFG.answerHash){
-        answered = true;
-        try{ localStorage.setItem(CFG.unlockKey, '1'); }catch(e){}
-        errEl.hidden = true;
-        input.value = '';
-        refresh();
-      }else{
-        errEl.hidden = false;
-        input.focus();
-      }
-    });
-  }
-
-  if(submitBtn) submitBtn.addEventListener('click', submit);
-  if(input) input.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); submit(); } });
-  if(exitBtn) exitBtn.addEventListener('click', close);
-  el.addEventListener('click', function(e){ if(e.target === el) close(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && el.classList.contains('show')) close(); });
-
-  refresh();
-  if(location.hash === '#final') setTimeout(open, 300);
-
-  window.__ARG = { open: open, close: close, refresh: refresh };
 })();
 </script>
 
