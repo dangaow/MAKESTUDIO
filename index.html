@@ -459,6 +459,41 @@ html.crt-lock{overflow:hidden}
 .crt-text .crt-line{opacity:0;transition:opacity .25s ease}
 .crt-text .crt-line.show{opacity:1}
 
+/* ============ 成就系统 ============ */
+.ach-toast-stack{position:fixed;top:calc(18px + env(safe-area-inset-top));right:18px;z-index:1400;display:flex;flex-direction:column;gap:12px;pointer-events:none}
+.ach-toast{pointer-events:auto;width:min(320px,calc(100vw - 36px));background:#000;border:1px solid rgba(77,255,136,.45);box-shadow:0 0 32px rgba(77,255,136,.18),inset 0 0 24px rgba(77,255,136,.04);transform:translateX(120%);opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .45s ease;position:relative;overflow:hidden}
+.ach-toast.show{transform:translateX(0);opacity:1}
+.ach-toast::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.14) 2px,rgba(0,0,0,.14) 4px);pointer-events:none;z-index:2}
+.ach-ti{display:flex;align-items:center;gap:8px;padding:11px 14px 9px;border-bottom:1px solid rgba(77,255,136,.18);position:relative;z-index:1}
+.ach-ti .ach-star{color:#ffd166;font-size:13px;text-shadow:0 0 8px rgba(255,209,102,.6)}
+.ach-ti .ach-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;color:#7dffa8;text-shadow:0 0 8px rgba(90,255,160,.4)}
+.ach-body{padding:10px 14px 13px;position:relative;z-index:1;font-family:'JetBrains Mono',monospace}
+.ach-name{font-size:14px;font-weight:600;color:#4dff88;letter-spacing:.04em;text-shadow:0 0 8px rgba(90,255,160,.4);min-height:1.4em}
+.ach-name .cursor{display:inline-block;width:.55em;height:1em;background:#7dffa8;vertical-align:text-bottom;margin-left:2px;animation:dosBlink .85s step-end infinite}
+.ach-desc{font-size:11px;color:rgba(125,255,168,.6);margin-top:5px;line-height:1.6;min-height:1.4em}
+.ach-prog{font-size:10px;color:rgba(125,255,168,.45);margin-top:9px;letter-spacing:.08em}
+.ach-prog b{color:#7dffa8;font-weight:600}
+/* 成就总览面板（复用 DOS 弹窗视觉） */
+.ach-bar{position:relative;z-index:1;padding:2px 2px 16px;border-bottom:1px solid rgba(77,255,136,.18);margin-bottom:6px}
+.ach-count{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#7dffa8;margin-bottom:8px}
+.ach-count b{color:#4dff88}
+.ach-track{height:5px;background:rgba(77,255,136,.12);border-radius:999px;overflow:hidden}
+.ach-fill{height:100%;width:0;background:linear-gradient(90deg,#4dff88,#66e0ff);box-shadow:0 0 10px rgba(77,255,136,.5);transition:width .7s cubic-bezier(.16,1,.3,1)}
+.ach-row{display:flex;gap:12px;align-items:flex-start;font-family:'JetBrains Mono',monospace;padding:9px 2px;border-bottom:1px dashed rgba(77,255,136,.14)}
+.ach-row:last-child{border-bottom:none}
+.ach-mark{flex-shrink:0;width:14px;text-align:center;font-size:12px;line-height:1.7}
+.ach-mark.done{color:#4dff88;text-shadow:0 0 8px rgba(90,255,160,.5)}
+.ach-mark.lock{color:rgba(125,255,168,.3)}
+.ach-row .ach-rn{font-size:12px;font-weight:600;letter-spacing:.04em}
+.ach-row.done .ach-rn{color:#7dffa8}
+.ach-row.lock .ach-rn{color:rgba(125,255,168,.6)}
+.ach-rn.ach-secret{color:rgba(125,255,168,.35)!important;letter-spacing:.32em}
+.ach-row .ach-rd{font-size:10px;color:rgba(125,255,168,.45);margin-top:2px;line-height:1.6}
+.ach-rd.ach-secret{color:rgba(125,255,168,.28);letter-spacing:.15em}
+/* 页脚入口行 */
+.foot-entry-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+@media(max-width:720px){.ach-toast-stack{right:12px;top:calc(12px + env(safe-area-inset-top));gap:10px}}
+
 @media(min-width:721px) and (max-width:1024px){
   #ct{max-width:680px;padding:90px 28px 60px}.sec{margin-bottom:100px}.pl{font-size:36px}.nav-links{gap:28px}
 }
@@ -693,7 +728,10 @@ html.crt-lock{overflow:hidden}
 
   <footer class="foot-wrap">
     <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.5.0</button>
+    <div class="foot-entry-row">
+      <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.5.0</button>
+      <button class="ver-entry" id="ach-entry" aria-label="查看成就">ACHIEVEMENTS</button>
+    </div>
   </footer>
 </main>
 
@@ -805,6 +843,25 @@ html.crt-lock{overflow:hidden}
   </div>
 </div>
 
+<!-- 成就系统：解锁提示条 + 总览面板 -->
+<div class="ach-toast-stack" id="ach-toasts" aria-live="polite"></div>
+
+<div class="log-modal" id="ach-modal" hidden>
+  <div class="log-card">
+    <div class="log-head">
+      <span class="log-title">ACHIEVEMENTS.SYS</span>
+      <button class="log-close" id="ach-close" aria-label="关闭">✕</button>
+    </div>
+    <div class="log-body">
+      <div class="ach-bar">
+        <div class="ach-count">已解锁 <b id="ach-done">0</b> / <span id="ach-total">0</span> · 完成度 <b id="ach-pct">0%</b></div>
+        <div class="ach-track"><div class="ach-fill" id="ach-fill"></div></div>
+      </div>
+      <div id="ach-list"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){'use strict';
 
@@ -875,6 +932,7 @@ html.crt-lock{overflow:hidden}
     if(hackPlayed||hBusy||!hov||!htxt||!hcard||modal.hidden)return;
     var run=++hRun;
     hBusy=true;
+    if(window.__ach) window.__ach.unlock('hack_log');
     hcard.classList.add('hack');
     hov.classList.remove('calm');
     hov.hidden=false;
@@ -964,6 +1022,7 @@ html.crt-lock{overflow:hidden}
   function enter(){
     /* 触发即写入标记：即使中途刷新，彩蛋也不再播放第二次 */
     try{localStorage.setItem(KEY,'1')}catch(e){}
+    if(window.__ach) window.__ach.unlock('crt_mode');
     var y=window.scrollY||window.pageYOffset||0;
     var vh=window.innerHeight;
     lockUI();
@@ -1467,6 +1526,9 @@ html.crt-lock{overflow:hidden}
     if(g !== gen) return;
     boot.hidden = true;
 
+    await typeLine('> 恭喜，你找到了藏在这里的老机器。', 'accent');
+    await typeLine('  ✦ 成就「老机器的秘密」已解锁', 'ok');
+    await typeLine('');
     await typeLine('MAKE STUDIO PRIVATE UPLINK v1.0', 'ok');
     await typeLine('(C) 2026 MAKE STUDIO // 未加密信道不予受理', 'dim');
     await typeLine('');
@@ -1552,6 +1614,7 @@ html.crt-lock{overflow:hidden}
     term.hidden = false;
     requestAnimationFrame(function(){ term.classList.add('show'); });
     bootSequence();
+    if(window.__ach) window.__ach.unlock('mail_terminal');
   }
   function close(){
     if(!visible) return;
@@ -1606,6 +1669,254 @@ html.crt-lock{overflow:hidden}
     if(phase === 'done' && e.key === 'Enter'){ e.preventDefault(); close(); }
     else if(phase === 'retry' && e.key === 'Enter'){ e.preventDefault(); transmit(); }
   });
+})();
+</script>
+
+<script>
+/* ============ 成就系统：彩蛋成就 + 隐藏成就，本地存储进度 ============ */
+(function(){
+  'use strict';
+  var KEY = 'make-studio-achievements';
+
+  var DEF = [
+    {id:'mail_terminal', name:'老机器的秘密', desc:'发现墙角的收信终端', secret:false},
+    {id:'crt_mode',       name:'复古显像管',   desc:'触发全站 CRT 显示模式', secret:false},
+    {id:'hack_log',       name:'系统入侵',     desc:'在更新日志里窥见被拦截的信号', secret:false},
+    {id:'play_all',       name:'从头到尾',     desc:'听完整站每一首歌', secret:false},
+    {id:'theme_master',   name:'明暗之间',     desc:'切换主题 10 次', secret:false},
+    {id:'hidden_konami',  name:'上上下下',     desc:'经典秘籍，心照不宣', secret:true},
+    {id:'hidden_lurker',  name:'耐心的潜伏者', desc:'在这个页面安静停留一分钟', secret:true}
+  ];
+
+  var state = { achievements: [], totalUnlocked: 0, lastChecked: 0 };
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var saved = JSON.parse(raw);
+        if(saved && saved.achievements && saved.achievements.length){
+          var map = {};
+          saved.achievements.forEach(function(a){ map[a.id] = a; });
+          state.achievements = DEF.map(function(d){
+            var s = map[d.id];
+            return {
+              id:d.id, name:d.name, desc:d.desc, secret:d.secret,
+              unlocked: !!(s && s.unlocked), time:(s && s.time)||0
+            };
+          });
+          state.totalUnlocked = state.achievements.filter(function(a){return a.unlocked}).length;
+          state.lastChecked = saved.lastChecked || 0;
+          return;
+        }
+      }
+    }catch(e){}
+    state.achievements = DEF.map(function(d){
+      return {id:d.id, name:d.name, desc:d.desc, secret:d.secret, unlocked:false, time:0};
+    });
+    state.totalUnlocked = 0;
+    state.lastChecked = Date.now();
+    save();
+  }
+
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function get(id){
+    for(var i=0;i<state.achievements.length;i++) if(state.achievements[i].id===id) return state.achievements[i];
+    return null;
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+
+  /* ---- 解锁 ---- */
+  function unlock(id, opts){
+    var a = get(id);
+    if(!a || a.unlocked) return;
+    a.unlocked = true;
+    a.time = Date.now();
+    state.totalUnlocked = state.achievements.filter(function(x){return x.unlocked}).length;
+    state.lastChecked = Date.now();
+    save();
+    toast(a, opts && opts.silent);
+    render();
+  }
+
+  /* ---- 解锁提示（DOS 打字机风格） ---- */
+  var queue = [], showing = false;
+  function toast(a, silent){
+    if(silent) return;
+    queue.push(a);
+    pump();
+  }
+  function pump(){
+    if(showing || !queue.length) return;
+    var a = queue.shift();
+    showing = true;
+    var stack = document.getElementById('ach-toasts');
+    if(!stack){ showing = false; pump(); return; }
+    var el = document.createElement('div');
+    el.className = 'ach-toast';
+    el.innerHTML =
+      '<div class="ach-ti"><span class="ach-star">◆</span><span class="ach-tag">ACHIEVEMENT UNLOCKED</span></div>' +
+      '<div class="ach-body">' +
+        '<div class="ach-name"><span class="ach-n"></span><span class="cursor"></span></div>' +
+        '<div class="ach-desc"></div>' +
+        '<div class="ach-prog">当前进度 <b>' + state.totalUnlocked + '</b> / ' + state.achievements.length + '</div>' +
+      '</div>';
+    stack.appendChild(el);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('show'); }); });
+
+    var nEl = el.querySelector('.ach-n');
+    var dEl = el.querySelector('.ach-desc');
+    var i = 0;
+    var t = setInterval(function(){
+      i++;
+      nEl.textContent = a.name.slice(0, i);
+      if(i >= a.name.length){ clearInterval(t); dEl.textContent = a.desc; }
+    }, 32);
+
+    var life = setTimeout(dismiss, 4200);
+    function dismiss(){
+      clearTimeout(life);
+      clearInterval(t);
+      el.classList.remove('show');
+      setTimeout(function(){
+        if(el.parentNode) el.parentNode.removeChild(el);
+        showing = false;
+        pump();
+      }, 450);
+    }
+    el.addEventListener('click', dismiss);
+  }
+
+  /* ---- 总览渲染 ---- */
+  function render(){
+    var total = state.achievements.length;
+    var done = state.totalUnlocked;
+    var pct = Math.round(done / total * 100);
+    var doneEl = document.getElementById('ach-done');
+    var totalEl = document.getElementById('ach-total');
+    var pctEl = document.getElementById('ach-pct');
+    var fillEl = document.getElementById('ach-fill');
+    var listEl = document.getElementById('ach-list');
+    var entryEl = document.getElementById('ach-entry');
+    if(entryEl) entryEl.textContent = 'ACHIEVEMENTS · ' + done + '/' + total;
+    if(doneEl) doneEl.textContent = done;
+    if(totalEl) totalEl.textContent = total;
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(fillEl) fillEl.style.width = pct + '%';
+    if(listEl){
+      var html = '';
+      state.achievements.forEach(function(a){
+        if(a.unlocked){
+          html += '<div class="ach-row done">' +
+            '<span class="ach-mark">✓</span>' +
+            '<div><div class="ach-rn">' + esc(a.name) + '</div><div class="ach-rd">' + esc(a.desc) + '</div></div>' +
+          '</div>';
+        }else{
+          html += '<div class="ach-row lock">' +
+            '<span class="ach-mark">✕</span>' +
+            '<div><div class="ach-rn' + (a.secret ? ' ach-secret' : '') + '">' + (a.secret ? '???' : esc(a.name)) + '</div>' +
+            '<div class="ach-rd' + (a.secret ? ' ach-secret' : '') + '">' + (a.secret ? '???' : esc(a.desc)) + '</div></div>' +
+          '</div>';
+        }
+      });
+      listEl.innerHTML = html;
+    }
+  }
+
+  /* ---- 主题切换计数（10 次） ---- */
+  var themeCount = 0;
+  var themeBtn = document.getElementById('theme-toggle');
+  if(themeBtn){
+    themeBtn.addEventListener('click', function(){
+      themeCount++;
+      if(themeCount >= 10) unlock('theme_master');
+    });
+  }
+
+  /* ---- 听完所有歌曲 ---- */
+  var listened = {};
+  var EXPECT_SONGS = ['灰烬','枷锁'];
+  var audio = document.getElementById('mp-audio');
+  if(audio){
+    audio.addEventListener('ended', function(){
+      var nameEl = document.getElementById('mp-name');
+      if(nameEl && nameEl.textContent) listened[nameEl.textContent] = true;
+      if(EXPECT_SONGS.every(function(s){ return listened[s]; })) unlock('play_all');
+    });
+  }
+
+  /* ---- 隐藏成就：经典秘籍 ---- */
+  (function(){
+    var SEQ = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    var idx = 0;
+    document.addEventListener('keydown', function(e){
+      var k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if(k === SEQ[idx]){
+        idx++;
+        if(idx >= SEQ.length){ unlock('hidden_konami'); idx = 0; }
+      }else{
+        idx = (k === SEQ[0]) ? 1 : 0;
+      }
+    });
+  })();
+
+  /* ---- 隐藏成就：停留一分钟（累计可见时长） ---- */
+  (function(){
+    var acc = 0, last = Date.now();
+    setInterval(function(){
+      var now = Date.now();
+      if(!document.hidden){
+        acc += (now - last) / 1000;
+        if(acc >= 60) unlock('hidden_lurker');
+      }
+      last = now;
+    }, 1000);
+  })();
+
+  /* ---- 迁移：识别已完成的旧彩蛋 ----
+     旧彩蛋为一次性（CRT / 入侵），返回用户需据此补回成就 */
+  function migrate(){
+    try{
+      if(localStorage.getItem('make-studio-crt') === '1') unlock('crt_mode', {silent:true});
+      if(localStorage.getItem('make-studio-hack') === '1') unlock('hack_log', {silent:true});
+    }catch(e){}
+  }
+
+  /* ---- 面板开关 ---- */
+  var modal = document.getElementById('ach-modal');
+  function openPanel(){
+    if(!modal) return;
+    render();
+    modal.hidden = false;
+    requestAnimationFrame(function(){ modal.classList.add('show'); });
+  }
+  function closePanel(){
+    if(!modal) return;
+    modal.classList.remove('show');
+    setTimeout(function(){ modal.hidden = true; }, 300);
+  }
+  var entry = document.getElementById('ach-entry');
+  var closeBtn = document.getElementById('ach-close');
+  if(entry) entry.addEventListener('click', openPanel);
+  if(closeBtn) closeBtn.addEventListener('click', closePanel);
+  if(modal) modal.addEventListener('click', function(e){ if(e.target === modal) closePanel(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal && !modal.hidden) closePanel();
+  });
+
+  load();
+  migrate();
+  render();
+
+  window.__ach = { unlock: unlock };
 })();
 </script>
 

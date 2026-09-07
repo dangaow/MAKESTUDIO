@@ -19,6 +19,7 @@ MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构�
 - **历程时间线**：工作室大事记时间线区块（TIMELINE）
 - **设备器材**：宿主 / 麦克风 / 监听设备清单区块（STUDIO GEAR）
 - **隐藏来信**：连点左上角 LOGO 5 次，唤起 MS-DOS 终端，通过 Formspree 直接给工作室发私信（开源自带开机自检动画与音效）
+- **成就系统**：发现彩蛋即可解锁太空机台风格成就，含隐藏成就（以 `???` 代名），完成数与进度保存在 `localStorage`
 - **无障碍**：播放器 / 弹窗带 ARIA 标注，支持 Escape 与焦点管理
 
 ## 作品
@@ -70,6 +71,26 @@ python -m http.server 8765
 | 全站 CRT 模式 | 打开页面约 6 秒后自动触发 | `localStorage.removeItem('make-studio-crt')` |
 | 版本详情入侵警告 | 打开更新日志弹窗 2 秒后 | `localStorage.removeItem('make-studio-hack')` |
 | 隐藏来信（MS-DOS 终端） | 连续点击左上角 LOGO 5 次 | 无需重置，随时触发 |
+
+## 成就
+
+页脚 `ACHIEVEMENTS` 入口可查看成就总览与进度；发现任意彩蛋都会弹出终端风格的解锁提示。
+
+| 成就 | 解锁条件 |
+| --- | --- |
+| 老机器的秘密 | 发现隐藏的收信终端（连点 LOGO 5 次） |
+| 复古显像管 | 触发全站 CRT 显示模式 |
+| 系统入侵 | 在更新日志里窥见被拦截的信号 |
+| 从头到尾 | 听完整站每一首歌 |
+| 明暗之间 | 切换主题 10 次 |
+| ???（隐藏） | 经典秘籍，心照不宣 |
+| ???（隐藏） | 在这个页面安静停留一分钟 |
+
+隐藏成就在解锁前以 `???` 代名。全部进度（含完成数、解锁状态与时间）保存于 `localStorage.make-studio-achievements`；如需重置，执行：
+
+```js
+localStorage.removeItem('make-studio-achievements')
+```
 
 ## 常见问题
 
