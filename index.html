@@ -1809,11 +1809,10 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   function migrate(){
     try{
       if(localStorage.getItem('make-studio-hack') === '1') unlock('hack_log', {silent:true});
-      var prog = JSON.parse(localStorage.getItem('make-studio-arg') || '{}');
       var acts = JSON.parse(localStorage.getItem('make-studio-actions') || '{}');
-      if(prog.signal || acts.signal)  unlock('arg_signal',  {silent:true});
-      if(prog.radio  || acts.radio )  unlock('arg_radio',   {silent:true});
-      if(prog.stegan || acts.stegan)  unlock('arg_stegan',  {silent:true});
+      if(acts.signal)  unlock('arg_signal',  {silent:true});
+      if(acts.radio)   unlock('arg_radio',   {silent:true});
+      if(acts.stegan)  unlock('arg_stegan',  {silent:true});
     }catch(e){}
   }
 
