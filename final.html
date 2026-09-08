@@ -54,6 +54,9 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
 .card.lock{text-align:center}
 .glyph{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:.24em;color:var(--c-mute)}
 .msg{margin-top:18px;font-size:14px;line-height:2;color:var(--c-dim)}
+.frag-ok{padding:8px 12px;border:1px solid var(--c-line);border-radius:6px;background:rgba(34,211,238,.06);color:var(--c-cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:all .25s ease;flex-shrink:0}
+.frag-ok:hover{border-color:var(--c-cyan);background:rgba(34,211,238,.14)}
+.frag-ok:disabled{opacity:.4;cursor:default;color:var(--c-green);border-color:rgba(52,211,153,.3)}
 </style>
 </head>
 <body>
@@ -72,6 +75,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       <span class="frag-idx">01</span>
       <div class="frag-body"><div class="frag-name">频率</div><div class="frag-desc">从一片噪声里分离出的红</div></div>
       <input class="frag-input" id="in-signal" maxlength="8" placeholder="频率" autocomplete="off" spellcheck="false">
+      <button class="frag-ok" data-t="signal" type="button">确定</button>
       <span class="frag-state" id="st-signal">○ 未捕获</span>
     </div>
 
@@ -79,6 +83,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       <span class="frag-idx">02</span>
       <div class="frag-body"><div class="frag-name">电台回执码</div><div class="frag-desc">向电台发信后，等到的回音</div></div>
       <input class="frag-input" id="in-radio" maxlength="8" placeholder="回执码" autocomplete="off" spellcheck="false">
+      <button class="frag-ok" data-t="radio" type="button">确定</button>
       <span class="frag-state" id="st-radio">○ 未捕获</span>
     </div>
 
@@ -86,6 +91,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       <span class="frag-idx">03</span>
       <div class="frag-body"><div class="frag-name">隐写坐标码</div><div class="frag-desc">从像素最末一位里拆出的秘密</div></div>
       <input class="frag-input" id="in-stegan" maxlength="8" placeholder="坐标码" autocomplete="off" spellcheck="false">
+      <button class="frag-ok" data-t="stegan" type="button">确定</button>
       <span class="frag-state" id="st-stegan">○ 未捕获</span>
     </div>
 
@@ -160,7 +166,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
   function norm(s){ return String(s).trim().replace(/\s+/g,''); }
 
   function setFrag(node, stateEl, on){
-    if(on){ node.classList.add('done'); stateEl.textContent = '● 已捕获'; } else { node.classList.remove('done'); stateEl.textContent = '○ 未捕获'; }
+    if(on){ node.classList.add('done'); stateEl.textContent = '✓ 已捕获'; } else { node.classList.remove('done'); stateEl.textContent = '○ 未捕获'; }
   }
   function saveProg(){ try{ localStorage.setItem(P.progKey, JSON.stringify(prog)); }catch(e){} }
   function render(){
@@ -175,6 +181,9 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
     document.getElementById('in-radio').disabled = prog.radio;
     document.getElementById('in-stegan').disabled = prog.stegan;
     document.getElementById('in-signal').disabled = prog.signal;
+    document.querySelector('.frag-ok[data-t="radio"]').disabled = prog.radio;
+    document.querySelector('.frag-ok[data-t="stegan"]').disabled = prog.stegan;
+    document.querySelector('.frag-ok[data-t="signal"]').disabled = prog.signal;
     if(answered) renderUnlocked();
   }
 
@@ -185,12 +194,21 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
     if(!val) return;
     sha256(val).then(function(h){
       if(h === target){ prog[which] = true; saveProg(); inp.value=''; render(); }
-      else { inp.value=''; inp.placeholder='× 无效'; inp.focus(); }
+      else {
+        inp.value=''; inp.focus();
+        var st = document.getElementById('st-' + which);
+        if(st){ st.textContent = '× 不合'; st.style.color = 'var(--c-red)'; }
+        var hint = document.getElementById('hint');
+        if(hint) hint.textContent = '× 信号对不上 · 再校准';
+        if(st) setTimeout(function(){ st.textContent = '○ 未捕获'; st.style.color = ''; }, 900);
+      }
     });
   }
   ['signal','radio','stegan'].forEach(function(w){
     var inp = document.getElementById('in-' + w);
-    inp.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); checkFrag(w); } });
+    var btn = document.querySelector('.frag-ok[data-t="' + w + '"]');
+    if(inp) inp.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); checkFrag(w); } });
+    if(btn) btn.addEventListener('click', function(){ checkFrag(w); });
   });
 
   function submitFinal(){
