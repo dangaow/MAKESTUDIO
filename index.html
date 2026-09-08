@@ -511,8 +511,9 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 #final-fab.show{opacity:1;visibility:visible;transform:none}
 #final-fab:hover{background:rgba(34,211,238,.12);box-shadow:0 0 32px rgba(34,211,238,.32)}
 #final-fab svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#track-final{opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s ease}
-#track-final.show{opacity:1;transform:none}
+#track-final{display:none}
+#track-final.show{display:flex;animation:trackReveal .9s ease forwards}
+@keyframes trackReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .trk-play.trk-soon{cursor:default;opacity:.55}
 .trk-play.trk-soon:hover{background:var(--c-card-bg);border-color:var(--c-line);color:var(--c-fg);box-shadow:none}
 .trk-play.trk-soon:hover svg{transform:none}
@@ -1716,12 +1717,12 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       state.achievements.forEach(function(a){
         if(a.unlocked){
           html += '<div class="ach-row done">' +
-            '<span class="ach-mark">✓</span>' +
+            '<span class="ach-mark done">✓</span>' +
             '<div><div class="ach-rn">' + esc(a.name) + '</div><div class="ach-rd">' + esc(a.desc) + '</div></div>' +
           '</div>';
         }else{
           html += '<div class="ach-row lock">' +
-            '<span class="ach-mark">✕</span>' +
+            '<span class="ach-mark lock">✕</span>' +
             '<div><div class="ach-rn' + (a.secret ? ' ach-secret' : '') + '">' + (a.secret ? '???' : esc(a.name)) + '</div>' +
             '<div class="ach-rd' + (a.secret ? ' ach-secret' : '') + '">' + (a.secret ? '???' : esc(a.desc)) + '</div></div>' +
           '</div>';
@@ -1732,11 +1733,14 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   }
 
   /* ---- 主题切换计数（10 次） ---- */
+  var THEME_COUNT_KEY = 'make-studio-theme-count';
   var themeCount = 0;
+  try{ themeCount = parseInt(localStorage.getItem(THEME_COUNT_KEY), 10) || 0; }catch(e){}
   var themeBtn = document.getElementById('theme-toggle');
   if(themeBtn){
     themeBtn.addEventListener('click', function(){
       themeCount++;
+      try{ localStorage.setItem(THEME_COUNT_KEY, String(themeCount)); }catch(e){}
       if(themeCount >= 10) unlock('theme_master');
     });
   }
@@ -1813,6 +1817,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       if(acts.signal)  unlock('arg_signal',  {silent:true});
       if(acts.radio)   unlock('arg_radio',   {silent:true});
       if(acts.stegan)  unlock('arg_stegan',  {silent:true});
+      if(themeCount >= 10) unlock('theme_master', {silent:true});
     }catch(e){}
   }
 

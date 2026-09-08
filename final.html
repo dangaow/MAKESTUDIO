@@ -50,10 +50,14 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
 .divider{height:1px;background:var(--c-line);margin:26px 0}
 .back{font-size:12px;color:var(--c-mute);text-align:center}
 .back a{border-bottom:1px solid rgba(34,211,238,.4)}
+.led.off i{background:var(--c-red);box-shadow:0 0 12px var(--c-red)}
+.card.lock{text-align:center}
+.glyph{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:.24em;color:var(--c-mute)}
+.msg{margin-top:18px;font-size:14px;line-height:2;color:var(--c-dim)}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="app">
   <div class="head">
     <div class="kicker">ARG // FINAL NODE</div>
     <h1>SIGNAL // 终局</h1>
@@ -108,16 +112,38 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
   <p class="back">返回 <a href="index.html">官网</a></p>
 </div>
 
+<div class="wrap" id="locked" hidden>
+  <div class="head">
+    <div class="kicker">ARG // FINAL NODE</div>
+    <h1>SIGNAL OFFLINE</h1>
+    <p class="sub">这条信道尚未开启，请等待更新。</p>
+    <div class="led off"><i></i>CHANNEL — NO CARRIER</div>
+  </div>
+  <div class="card lock">
+    <div class="glyph">■ LOCKED</div>
+    <p class="msg">终局解密通道暂时关闭。<br>等到指定时间，这里会重新亮起来。</p>
+  </div>
+  <div class="divider"></div>
+  <p class="back">返回 <a href="index.html">官网</a></p>
+</div>
+
 <script>
 (function(){
   'use strict';
+  var ENABLED = false;
+  if(!ENABLED){
+    document.getElementById('app').hidden = true;
+    var _L = document.getElementById('locked');
+    if(_L) _L.hidden = false;
+    return;
+  }
   var P = {
     signalHash:  atob('YmU0YjJmNDUwNjljMTgwZWYzMDk1MjFmNjc3MDE0NjkyMGRmMThlNjkxNjVjNTc3ZGM3ZmY4ZTVhN2MzNDQ2NQ=='),
     radioHash:   atob('MDdkZjQ3ZjQ4NTcyMjk4MDUzMzNhM2RlMTQxYjYzMThiNjk5ZTRhZTUyYTg2MGM5OTIzZGI2ZGU5YThiZjE2Yw=='),
     steganHash:  atob('MjUxZDI5ODExNmUzMWZkZGNhMTU4YzQwMGZjMDcwZTJlNmMzMzMzZWEwZmNkMTNjNzc4ZjQ1MzkwZTk2ZjZmOQ=='),
     finalHash:   atob('MjllZmUxNTdiZjJiMzdiMDM2NzczZDJhNmQwZDBmMTMzNjE2ZmI3ODM4ZGQxZjdkZTY2NjE5MGNkNmQ3N2NmNw=='),
     unlockKey:   'make-studio-arg-final',
-    progKey:     'make-studio-arg'
+    progKey:     'make-studio-actions'
   };
 
   var prog = { signal:false, radio:false, stegan:false };
@@ -196,10 +222,11 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
     drawWave();
   }
 
-  /* ---- 波形曲线：渐显 + 从左到右绘制 ---- */
+  var _waveToken = 0, _rsT = null;
   function drawWave(){
     var cv = document.getElementById('wave');
     if(!cv) return;
+    var token = ++_waveToken;
     var dpr = window.devicePixelRatio || 1;
     var rect = cv.parentElement.getBoundingClientRect();
     cv.width = rect.width * dpr;
@@ -209,16 +236,16 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
     var W = rect.width, H = rect.height;
     var t0 = null, DUR = 1800;
     function frame(t){
+      if(token !== _waveToken) return;
       if(!t0) t0 = t;
       var p = Math.min(1, (t - t0) / DUR);
       ctx.clearRect(0, 0, W, H);
-      var cx = W/2, cy = H/2, amp = H*0.34;
-      // 主波形（正弦，随 p 从左往右展开）
+      var cy = H/2, amp = H*0.34;
       ctx.beginPath();
       ctx.strokeStyle = '#22d3ee';
       ctx.lineWidth = 2;
       ctx.globalAlpha = p;
-      var span = 6; // 周期数
+      var span = 6;
       for(var x = 0; x <= W * p; x++){
         var t2 = (x / W) * span * Math.PI * 2;
         var y = cy + Math.sin(t2) * amp * (0.4 + 0.6 * Math.sin(x/W*Math.PI));
@@ -226,16 +253,18 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       }
       ctx.stroke();
       if(p < 1) requestAnimationFrame(frame);
-      else { /* 完成后再描一条更亮的中心线 */ }
     }
     requestAnimationFrame(frame);
   }
+  window.addEventListener('resize', function(){
+    clearTimeout(_rsT);
+    _rsT = setTimeout(function(){ if(answered) drawWave(); }, 200);
+  });
 
   render();
 })();
 </script>
 <script>
-/* 软防护：拦右键 / F12 / 查看源码快捷键 */
 (function(){
   document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
   document.addEventListener('keydown', function(e){
