@@ -521,7 +521,8 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 
 /* ===== LSB 隐写终端（MS-DOS）===== */
 .puzzle-entry{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--c-fg-mute);margin-top:14px;padding:2px 8px;border:1px solid transparent;border-radius:999px;transition:all .3s ease;opacity:.55}
-.puzzle-entry:hover{color:var(--c-cyan);border-color:rgba(34,211,238,.35);opacity:1;text-shadow:0 0 12px rgba(34,211,238,.5)}
+.puzzle-entry:not(:disabled):hover{color:var(--c-cyan);border-color:rgba(34,211,238,.35);opacity:1;text-shadow:0 0 12px rgba(34,211,238,.5)}
+.puzzle-entry:disabled{cursor:not-allowed;opacity:.22}
 .terminal{position:fixed;inset:0;z-index:1300;background:#000;opacity:0;pointer-events:none;transition:opacity .5s ease}
 .terminal.on{opacity:1;pointer-events:auto}
 .terminal[hidden]{display:none}
@@ -750,7 +751,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <div class="foot-entry-row">
       <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v4.0.0</button>
       <button class="ver-entry" id="ach-entry" aria-label="查看成就">ACHIEVEMENTS</button>
-      <button class="puzzle-entry" id="puzzle-entry" aria-label="解密终端入口">terminal.</button>
+      <button class="puzzle-entry" id="puzzle-entry" aria-label="解密终端入口" disabled>terminal.</button>
     </div>
   </footer>
 </main>
@@ -1976,6 +1977,9 @@ init({
   var bootEl = document.getElementById('dos-boot');
   if(!term || !body || !input || !entry) return;
 
+  var ENABLED = false;  /* 终端总闸 · 活动开启时置 true */
+  entry.disabled = !ENABLED;
+
   var gen = 0, busy = true, shutdownTimer = null;
 
   /* 老电脑开机 / 关机音 */
@@ -2081,6 +2085,7 @@ init({
   }
 
   function openTerm(){
+    if(!ENABLED) return;
     gen++;
     var g = gen;
     clearTimeout(shutdownTimer);
