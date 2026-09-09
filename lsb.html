@@ -6,44 +6,54 @@
 <title>光里有余音 // LSB 隐写解码</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
-:root{--c-bg:#05050b;--c-fg:#eef1fa;--c-dim:rgba(238,241,250,.6);--c-mute:rgba(238,241,250,.28);--c-line:rgba(255,255,255,.08);--c-cyan:#22d3ee;--c-green:#34d399;--c-red:#ff4d63;--c-purple:#a78bfa;--c-card:rgba(255,255,255,.02)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--c-bg);color:var(--c-fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;min-height:100%;-webkit-font-smoothing:antialiased}
-a{color:var(--c-cyan);text-decoration:none}
-.wrap{max-width:640px;margin:0 auto;padding:56px 22px 48px}
+html,body{background:#000;color:#7dffa8;font-family:'JetBrains Mono','Courier New',monospace;min-height:100%;-webkit-font-smoothing:none;text-shadow:0 0 6px rgba(125,255,168,.2)}
+body{animation:crtflicker 8s steps(1) infinite}
+@keyframes crtflicker{0%,88%,100%{opacity:1}89%{opacity:.82}90%{opacity:1}94%{opacity:.9}95%{opacity:1}}
+a{color:#66e0ff;text-decoration:none}
+/* CRT 覆盖层：扫描线 + 暗角 + 滚动光束 */
+.crt{position:fixed;inset:0;z-index:9998;pointer-events:none}
+.crt::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.18) 2px 4px)}
+.crt::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,42,14,.55) 100%)}
+.crt i{position:absolute;left:0;right:0;height:80px;top:-80px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.1),transparent);animation:crtScan 3.6s linear infinite}
+@keyframes crtScan{0%{top:-80px}100%{top:100%}}
+
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px 56px}
 .head{text-align:center}
-.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--c-purple)}
-h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-spacing:.12em;margin-top:14px}
-.sub{margin-top:12px;font-size:13px;letter-spacing:.06em;color:var(--c-dim);line-height:1.9}
-.led{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:6px 14px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--c-dim)}
-.led i{width:7px;height:7px;border-radius:50%;background:var(--c-green);box-shadow:0 0 12px var(--c-green);animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.card{border:1px solid var(--c-line);border-radius:12px;padding:28px 24px;background:var(--c-card);margin-top:34px}
-.card-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--c-dim);text-align:center}
-.drop{margin-top:18px;border:1px dashed rgba(34,211,238,.35);border-radius:12px;padding:34px 18px;text-align:center;cursor:pointer;transition:border-color .3s ease,background .3s ease}
-.drop:hover,.drop.over{border-color:var(--c-cyan);background:rgba(34,211,238,.05)}
-.drop-glyph{font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.2em;color:var(--c-cyan)}
-.drop-text{margin-top:10px;font-size:12px;letter-spacing:.08em;color:var(--c-dim);line-height:1.8}
-.file-name{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-green);letter-spacing:.06em;word-break:break-all;min-height:14px}
+.kicker{font-size:11px;letter-spacing:.3em;color:#ff9ad5}
+h1{font-weight:700;font-size:26px;letter-spacing:.14em;margin-top:16px;color:#7dffa8;text-shadow:0 0 12px rgba(90,255,160,.6)}
+.sub{margin-top:14px;font-size:13px;letter-spacing:.06em;color:rgba(125,255,168,.55);line-height:1.9}
+.led{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:6px 14px;border:1px solid rgba(77,255,136,.25);border-radius:2px;font-size:11px;letter-spacing:.2em;color:rgba(125,255,168,.55)}
+.led i{width:7px;height:7px;border-radius:50%;background:#4dff88;box-shadow:0 0 12px #4dff88;animation:dosBlink 1.4s steps(1) infinite}
+@keyframes dosBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+.card{border:1px solid rgba(77,255,136,.18);border-radius:4px;padding:26px 22px;background:rgba(77,255,136,.03);margin-top:30px}
+.card-title{font-size:11px;letter-spacing:.24em;color:rgba(125,255,168,.55);text-align:center}
+.drop{margin-top:18px;border:1px dashed rgba(102,224,255,.35);border-radius:4px;padding:34px 18px;text-align:center;cursor:pointer;transition:border-color .3s ease,background .3s ease}
+.drop:hover,.drop.over{border-color:#66e0ff;background:rgba(102,224,255,.05)}
+.drop-glyph{font-size:24px;letter-spacing:.2em;color:#66e0ff}
+.drop-text{margin-top:10px;font-size:12px;letter-spacing:.08em;color:rgba(125,255,168,.55);line-height:1.8}
+.file-name{margin-top:14px;font-size:11px;color:#4dff88;letter-spacing:.06em;word-break:break-all;min-height:14px}
 .result{margin-top:20px;display:none}
 .result.show{display:block}
-.result-box{margin-top:14px;border:1px solid rgba(52,211,153,.3);border-radius:10px;background:rgba(52,211,153,.04);padding:22px 16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;letter-spacing:.2em;color:var(--c-green);word-break:break-all}
-.result-label{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--c-mute);text-align:center}
-.err{margin-top:18px;border:1px solid rgba(255,77,99,.3);border-radius:10px;background:rgba(255,77,99,.05);padding:16px;font-size:12px;line-height:1.9;color:#ff8a96;display:none}
+.result-box{margin-top:14px;border:1px solid rgba(77,255,136,.3);border-radius:4px;background:rgba(77,255,136,.05);padding:22px 16px;text-align:center;font-size:26px;font-weight:700;letter-spacing:.2em;color:#4dff88;text-shadow:0 0 14px rgba(77,255,136,.5);word-break:break-all}
+.result-label{margin-top:12px;font-size:10px;letter-spacing:.12em;color:rgba(125,255,168,.3);text-align:center}
+.err{margin-top:18px;border:1px solid rgba(255,107,107,.3);border-radius:4px;background:rgba(255,107,107,.05);padding:16px;font-size:12px;line-height:1.9;color:#ff8a96;display:none}
 .err.show{display:block}
-.steps{margin-top:18px;font-size:13px;line-height:2;color:var(--c-dim)}
-.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--c-line)}
+.steps{margin-top:18px;font-size:13px;line-height:2;color:rgba(125,255,168,.55)}
+.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed rgba(77,255,136,.18)}
 .step:last-child{border-bottom:none}
-.step-n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-cyan);letter-spacing:.1em;flex-shrink:0;padding-top:2px}
+.step-n{font-size:11px;color:#66e0ff;letter-spacing:.1em;flex-shrink:0;padding-top:2px}
 .step-body{flex:1;min-width:0}
-.step-body b{color:var(--c-fg);font-weight:600}
-.note{margin-top:18px;font-size:12px;line-height:2;color:var(--c-mute);border-left:2px solid var(--c-purple);padding-left:14px}
-.note b{color:var(--c-dim)}
-.back{font-size:12px;color:var(--c-mute);text-align:center;margin-top:30px}
-.back a{border-bottom:1px solid rgba(34,211,238,.4)}
+.step-body b{color:#7dffa8;font-weight:600}
+.note{margin-top:18px;font-size:12px;line-height:2;color:rgba(125,255,168,.3);border-left:2px solid #a78bfa;padding-left:14px}
+.note b{color:rgba(125,255,168,.55)}
+.back{font-size:12px;color:rgba(125,255,168,.3);text-align:center;margin-top:30px}
+.back a{border-bottom:1px solid rgba(102,224,255,.4)}
 </style>
 </head>
 <body>
+<div class="crt"><i></i></div>
 <div class="wrap">
   <div class="head">
     <div class="kicker">ARG // STEGO NODE</div>
