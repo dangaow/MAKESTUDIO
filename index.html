@@ -752,11 +752,26 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
   <footer class="foot-wrap">
     <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
     <div class="foot-entry-row">
-      <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">v3.5.0</button>
+      <button class="ver-entry" id="ver-entry" aria-label="查看更新日志">???</button>
       <button class="ver-entry" id="ach-entry" aria-label="查看成就">ACHIEVEMENTS</button>
+      <button class="puzzle-entry" id="puzzle-entry" aria-label="隐藏解密入口"><span>?</span><span>?</span><span>?</span></button>
     </div>
   </footer>
 </main>
+
+<div class="terminal" id="terminal" hidden>
+  <div class="dos-screen">
+    <div class="dos-boot" id="dos-boot">
+      <div class="boot-logo">MAKE STUDIO</div>
+      <div class="boot-sub">DECRYPT SYSTEM BOOTING…</div>
+    </div>
+    <div class="term-body" id="term-body"></div>
+    <div class="term-input-row">
+      <span class="term-prompt" id="term-prompt">C:\MAKE\DECRYPT&gt;</span>
+      <input id="term-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="输入命令" />
+    </div>
+  </div>
+</div>
 
 <div class="log-modal" id="log-modal" hidden>
   <div class="log-card">
@@ -767,6 +782,9 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
+      <div class="log-ver-row"><span class="log-ver">???</span><span class="log-date">2026-09-09</span></div>
+      <div class="log-item">* 光里有余音，答案在终端</div>
+      <div class="log-item">* 页脚的三连问号，等你敲下那个指令</div>
       <div class="log-ver-row"><span class="log-ver">v3.5.0</span><span class="log-date">2026-09-05</span></div>
       <div class="log-item">* 站点内部调整与细节优化</div>
       <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
@@ -1949,6 +1967,165 @@ init({
       e.preventDefault(); e.stopPropagation(); return false;
     }
   }, true);
+})();
+</script>
+
+<script>
+/* ============ LSB 隐写终端（MS-DOS 快捷入口）============ */
+(function(){
+  'use strict';
+  var term = document.getElementById('terminal');
+  var body = document.getElementById('term-body');
+  var input = document.getElementById('term-input');
+  var entry = document.getElementById('puzzle-entry');
+  var bootEl = document.getElementById('dos-boot');
+  if(!term || !body || !input || !entry) return;
+
+  var gen = 0, busy = true, shutdownTimer = null;
+
+  /* 老电脑开机 / 关机音 */
+  var actx = null;
+  function ensureAudio(){
+    if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(AC) actx = new AC(); }
+    if(actx && actx.state === 'suspended') actx.resume();
+  }
+  function tone(type, f0, f1, dur, vol, delay){
+    if(!actx) return;
+    var t = actx.currentTime + (delay || 0);
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(f0, t);
+    if(f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol || 0.08, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + dur + 0.06);
+  }
+  function playBoot(){
+    ensureAudio();
+    tone('sine', 45, 60, 0.8, 0.07, 0);
+    tone('square', 980, 980, 0.14, 0.1, 0.4);
+  }
+  function playShutdown(){
+    ensureAudio();
+    tone('sine', 60, 38, 0.6, 0.07, 0);
+    tone('square', 1200, 1200, 0.06, 0.05, 0.12);
+  }
+
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function focus(){ setTimeout(function(){ input.focus(); }, 30); }
+
+  function typeAsync(text, cls){
+    var g = gen;
+    return new Promise(function(res){
+      if(g !== gen || !text){ res(); return; }
+      var d = document.createElement('div');
+      d.className = 'term-line' + (cls ? ' ' + cls : '');
+      body.appendChild(d);
+      var cur = document.createElement('span'); cur.className = 'term-cursor'; d.appendChild(cur);
+      var i = 0;
+      (function step(){
+        if(g !== gen){ d.remove(); body.scrollTop = body.scrollHeight; res(); return; }
+        if(i >= text.length){ cur.remove(); body.scrollTop = body.scrollHeight; res(); return; }
+        d.insertBefore(document.createTextNode(text.charAt(i)), cur);
+        i++; body.scrollTop = body.scrollHeight;
+        setTimeout(step, 12 + Math.random() * 14);
+      })();
+    });
+  }
+  function line(cls, text){
+    var d = document.createElement('div');
+    d.className = 'term-line' + (cls ? ' ' + cls : '');
+    d.textContent = text || '';
+    body.appendChild(d); body.scrollTop = body.scrollHeight;
+    return d;
+  }
+  function clearScreen(){ body.innerHTML = ''; }
+
+  async function bootSequence(g){
+    bootEl.style.display = 'flex';
+    playBoot();
+    await wait(1800);
+    if(g !== gen){ bootEl.style.display = 'none'; return; }
+    bootEl.style.display = 'none';
+
+    await typeAsync('MAKE STUDIO OS [Version 4.0.0]', 'ok');
+    await typeAsync('STEGANOGRAPHY DECODER v1.0 — LOADED', 'dim');
+    await typeAsync('');
+    await typeAsync('这条路通到一张被处理过的图。', 'dim');
+    await typeAsync('秘密不在画面里，在每一个像素的最末一位。', 'dim');
+    await typeAsync('');
+    await typeAsync('输入 decode，进入 LSB 解码器。', 'hint');
+  }
+
+  async function showHelp(){
+    await typeAsync('');
+    await typeAsync('可用指令：');
+    await typeAsync('  decode — 进入 LSB 解码器');
+    await typeAsync('  help   — 显示帮助');
+    await typeAsync('  clear  — 清空屏幕');
+    await typeAsync('  exit   — 关机');
+  }
+
+  async function handle(cmd){
+    cmd = (cmd || '').trim();
+    if(!cmd || busy) return;
+    var lc = cmd.toLowerCase();
+    busy = true;
+    try{
+      if(lc === 'decode'){ await typeAsync('正在打开 LSB 解码器…', 'ok'); await wait(450); window.location.href = 'lsb.html'; return; }
+      if(lc === 'help'){ await showHelp(); return; }
+      if(lc === 'clear'){ clearScreen(); return; }
+      if(lc === 'exit' || lc === 'quit' || lc === 'shutdown'){ await shutdown(); return; }
+      await typeAsync('未识别的指令，输入 help 查看。', 'dim');
+    } finally {
+      busy = false;
+      if(!term.hidden) focus();
+    }
+  }
+
+  function openTerm(){
+    gen++;
+    var g = gen;
+    clearTimeout(shutdownTimer);
+    ensureAudio();
+    term.hidden = false;
+    term.classList.remove('off');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function(){ if(g === gen) term.classList.add('on'); });
+    clearScreen();
+    busy = true; input.disabled = true;
+    bootSequence(g).then(function(){
+      if(g !== gen) return;
+      busy = false; input.disabled = false; focus();
+    });
+  }
+
+  function shutdown(){
+    gen++;
+    return new Promise(function(res){
+      busy = true;
+      playShutdown();
+      term.classList.add('off');
+      clearTimeout(shutdownTimer);
+      shutdownTimer = setTimeout(function(){
+        term.classList.remove('off', 'on');
+        term.hidden = true;
+        document.body.style.overflow = '';
+        busy = false;
+        res();
+      }, 520);
+    });
+  }
+
+  entry.addEventListener('click', openTerm);
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ var v = input.value; input.value = ''; handle(v); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && term && !term.hidden) shutdown();
+  });
 })();
 </script>
 </body></html>

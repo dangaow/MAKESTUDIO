@@ -6,60 +6,70 @@
 <title>SIGNAL // 终局解密</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
-:root{--c-bg:#05050b;--c-fg:#eef1fa;--c-dim:rgba(238,241,250,.6);--c-mute:rgba(238,241,250,.28);--c-line:rgba(255,255,255,.08);--c-cyan:#22d3ee;--c-green:#34d399;--c-red:#ff4d63;--c-card:rgba(255,255,255,.02)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--c-bg);color:var(--c-fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;min-height:100%;-webkit-font-smoothing:antialiased}
-a{color:var(--c-cyan);text-decoration:none}
-.wrap{max-width:640px;margin:0 auto;padding:56px 22px 48px}
+html,body{background:#000;color:#7dffa8;font-family:'JetBrains Mono','Courier New',monospace;min-height:100%;-webkit-font-smoothing:none;text-shadow:0 0 6px rgba(125,255,168,.2)}
+body{animation:crtflicker 8s steps(1) infinite}
+@keyframes crtflicker{0%,88%,100%{opacity:1}89%{opacity:.82}90%{opacity:1}94%{opacity:.9}95%{opacity:1}}
+a{color:#66e0ff;text-decoration:none}
+/* CRT 覆盖层：扫描线 + 暗角 + 滚动光束 */
+.crt{position:fixed;inset:0;z-index:9998;pointer-events:none}
+.crt::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.18) 2px 4px)}
+.crt::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,42,14,.55) 100%)}
+.crt i{position:absolute;left:0;right:0;height:80px;top:-80px;background:linear-gradient(180deg,transparent,rgba(77,255,136,.1),transparent);animation:crtScan 3.6s linear infinite}
+@keyframes crtScan{0%{top:-80px}100%{top:100%}}
+
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px 56px}
 .head{text-align:center}
-.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--c-red)}
-h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-spacing:.16em;margin-top:14px}
-.sub{margin-top:12px;font-size:13px;letter-spacing:.08em;color:var(--c-dim);line-height:1.8}
-.led{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:6px 14px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--c-dim)}
-.led i{width:7px;height:7px;border-radius:50%;background:var(--c-green);box-shadow:0 0 12px var(--c-green);animation:blink 1.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.card{border:1px solid var(--c-line);border-radius:12px;padding:28px 24px;background:var(--c-card);margin-top:34px}
-.brief-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--c-dim);text-align:center}
-.frag{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--c-line);border-radius:10px;background:var(--c-card);transition:border-color .35s ease}
-.frag.done{border-color:rgba(52,211,153,.38)}
-.frag-idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-mute);letter-spacing:.1em;flex-shrink:0}
+.kicker{font-size:11px;letter-spacing:.3em;color:#ff6b6b}
+h1{font-weight:700;font-size:26px;letter-spacing:.16em;margin-top:16px;color:#7dffa8;text-shadow:0 0 12px rgba(90,255,160,.6)}
+.sub{margin-top:14px;font-size:13px;letter-spacing:.08em;color:rgba(125,255,168,.55);line-height:1.9}
+.led{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:6px 14px;border:1px solid rgba(77,255,136,.25);border-radius:2px;font-size:11px;letter-spacing:.2em;color:rgba(125,255,168,.55)}
+.led i{width:7px;height:7px;border-radius:50%;background:#4dff88;box-shadow:0 0 12px #4dff88;animation:dosBlink 1.4s steps(1) infinite}
+.led.off i{background:#ff6b6b;box-shadow:0 0 12px #ff6b6b}
+@keyframes dosBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+.card{border:1px solid rgba(77,255,136,.18);border-radius:4px;padding:26px 22px;background:rgba(77,255,136,.03);margin-top:30px}
+.brief-title{font-size:11px;letter-spacing:.24em;color:rgba(125,255,168,.55);text-align:center}
+.frag{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid rgba(77,255,136,.18);border-radius:4px;background:rgba(77,255,136,.03);transition:border-color .35s ease}
+.frag.done{border-color:rgba(77,255,136,.4)}
+.frag-idx{font-size:11px;color:rgba(125,255,168,.3);letter-spacing:.1em;flex-shrink:0}
 .frag-body{flex:1;min-width:0}
-.frag-name{font-family:'JetBrains Mono',monospace;font-size:13px}
-.frag-desc{font-size:11px;line-height:1.55;color:var(--c-mute);margin-top:2px}
-.frag-input{width:84px;padding:8px 9px;background:var(--c-card);border:1px solid var(--c-line);border-radius:6px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-align:center;outline:none}
-.frag-input:focus{border-color:var(--c-cyan)}
-.frag-input:disabled{opacity:.45;cursor:default;border-color:rgba(52,211,153,.25);color:var(--c-green)}
-.frag-state{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--c-mute);flex-shrink:0;min-width:60px;text-align:right}
-.frag.done .frag-state{color:var(--c-green)}
-.hint{margin-top:14px;min-height:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--c-green);text-align:center}
-.form{margin-top:26px;border-top:1px dashed var(--c-line);padding-top:24px;text-align:center}
-.form-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--c-mute)}
-.form input{width:100%;margin-top:14px;padding:14px 16px;background:var(--c-card);border:1px solid var(--c-line);border-radius:8px;color:var(--c-fg);font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.12em;text-align:center;outline:none}
-.form input::placeholder{color:var(--c-mute)}
-.form input:focus{border-color:var(--c-cyan)}
-.err{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#ff6b7a;min-height:14px}
-.btn{margin-top:16px;padding:12px 34px;border:1px solid var(--c-cyan);border-radius:999px;color:var(--c-cyan);background:transparent;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.24em;cursor:pointer;transition:all .3s ease}
-.btn:hover{background:var(--c-cyan);color:#04121a}
+.frag-name{font-size:13px;color:#7dffa8}
+.frag-desc{font-size:11px;line-height:1.55;color:rgba(125,255,168,.3);margin-top:2px}
+.frag-input{width:84px;padding:8px 9px;background:rgba(77,255,136,.03);border:1px solid rgba(77,255,136,.18);border-radius:2px;color:#7dffa8;font-size:12px;letter-spacing:.1em;text-align:center;outline:none}
+.frag-input:focus{border-color:#66e0ff}
+.frag-input:disabled{opacity:.45;cursor:default;border-color:rgba(77,255,136,.25);color:#4dff88}
+.frag-state{font-size:10px;letter-spacing:.06em;color:rgba(125,255,168,.3);flex-shrink:0;min-width:60px;text-align:right}
+.frag.done .frag-state{color:#4dff88}
+.hint{margin-top:14px;min-height:16px;font-size:11px;letter-spacing:.06em;color:#4dff88;text-align:center}
+.form{margin-top:26px;border-top:1px dashed rgba(77,255,136,.18);padding-top:24px;text-align:center}
+.form-label{font-size:11px;letter-spacing:.2em;color:rgba(125,255,168,.3)}
+.form input{width:100%;margin-top:14px;padding:14px 16px;background:rgba(77,255,136,.03);border:1px solid rgba(77,255,136,.18);border-radius:2px;color:#7dffa8;font-size:14px;letter-spacing:.12em;text-align:center;outline:none}
+.form input::placeholder{color:rgba(125,255,168,.3)}
+.form input:focus{border-color:#66e0ff}
+.err{margin-top:12px;font-size:11px;letter-spacing:.14em;color:#ff6b6b;min-height:14px}
+.btn{margin-top:16px;padding:12px 34px;border:1px solid #66e0ff;border-radius:2px;color:#66e0ff;background:transparent;font-size:12px;letter-spacing:.24em;cursor:pointer;transition:all .3s ease}
+.btn:hover{background:rgba(102,224,255,.12);box-shadow:0 0 20px rgba(102,224,255,.3)}
 .reveal{margin-top:30px;opacity:0;visibility:hidden;transition:opacity 1.4s ease}
 .reveal.show{opacity:1;visibility:visible}
-.reveal-title{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;letter-spacing:.16em;color:var(--c-fg);text-align:center}
-.reveal-sub{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--c-mute);text-align:center}
-.reveal-frame{margin-top:20px;border:1px dashed var(--c-line);border-radius:10px;height:180px;overflow:hidden;position:relative;background:radial-gradient(ellipse at center,rgba(34,211,238,.06),transparent 70%)}
+.reveal-title{font-weight:700;font-size:18px;letter-spacing:.16em;color:#7dffa8;text-align:center;text-shadow:0 0 12px rgba(90,255,160,.6)}
+.reveal-sub{margin-top:12px;font-size:12px;letter-spacing:.12em;color:rgba(125,255,168,.3);text-align:center}
+.reveal-frame{margin-top:20px;border:1px dashed rgba(77,255,136,.25);border-radius:2px;height:180px;overflow:hidden;position:relative;background:radial-gradient(ellipse at center,rgba(77,255,136,.06),transparent 70%)}
 .reveal-frame canvas{position:absolute;inset:0;width:100%;height:100%}
-.reveal-note{margin-top:18px;font-size:12px;line-height:2;color:var(--c-dim);text-align:center}
-.divider{height:1px;background:var(--c-line);margin:26px 0}
-.back{font-size:12px;color:var(--c-mute);text-align:center}
-.back a{border-bottom:1px solid rgba(34,211,238,.4)}
-.led.off i{background:var(--c-red);box-shadow:0 0 12px var(--c-red)}
+.reveal-note{margin-top:18px;font-size:12px;line-height:2;color:rgba(125,255,168,.55);text-align:center}
+.divider{height:1px;background:rgba(77,255,136,.18);margin:26px 0}
+.back{font-size:12px;color:rgba(125,255,168,.3);text-align:center}
+.back a{border-bottom:1px solid rgba(102,224,255,.4)}
 .card.lock{text-align:center}
-.glyph{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:.24em;color:var(--c-mute)}
-.msg{margin-top:18px;font-size:14px;line-height:2;color:var(--c-dim)}
-.frag-ok{padding:8px 12px;border:1px solid var(--c-line);border-radius:6px;background:rgba(34,211,238,.06);color:var(--c-cyan);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:all .25s ease;flex-shrink:0}
-.frag-ok:hover{border-color:var(--c-cyan);background:rgba(34,211,238,.14)}
-.frag-ok:disabled{opacity:.4;cursor:default;color:var(--c-green);border-color:rgba(52,211,153,.3)}
+.glyph{font-size:30px;font-weight:700;letter-spacing:.24em;color:rgba(125,255,168,.3)}
+.msg{margin-top:18px;font-size:14px;line-height:2;color:rgba(125,255,168,.55)}
+.frag-ok{padding:8px 12px;border:1px solid rgba(77,255,136,.18);border-radius:2px;background:rgba(102,224,255,.06);color:#66e0ff;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:all .25s ease;flex-shrink:0}
+.frag-ok:hover{border-color:#66e0ff;background:rgba(102,224,255,.14)}
+.frag-ok:disabled{opacity:.4;cursor:default;color:#4dff88;border-color:rgba(77,255,136,.3)}
 </style>
 </head>
 <body>
+<div class="crt"><i></i></div>
 <div class="wrap" id="app">
   <div class="head">
     <div class="kicker">ARG // FINAL NODE</div>
@@ -197,7 +207,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       else {
         inp.value=''; inp.focus();
         var st = document.getElementById('st-' + which);
-        if(st){ st.textContent = '× 不合'; st.style.color = 'var(--c-red)'; }
+        if(st){ st.textContent = '× 不合'; st.style.color = '#ff6b6b'; }
         var hint = document.getElementById('hint');
         if(hint) hint.textContent = '× 信号对不上 · 再校准';
         if(st) setTimeout(function(){ st.textContent = '○ 未捕获'; st.style.color = ''; }, 900);
@@ -260,7 +270,7 @@ h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-
       ctx.clearRect(0, 0, W, H);
       var cy = H/2, amp = H*0.34;
       ctx.beginPath();
-      ctx.strokeStyle = '#22d3ee';
+      ctx.strokeStyle = '#4dff88';
       ctx.lineWidth = 2;
       ctx.globalAlpha = p;
       var span = 6;

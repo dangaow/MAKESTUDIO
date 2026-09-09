@@ -2,7 +2,7 @@
 
 MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构建的轻量站点，纯 HTML + CSS + JS 实现，打开即用。
 
-当前版本：**v3.5.0**
+当前版本：**v4.0.0**
 
 ## 特性
 
@@ -19,6 +19,8 @@ MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构�
 - **历程时间线**：工作室大事记时间线区块（TIMELINE）
 - **设备器材**：宿主 / 麦克风 / 监听设备清单区块（STUDIO GEAR）
 - **成就系统**：发现彩蛋即可解锁太空机台风格成就，含隐藏成就（以 `???` 代名），完成数与进度保存在 `localStorage`
+- **解密终端**：页脚 `???` 隐藏入口进入 MS-DOS 风格终端，输入 `decode` 进入 LSB 隐写解码页（`lsb.html`）
+- **LSB 隐写解码**：纯浏览器本地解码，上传图片即可从像素最低位抽出隐藏信息，数据不上传
 - **无障碍**：播放器 / 弹窗带 ARIA 标注，支持 Escape 与焦点管理
 
 ## 作品
@@ -47,6 +49,8 @@ python -m http.server 8765
 ├── index.html                        # 主站点（全部样式与逻辑内置）
 ├── index.backup.html                 # 删除 CRT 彩蛋/成就前的备份，供回滚参考
 ├── make-studio-decrypt-backup.html   # 历史活动解密版本备份
+├── lsb.html                          # LSB 隐写解码页（MS-DOS 风格）
+├── final.html                        # 终局解密页（MS-DOS 风格）
 ├── signal.html                       # 预留节点页（当前未开放）
 ├── api/
 │   └── signal.js                     # 邮件回信函数（Vercel Function + Resend，可选）
