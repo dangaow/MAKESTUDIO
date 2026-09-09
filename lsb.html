@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>光里有余音 // LSB 隐写解码</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--c-bg:#05050b;--c-fg:#eef1fa;--c-dim:rgba(238,241,250,.6);--c-mute:rgba(238,241,250,.28);--c-line:rgba(255,255,255,.08);--c-cyan:#22d3ee;--c-green:#34d399;--c-red:#ff4d63;--c-purple:#a78bfa;--c-card:rgba(255,255,255,.02)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--c-bg);color:var(--c-fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;min-height:100%;-webkit-font-smoothing:antialiased}
+a{color:var(--c-cyan);text-decoration:none}
+.wrap{max-width:640px;margin:0 auto;padding:56px 22px 48px}
+.head{text-align:center}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--c-purple)}
+h1{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;letter-spacing:.12em;margin-top:14px}
+.sub{margin-top:12px;font-size:13px;letter-spacing:.06em;color:var(--c-dim);line-height:1.9}
+.led{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:6px 14px;border:1px solid var(--c-line);border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--c-dim)}
+.led i{width:7px;height:7px;border-radius:50%;background:var(--c-green);box-shadow:0 0 12px var(--c-green);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.card{border:1px solid var(--c-line);border-radius:12px;padding:28px 24px;background:var(--c-card);margin-top:34px}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;color:var(--c-dim);text-align:center}
+.drop{margin-top:18px;border:1px dashed rgba(34,211,238,.35);border-radius:12px;padding:34px 18px;text-align:center;cursor:pointer;transition:border-color .3s ease,background .3s ease}
+.drop:hover,.drop.over{border-color:var(--c-cyan);background:rgba(34,211,238,.05)}
+.drop-glyph{font-family:'JetBrains Mono',monospace;font-size:22px;letter-spacing:.2em;color:var(--c-cyan)}
+.drop-text{margin-top:10px;font-size:12px;letter-spacing:.08em;color:var(--c-dim);line-height:1.8}
+.file-name{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-green);letter-spacing:.06em;word-break:break-all;min-height:14px}
+.result{margin-top:20px;display:none}
+.result.show{display:block}
+.result-box{margin-top:14px;border:1px solid rgba(52,211,153,.3);border-radius:10px;background:rgba(52,211,153,.04);padding:22px 16px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;letter-spacing:.2em;color:var(--c-green);word-break:break-all}
+.result-label{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--c-mute);text-align:center}
+.err{margin-top:18px;border:1px solid rgba(255,77,99,.3);border-radius:10px;background:rgba(255,77,99,.05);padding:16px;font-size:12px;line-height:1.9;color:#ff8a96;display:none}
+.err.show{display:block}
+.steps{margin-top:18px;font-size:13px;line-height:2;color:var(--c-dim)}
+.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--c-line)}
+.step:last-child{border-bottom:none}
+.step-n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-cyan);letter-spacing:.1em;flex-shrink:0;padding-top:2px}
+.step-body{flex:1;min-width:0}
+.step-body b{color:var(--c-fg);font-weight:600}
+.note{margin-top:18px;font-size:12px;line-height:2;color:var(--c-mute);border-left:2px solid var(--c-purple);padding-left:14px}
+.note b{color:var(--c-dim)}
+.back{font-size:12px;color:var(--c-mute);text-align:center;margin-top:30px}
+.back a{border-bottom:1px solid rgba(34,211,238,.4)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="kicker">ARG // STEGO NODE</div>
+    <h1>LSB 隐写解码</h1>
+    <p class="sub">光里有余音。<br>把那张图交给这里，最低位的秘密会自己浮出来。</p>
+    <div class="led"><i></i>CHANNEL — READY</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DROP IMAGE · 放入图片</div>
+    <div class="drop" id="drop">
+      <div class="drop-glyph">[ + ]</div>
+      <div class="drop-text">点击选择，或把图片拖到这里<br>支持 PNG / JPEG（推荐无损 PNG）</div>
+    </div>
+    <input type="file" id="file" accept="image/*" hidden>
+    <div class="file-name" id="file-name"></div>
+
+    <div class="err" id="err"></div>
+
+    <div class="result" id="result">
+      <div class="result-label">■ 从像素最末一位拆出的秘密</div>
+      <div class="result-box" id="result-text"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">HOW TO · 怎么解</div>
+    <div class="steps">
+      <div class="step"><span class="step-n">01</span><div class="step-body"><b>拿到原图</b>：从发布渠道保存<b>原图 / 无损文件</b>，不要用截图或压缩过的转存。</div></div>
+      <div class="step"><span class="step-n">02</span><div class="step-body"><b>放入上方框</b>：本页会在浏览器本地读取像素，<b>不上传任何数据</b>。</div></div>
+      <div class="step"><span class="step-n">03</span><div class="step-body"><b>读取末位</b>：逐个像素抽出 R/G/B 的最低一位，还原出隐藏的码。</div></div>
+    </div>
+    <div class="note">
+      <b>为什么有时解不出来？</b>常见中断原因：图片被社交平台二次压缩（尤其 JPEG）、被缩放/裁切/加滤镜、<br>或你拿的是<b>预告/载体原图</b>而不是<b>已嵌入内容的隐写图</b>。换回无损 PNG 原图再试。
+    </div>
+  </div>
+
+  <div class="back">返回 <a href="index.html">官网</a></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var MAGIC = [0x4D,0x53,0x53,0x54,0x45,0x47]; // "MSSTEG"
+  var drop = document.getElementById('drop');
+  var fileIn = document.getElementById('file');
+  var fileName = document.getElementById('file-name');
+  var err = document.getElementById('err');
+  var result = document.getElementById('result');
+  var resultText = document.getElementById('result-text');
+
+  function showErr(msg){
+    result.classList.remove('show');
+    err.textContent = msg;
+    err.classList.add('show');
+  }
+  function showResult(text){
+    err.classList.remove('show');
+    resultText.textContent = text;
+    result.classList.add('show');
+  }
+
+  drop.addEventListener('click', function(){ fileIn.click(); });
+  drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', function(){ drop.classList.remove('over'); });
+  drop.addEventListener('drop', function(e){
+    e.preventDefault(); drop.classList.remove('over');
+    if(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length){
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+  fileIn.addEventListener('change', function(){
+    if(fileIn.files && fileIn.files.length) handleFile(fileIn.files[0]);
+  });
+
+  function loadImageFile(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){ resolve(img); };
+      img.onerror = function(){ reject(new Error('无法读取这张图片')); };
+      img.src = url;
+    });
+  }
+
+  function readBits(data, w, h, count){
+    var bits = [];
+    var total = w * h;
+    for(var p = 0; p < total; p++){
+      var i = p * 4;
+      bits.push(data[i] & 1);         // R
+      if(bits.length >= count) return bits;
+      bits.push(data[i + 1] & 1);     // G
+      if(bits.length >= count) return bits;
+      bits.push(data[i + 2] & 1);     // B
+      if(bits.length >= count) return bits;
+    }
+    return bits;
+  }
+
+  function bitsToBytes(bits, n){
+    var out = new Uint8Array(n);
+    for(var i = 0; i < n * 8; i += 8){
+      var b = 0;
+      for(var j = 0; j < 8; j++) b = (b << 1) | bits[i + j];
+      out[i / 8] = b;
+    }
+    return out;
+  }
+
+  function decodePixels(data, w, h){
+    var headLen = MAGIC.length + 4;      // 10 字节 = 80 bit
+    var headBits = readBits(data, w, h, headLen * 8);
+    var head = bitsToBytes(headBits, headLen);
+
+    var match = true;
+    for(var i = 0; i < MAGIC.length; i++){
+      if(head[i] !== MAGIC[i]){ match = false; break; }
+    }
+    if(!match) return null;
+
+    var length = ((head[6] << 24) | (head[7] << 16) | (head[8] << 8) | head[9]) >>> 0;
+    var total = MAGIC.length + 4 + length;
+    var bodyBits = readBits(data, w, h, total * 8);
+    var body = bitsToBytes(bodyBits, total);
+    var msg = body.slice(MAGIC.length + 4);
+
+    return new TextDecoder('utf-8').decode(msg);
+  }
+
+  function handleFile(file){
+    err.classList.remove('show');
+    result.classList.remove('show');
+    fileName.textContent = file ? ('已载入：' + file.name) : '';
+
+    if(!file) return;
+    if(!/^image\//.test(file.type)){
+      showErr('这不是图片文件。');
+      return;
+    }
+
+    loadImageFile(file).then(function(img){
+      var w = img.naturalWidth || img.width;
+      var h = img.naturalHeight || img.height;
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0);
+      var imageData;
+      try{
+        imageData = ctx.getImageData(0, 0, w, h);
+      }catch(e){
+        showErr('像素读取失败，请换一张原图再试。');
+        return;
+      }
+
+      var text = decodePixels(imageData.data, w, h);
+      if(text === null){
+        showErr('未找到隐写标记（MSSTEG）。可能原因：这只是一张普通/预告图，或图片经过压缩、缩放，最低位已被破坏。请尝试无损 PNG 原图。');
+      }else{
+        showResult(text);
+      }
+    }).catch(function(e){
+      showErr(e.message || '读取失败，请换一张图片。');
+    });
+  }
+})();
+</script>
+</body>
+</html>
