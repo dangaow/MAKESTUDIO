@@ -879,7 +879,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 </div>
 
 <!-- 终局入口 FAB（仅破解用户可见） -->
-<a id="final-fab" href="final.html" aria-label="进入终局解密页">
+<a id="final-fab" href="arg/final.html" aria-label="进入终局解密页">
   <svg viewBox="0 0 24 24"><path d="M5 7l5 5-5 5"></path><path d="M13 17h6"></path></svg>
   <span>FINAL</span>
 </a>
@@ -2080,7 +2080,7 @@ init({
     var lc = cmd.toLowerCase();
     busy = true;
     try{
-      if(lc === 'decode'){ await typeAsync('正在打开 LSB 解码器…', 'ok'); await wait(450); window.location.href = 'lsb.html'; return; }
+      if(lc === 'decode'){ await typeAsync('正在打开 LSB 解码器…', 'ok'); await wait(450); window.location.href = 'arg/lsb.html'; return; }
       if(lc === 'help'){ await showHelp(); return; }
       if(lc === 'clear'){ clearScreen(); return; }
       if(lc === 'exit' || lc === 'quit' || lc === 'shutdown'){ await shutdown(); return; }

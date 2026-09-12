@@ -47,11 +47,13 @@ python -m http.server 8765
 ```
 .
 ├── index.html                        # 主站点（全部样式与逻辑内置）
-├── index.backup.html                 # 删除 CRT 彩蛋/成就前的备份，供回滚参考
-├── make-studio-decrypt-backup.html   # 历史活动解密版本备份
-├── lsb.html                          # LSB 隐写解码页（MS-DOS 风格）
-├── final.html                        # 终局解密页（MS-DOS 风格）
-├── signal.html                       # 预留节点页（当前未开放）
+├── arg/                              # 解密活动页面
+│   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
+│   ├── final.html                    # 终局解密页（MS-DOS 风格）
+│   └── signal.html                   # 预留节点页（当前未开放）
+├── backup/                           # 历史备份（不回滚可忽略）
+│   ├── index.backup.html             # 删除 CRT 彩蛋/成就前的备份，供回滚参考
+│   └── make-studio-decrypt-backup.html # 历史活动解密版本备份
 ├── api/
 │   └── signal.js                     # 邮件回信函数（Vercel Function + Resend，可选）
 ├── tools/
