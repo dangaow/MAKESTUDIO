@@ -517,6 +517,13 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 .trk-play.trk-soon{cursor:default;opacity:.55}
 .trk-play.trk-soon:hover{background:var(--c-card-bg);border-color:var(--c-line);color:var(--c-fg);box-shadow:none}
 .trk-play.trk-soon:hover svg{transform:none}
+/* ===== 第五首歌：错误 / 故障状态 ===== */
+#track-final{border-color:rgba(244,114,182,.5)}
+#track-final .trk-num{color:var(--c-pink);border-color:rgba(244,114,182,.45);text-shadow:0 0 10px rgba(244,114,182,.5)}
+#track-final .trk-n{color:var(--c-pink);animation:finalGlitchName 1.1s steps(2) infinite}
+#track-final .trk-m{color:var(--c-pink);animation:finalGlitchSub 1.3s steps(2) infinite}
+@keyframes finalGlitchName{0%,100%{text-shadow:1px 0 rgba(34,211,238,.9),-1px 0 rgba(244,114,182,.9);transform:translateX(0)}20%{text-shadow:-1px 0 rgba(34,211,238,.9),1px 0 rgba(244,114,182,.9);transform:translateX(-1.5px)}40%{text-shadow:2px 0 rgba(244,114,182,.95),-2px 0 rgba(34,211,238,.95);transform:translateX(1.5px)}60%{text-shadow:-2px 0 rgba(244,114,182,.95),2px 0 rgba(34,211,238,.95);transform:translateX(-1px)}80%{text-shadow:1px 1px rgba(244,114,182,.9),-1px -1px rgba(34,211,238,.9);transform:translateX(1px)}}
+@keyframes finalGlitchSub{0%,100%{opacity:.9}50%{opacity:.35}}
 @media(max-width:720px){#final-fab{right:14px;bottom:calc(84px + env(safe-area-inset-bottom));padding:10px 15px;font-size:11px}}
 
 /* ===== LSB 隐写终端（MS-DOS）===== */
@@ -647,7 +654,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     <div class="trk" id="track-final">
       <div class="trk-num">05</div>
       <div class="trk-cover dark-cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-5.4 6-8.1 9-8.1s7 2.7 9 8.1"></path><path d="M7 12c1.2-2.6 3.2-3.9 5-3.9s3.8 1.3 5 3.9"></path><path d="M11 12c.4-.8 1-1.2 1.6-1.2s1.2.4 1.6 1.2"></path></svg></div>
-      <div class="trk-i"><div class="trk-n">真假？？</div><div class="trk-m">2026 · 即将发布 <span class="tag">SINGLE</span></div></div>
+      <div class="trk-i"><div class="trk-n">？？？</div><div class="trk-m">MAKING...</div></div>
       <span class="trk-play trk-soon" aria-label="即将发布"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 6h14M5 18h14"></path></svg></span>
     </div>
   </section>
