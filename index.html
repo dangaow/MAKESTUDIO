@@ -780,7 +780,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
       <div class="log-ver-row"><span class="log-ver">v4.0.0</span><span class="log-date">2026-09-09</span></div>
-      <div class="log-item">* ???</div>
+      <div class="log-item">+ 隐藏解密活动重新开启（SIGNAL // ARG）</div>
       <div class="log-ver-row"><span class="log-ver">v3.5.0</span><span class="log-date">2026-09-05</span></div>
       <div class="log-item">* 站点内部调整与细节优化</div>
       <div class="log-ver-row"><span class="log-ver">v3.4.0</span><span class="log-date">2026-09-04</span></div>
@@ -1323,7 +1323,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 (function(){
   'use strict';
   var ENDPOINT = 'https://formspree.io/f/mljelzge';
-  var ENABLED = false;  /* 终端总闸 · 活动开启时置 true */
+  var ENABLED = true;   /* 终端总闸 · 活动开启时置 true */
   var NEED = 5, RESET_MS = 3000;
 
   var logo = document.querySelector('.nav-logo');
@@ -1977,7 +1977,7 @@ init({
   var bootEl = document.getElementById('dos-boot');
   if(!term || !body || !input || !entry) return;
 
-  var ENABLED = false;  /* 终端总闸 · 活动开启时置 true */
+  var ENABLED = true;   /* 终端总闸 · 活动开启时置 true */
   entry.disabled = !ENABLED;
 
   var gen = 0, busy = true, shutdownTimer = null;
