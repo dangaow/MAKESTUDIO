@@ -284,7 +284,7 @@ function addWall(axis, coord, span0, span1){
 // 地板（整栋，10 宽 × 30 深）
 const floor = boxMesh(10, 0.3, 30, new THREE.MeshStandardMaterial({ color:0x121020, roughness:0.9 }));
 floor.position.set(0, -0.15, -15); scene.add(floor);
-solids.push({ min:new THREE.Vector3(-5,-0.3,0), max:new THREE.Vector3(5,0,-30) });
+solids.push({ min:new THREE.Vector3(-5,-0.3,-30), max:new THREE.Vector3(5,0,0) });
 
 // 发光地板边线（房间分界，Porter 粉/青）
 function floorStrip(x0, z0, x1, z1, color){
