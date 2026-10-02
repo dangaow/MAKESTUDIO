@@ -1749,16 +1749,18 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
     }, 1000);
   })();
 
-  /* ---- 隐藏成就：连点导航时钟 3 次 ---- */
+  /* ---- 隐藏入口：连点导航时钟 ---- */
+  /* 3 次解锁「时间旅人」成就；在意的人继续敲到 6 次，会被送去倒计时 */
   (function(){
     var el = document.getElementById('clk');
     if(!el) return;
-    var n = 0, t = null;
+    var n = 0, t = null, got = false;
     el.addEventListener('click', function(){
       n++;
       clearTimeout(t);
-      if(n >= 3){ n = 0; unlock('hidden_clock'); }
-      else t = setTimeout(function(){ n = 0; }, 2000);
+      if(n >= 3 && !got){ got = true; unlock('hidden_clock'); }
+      if(n >= 6){ n = 0; got = false; window.location.href = 'countdown.html'; return; }
+      t = setTimeout(function(){ n = 0; got = false; }, 3000);
     });
   })();
 
