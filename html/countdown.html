@@ -7,9 +7,37 @@
 <meta name="theme-color" content="#02060c">
 <title>MAKE STUDIO // COUNTDOWN</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b1a'/%3E%3Cpath d='M24 24L38 32L24 40' fill='none' stroke='%2322d3ee' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* 自托管字体：消除 Google Fonts 外链的国内访问阻塞，字体不变 */
+  @font-face {
+    font-family: 'Saira Extra Condensed';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/saira-400.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Saira Extra Condensed';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../assets/fonts/saira-600.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/jbm-400.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../assets/fonts/jbm-600.woff2') format('woff2');
+  }
+</style>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -841,7 +869,8 @@
 
   function fitScaler() {
     const vw = window.innerWidth, vh = window.innerHeight;
-    const s = Math.min(vw / DESIGN_W, vh / DESIGN_H);
+    // cover：铺满整个屏幕，不保留黑边（超出部分由 overflow 裁剪）
+    const s = Math.max(vw / DESIGN_W, vh / DESIGN_H);
     const ox = (vw - DESIGN_W * s) / 2;
     const oy = (vh - DESIGN_H * s) / 2;
     scaler.style.transform =
