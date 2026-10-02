@@ -1113,8 +1113,7 @@
 
   function renderMask() {
     if (!maskCtx) return;
-    const L = getTimeLayout();
-    const vw = L.vw, vh = L.vh;
+    const vw = window.innerWidth, vh = window.innerHeight;
     if (maskCanvas.width !== vw) maskCanvas.width = vw;
     if (maskCanvas.height !== vh) maskCanvas.height = vh;
     const ctx = maskCtx;
@@ -1122,18 +1121,40 @@
     ctx.clearRect(0, 0, vw, vh);
     if (REVEAL) return;
 
-    const fontSize = L.fontSize;
-    // 白色大方块：每字符一格，精确对齐数字位置
-    for (const it of L.items) {
-      // 单字符（数字、冒号）占一格；窄屏时 it.ch 是整段（如 "90"），按字符数加宽
-      const bw = it.ch.length * fontSize * 0.82;
-      const bh = fontSize * 1.02;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(it.x - bw / 2, it.y - bh / 2, bw, bh);
-    }
+    // 字体度量与 renderCountdown 保持一致
+    const narrow = vw < 800;
+    const fontSize = narrow
+      ? Math.max(40, Math.min(96, vw * 0.12))
+      : vw * 0.05;
 
-    // 鱼眼（桶形畸变）盖在格子之上，让格子也随曲面屏一起弯曲
-    barrelWarpCanvas(maskCanvas, ctx, BARREL_K, 8);
+    // 遮罩范围：刚好盖住时间所在区域
+    let rw, rh;
+    if (narrow) {
+      rw = fontSize * 4.8;
+      rh = fontSize * 5.0;
+    } else {
+      rw = vw * 0.84;
+      rh = fontSize * 1.8;
+    }
+    const rx = vw / 2 - rw / 2;
+    const ry = vh / 2 - rh / 2;
+
+    const cell = Math.max(10, fontSize * 0.5);
+    const gap = Math.max(2, cell * 0.12);
+    const size = cell - gap;
+    const cols = Math.ceil(rw / cell);
+    const rows = Math.ceil(rh / cell);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const v = hashCell01(c, r, 17);
+        const base = 10 + v * 16;
+        ctx.fillStyle = 'rgb(' + (base * 0.35 | 0) + ',' +
+                                (base * 1.30 | 0) + ',' +
+                                (base * 2.10 | 0) + ')';
+        ctx.fillRect(rx + c * cell, ry + r * cell, size, size);
+      }
+    }
   }
 
   /* ============================================================
