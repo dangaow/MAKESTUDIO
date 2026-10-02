@@ -996,24 +996,13 @@
     return scanPattern;
   }
 
-  function renderCountdown() {
-    if (!countdownCtx) return;
+  // 计算时间字符的布局（遮罩与文字共用，保证格子精确对齐数字）
+  function getTimeLayout() {
     const vw = window.innerWidth, vh = window.innerHeight;
-    if (countdownCanvas.width !== vw) countdownCanvas.width = vw;
-    if (countdownCanvas.height !== vh) countdownCanvas.height = vh;
-
-    const ctx = countdownCtx;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, vw, vh);
-
     const narrow = vw < 800;
     const fontSize = narrow
       ? Math.max(40, Math.min(96, vw * 0.12))
       : vw * 0.05;
-    ctx.font = fontSize + "px 'Saira Extra Condensed', 'Microsoft YaHei', sans-serif";
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
     const text = countdownText();
     const cx = vw / 2, cy = vh / 2;
     const items = [];
@@ -1036,6 +1025,26 @@
         x += cell + gap;
       }
     }
+    return { vw: vw, vh: vh, narrow: narrow, fontSize: fontSize, text: text, items: items };
+  }
+
+  function renderCountdown() {
+    if (!countdownCtx) return;
+    const L = getTimeLayout();
+    const vw = L.vw, vh = L.vh;
+    if (countdownCanvas.width !== vw) countdownCanvas.width = vw;
+    if (countdownCanvas.height !== vh) countdownCanvas.height = vh;
+
+    const ctx = countdownCtx;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, vw, vh);
+
+    const fontSize = L.fontSize;
+    ctx.font = fontSize + "px 'Saira Extra Condensed', 'Microsoft YaHei', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const items = L.items;
 
     // 黑色叠影（描边感）
     ctx.save();
