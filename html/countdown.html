@@ -109,6 +109,16 @@
     z-index: 100;
   }
 
+  /* ---- 方块遮罩（暂时把时间盖住）---- */
+  #mask-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 105;
+  }
+
   /* ---- 扫描线 ---- */
   #scanline-canvas {
     position: fixed;
@@ -226,6 +236,7 @@
   </div>
 
   <canvas id="countdown-canvas"></canvas>
+  <canvas id="mask-canvas"></canvas>
   <canvas id="scanline-canvas"></canvas>
   <div id="dim-layer"></div>
   <div id="crt-vignette"></div>
@@ -236,7 +247,7 @@
   </button>
 
   <!-- 后台播放的背景音乐（低音量） -->
-  <audio id="bgm" src="assets/5%20Keyboard.mp3" loop preload="auto"></audio>
+  <audio id="bgm" src="../assets/5%20Keyboard.mp3" loop preload="auto"></audio>
 
 <script>
 (function () {
@@ -249,6 +260,8 @@
   const DEADLINE_TEXT = '2027/01/01 00:00:00';
   // 背景音乐音量（0~1，越小越轻）
   const BGM_VOLUME = 0.13;
+  // 临时遮罩：默认用方块格子把时间盖住；访问时加 ?reveal 可显示真实时间
+  const REVEAL = /[?&](reveal|show)([&=]|$)/.test(location.search);
 
   /* ============================================================
    * 设计稿尺寸
@@ -1051,6 +1064,59 @@
     ctx.restore();
 
     barrelWarpCanvas(countdownCanvas, ctx, BARREL_K, 8);
+    renderMask();
+  }
+
+  /* ============================================================
+   * 方块遮罩：把时间盖住（访问时加 ?reveal 可取消）
+   * ============================================================ */
+  const maskCanvas = document.getElementById('mask-canvas');
+  const maskCtx = maskCanvas ? maskCanvas.getContext('2d') : null;
+
+  function renderMask() {
+    if (!maskCtx) return;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    if (maskCanvas.width !== vw) maskCanvas.width = vw;
+    if (maskCanvas.height !== vh) maskCanvas.height = vh;
+    const ctx = maskCtx;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, vw, vh);
+    if (REVEAL) return;
+
+    // 字体度量与 renderCountdown 保持一致
+    const narrow = vw < 800;
+    const fontSize = narrow
+      ? Math.max(40, Math.min(96, vw * 0.12))
+      : vw * 0.05;
+
+    // 遮罩范围：刚好盖住时间所在区域
+    let rw, rh;
+    if (narrow) {
+      rw = fontSize * 4.8;
+      rh = fontSize * 5.0;
+    } else {
+      rw = vw * 0.84;
+      rh = fontSize * 1.8;
+    }
+    const rx = vw / 2 - rw / 2;
+    const ry = vh / 2 - rh / 2;
+
+    const cell = Math.max(10, fontSize * 0.5);
+    const gap = Math.max(2, cell * 0.12);
+    const size = cell - gap;
+    const cols = Math.ceil(rw / cell);
+    const rows = Math.ceil(rh / cell);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const v = hashCell01(c, r, 17);
+        const base = 10 + v * 16;
+        ctx.fillStyle = 'rgb(' + (base * 0.35 | 0) + ',' +
+                                (base * 1.30 | 0) + ',' +
+                                (base * 2.10 | 0) + ')';
+        ctx.fillRect(rx + c * cell, ry + r * cell, size, size);
+      }
+    }
   }
 
   /* ============================================================
