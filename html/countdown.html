@@ -274,10 +274,7 @@
     <span id="sound-label">SOUND ON</span>
   </button>
 
-  <!-- 后台播放的背景音乐（低音量） -->
-  <audio id="bgm" src="../assets/36079862732-1-192.MP3" loop preload="auto"></audio>
-
-<script>
+  <script>
 (function () {
   'use strict';
 
@@ -1180,9 +1177,15 @@
   }
 
   /* ============================================================
-   * 背景音乐（低音量，后台循环播放）
+   * 背景音乐：缓存 + 无缝循环（Web Audio）
+   * ------------------------------------------------------------
+   * - 用 Cache API 把音频存进浏览器缓存：首次访问加载一次，
+   *   之后直接秒开，不再等网络（没有缓存时才会走网络）。
+   * - 用 Web Audio 解码后在内存里以 loop=true 整段无缝循环，
+   *   时间上首尾相接、无空档、播放不中断不卡顿。
+   * - 完全不阻塞页面：页面先渲染与交互，音频就绪后再淡入。
    * ============================================================ */
-  const bgm = document.getElementById('bgm');
+  const AUDIO_URL = '../assets/36079862732-1-192.MP3';
   const soundToggle = document.getElementById('sound-toggle');
   const soundLabel = document.getElementById('sound-label');
   let userMuted = false;
@@ -1193,57 +1196,116 @@
     if (soundLabel) soundLabel.textContent = playing ? 'SOUND ON' : 'SOUND OFF';
   }
 
+  let actx = null;
+  let audioBuffer = null;
+  let source = null;
+
+  function ensureCtx() {
+    if (actx) return actx;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+    return actx;
+  }
+
+  // 取音频原始字节：优先命中缓存(秒开)，没有才请求网络，并把结果写回缓存
+  async function fetchAudioBytes(url) {
+    if (window.caches) {
+      try {
+        const cache = await caches.open('make-studio-audio-v1');
+        const hit = await cache.match(url);
+        if (hit) {
+          const blob = await hit.blob();
+          return await blob.arrayBuffer();
+        }
+      } catch (e) { /* 忽略缓存读取失败 */ }
+    }
+    const res = await fetch(url);
+    const blob = await res.blob();
+    if (window.caches) {
+      try {
+        const cache = await caches.open('make-studio-audio-v1');
+        cache.put(url, new Response(blob.clone()));
+      } catch (e) { /* 忽略缓存写入失败 */ }
+    }
+    return await blob.arrayBuffer();
+  }
+
+  // 准备解码后的音频缓冲区（幂等，多次调用只解码一次）
+  async function prepareAudio() {
+    if (audioBuffer) return audioBuffer;
+    const ctx = ensureCtx();
+    if (!ctx) return null;
+    try {
+      audioBuffer = await ctx.decodeAudioData(await fetchAudioBytes(AUDIO_URL));
+    } catch (e) {
+      audioBuffer = null;
+    }
+    return audioBuffer;
+  }
+
+  function startSource(when) {
+    if (!actx || !audioBuffer) return;
+    const s = actx.createBufferSource();
+    const gain = actx.createGain();
+    gain.gain.setValueAtTime(0, when);
+    gain.gain.linearRampToValueAtTime(BGM_VOLUME, when + 0.025); // 开场快速淡入防爆音
+    s.buffer = audioBuffer;
+    s.loop = true; // 整段无缝循环，首尾相接、无空档
+    s.connect(gain);
+    gain.connect(actx.destination);
+    s.start(when);
+    source = s;
+  }
+
+  function stopSource() {
+    if (source) {
+      try { source.stop(); } catch (e) {}
+      try { source.disconnect(); } catch (e) {}
+      source = null;
+    }
+  }
+
   const unlockEvents = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'click'];
   function removeUnlock() {
-    unlockEvents.forEach(function (ev) {
-      window.removeEventListener(ev, unlock);
-    });
+    unlockEvents.forEach(function (ev) { window.removeEventListener(ev, unlock); });
   }
   function unlock() { tryPlay(); }
 
   function tryPlay() {
-    if (!bgm || userMuted) return;
-    bgm.volume = BGM_VOLUME;
-    let p;
-    try { p = bgm.play(); } catch (e) { updateSoundUI(false); return; }
-    if (p && p.then) {
-      p.then(function () { updateSoundUI(true); removeUnlock(); })
-       .catch(function () { updateSoundUI(false); });
-    } else {
-      removeUnlock();
-    }
-  }
-
-  if (bgm) {
-    bgm.volume = BGM_VOLUME;
-    // UI 状态以音频实际事件为准
-    bgm.addEventListener('play', function () {
+    if (userMuted) return;
+    const ctx = ensureCtx();
+    if (!ctx) { updateSoundUI(false); return; }
+    if (ctx.state === 'suspended') ctx.resume().catch(function () {});
+    prepareAudio().then(function (buf) {
+      if (userMuted) return;
+      if (!buf) { updateSoundUI(false); return; }
+      if (source) return; // 已在播放
+      startSource(Math.max(ctx.currentTime, ctx.currentTime + 0.03));
       updateSoundUI(true);
       removeUnlock();
-    });
-    bgm.addEventListener('pause', function () { updateSoundUI(false); });
-
-    tryPlay();
-    // 浏览器自动播放受限时，等首次交互再播放
-    unlockEvents.forEach(function (ev) {
-      window.addEventListener(ev, unlock, { passive: true });
     });
   }
 
   if (soundToggle) {
     soundToggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      if (!bgm) return;
-      if (bgm.paused) {
+      if (userMuted) {
         userMuted = false;
-        bgm.volume = BGM_VOLUME;
         tryPlay();
       } else {
         userMuted = true;
-        bgm.pause();
+        stopSource();
+        updateSoundUI(false);
       }
     });
   }
+
+  tryPlay();
+  // 浏览器自动播放受限时，等首次交互再播放（不阻塞页面）
+  unlockEvents.forEach(function (ev) {
+    window.addEventListener(ev, unlock, { passive: true });
+  });
 
   /* ============================================================
    * 初始化
