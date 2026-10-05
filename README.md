@@ -2,7 +2,7 @@
 
 MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构建的轻量站点，纯 HTML + CSS + JS 实现，打开即用。
 
-当前版本：**v4.0.0**
+当前版本：**v4.1.0**
 
 ## 特性
 
@@ -22,6 +22,9 @@ MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构�
 - **解密终端**：页脚 `terminal.` 入口进入 MS-DOS 风格终端，输入 `decode` 进入 LSB 隐写解码页（`lsb.html`）
 - **LSB 隐写解码**：纯浏览器本地解码，上传图片即可从像素最低位抽出隐藏信息，数据不上传
 - **无障碍**：播放器 / 弹窗带 ARIA 标注，支持 Escape 与焦点管理
+- **倒计时页（`html/countdown.html`）**：全屏动态倒计时宣传页；时间默认被方形遮罩盖住（访问加 `?reveal` 可显示真实时间），顶部鱼眼 / 面板等视觉特效层，方块随背景渲染
+- **自托管字体**：Caveat / JetBrains Mono / Orbitron / Saira Extra Condensed 全部本地 `woff2`，零外链、首次加载不因字体卡住
+- **无缝背景音乐（倒计时页）**：Web Audio `loop` 整段无缝循环不卡顿，Cache API 缓存音频实现二次秒开
 
 ## 作品
 
@@ -47,6 +50,8 @@ python -m http.server 8765
 ```
 .
 ├── index.html                        # 主站点（全部样式与逻辑内置）
+├── html/
+│   └── countdown.html                 # 全屏倒计时宣传页（动态倒计时 + 遮罩 + 特效）
 ├── arg/                              # 解密活动页面
 │   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
 │   ├── final.html                    # 终局解密页（MS-DOS 风格）
@@ -59,17 +64,25 @@ python -m http.server 8765
 ├── tools/
 │   └── stego.py                      # 图像 LSB 隐写工具（Python，可选）
 ├── assets/
+│   ├── fonts/                        # 自托管字体（Caveat / JetBrains Mono / Orbitron / Saira Extra Condensed）
+│   │   ├── caveat-var.woff2
+│   │   ├── jbm-400.woff2 / jbm-600.woff2 / jbm-var.woff2
+│   │   ├── orbitron-var.woff2
+│   │   └── saira-100.woff2 / saira-400.woff2 / saira-600.woff2
 │   ├── cover-huijin.jpg              # 《灰烬》封面
 │   ├── cover-jiasuo.jpg              # 《枷锁》封面
 │   ├── huijin.mp3                    # 《灰烬》音频
-│   └── jiasuo.mp3                    # 《枷锁》音频
-└── README.md
+│   ├── jiasuo.mp3                    # 《枷锁》音频
+│   ├── 36079862732-1-192.MP3         # 倒计时页背景音乐（Cache API 缓存 / Web Audio 无缝循环）
+│   ├── arg-teaser.jpg / logo-share.png
+│   └── README.md
 ```
 
 ## 技术栈
 
 - 原生 HTML / CSS / JavaScript，无任何框架与构建步骤
-- 音频：HTML5 Audio，本地 mp3 优先，网易云外链流兜底
+- 音频：HTML5 Audio，本地 mp3 优先，网易云外链流兜底；倒计时页改用 Web Audio（无缝循环 + Cache API 缓存）
+- 字体：本地自托管 `woff2`（零 Google Fonts 外链）
 - 视频：B 站播放器 iframe（[player.bilibili.com/player.html](https://player.bilibili.com/player.html)）
 - 评论区：[Waline](https://waline.js.org)（后端部署于 Vercel）
 
