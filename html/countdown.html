@@ -1314,10 +1314,14 @@
     });
   }
 
-  // 初始不谎报状态：未真正出声前一律显示关闭
-  updateSoundUI(false);
+  // 尽可能自动播放：页面一打开就尝试出声
+  updateSoundUI(true);
   tryPlay();
-  // 浏览器自动播放受限时，等首次交互再播放（不阻塞页面）
+  // 若浏览器拦截了自动播放（AudioContext 被挂起），短暂显示后回退为关闭，等首次交互再播
+  setTimeout(function () {
+    if (!playing && actx && actx.state !== 'running') updateSoundUI(false);
+  }, 400);
+  // 首次交互解除拦截后自动开播（不阻塞页面）
   unlockEvents.forEach(function (ev) {
     window.addEventListener(ev, unlock, { passive: true });
   });
