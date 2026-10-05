@@ -1199,12 +1199,17 @@
   let actx = null;
   let audioBuffer = null;
   let source = null;
+  let playing = false; // 是否真正在出声
 
   function ensureCtx() {
     if (actx) return actx;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     actx = new AC();
+    // 上下文真正进入 running（解除自动播放限制）时才开播
+    actx.addEventListener('statechange', function () {
+      if (actx.state === 'running') onCtxRunning();
+    });
     return actx;
   }
 
@@ -1238,6 +1243,8 @@
     if (!ctx) return null;
     try {
       audioBuffer = await ctx.decodeAudioData(await fetchAudioBytes(AUDIO_URL));
+      // 解码完成后，若上下文已恢复运行则直接开播
+      if (ctx.state === 'running') onCtxRunning();
     } catch (e) {
       audioBuffer = null;
     }
@@ -1258,7 +1265,19 @@
     source = s;
   }
 
+  // 仅当上下文确认在出声（running）时才真正开始，并点亮 UI
+  function onCtxRunning() {
+    if (playing) return;
+    if (userMuted || !audioBuffer || !actx) return;
+    if (actx.state !== 'running') return;
+    startSource(Math.max(actx.currentTime, actx.currentTime + 0.03));
+    playing = true;
+    updateSoundUI(true);
+    removeUnlock();
+  }
+
   function stopSource() {
+    playing = false;
     if (source) {
       try { source.stop(); } catch (e) {}
       try { source.disconnect(); } catch (e) {}
@@ -1276,15 +1295,9 @@
     if (userMuted) return;
     const ctx = ensureCtx();
     if (!ctx) { updateSoundUI(false); return; }
+    // 触发起解码（后台不阻塞），并尝试恢复上下文（需在用户手势内才真正生效）
+    prepareAudio();
     if (ctx.state === 'suspended') ctx.resume().catch(function () {});
-    prepareAudio().then(function (buf) {
-      if (userMuted) return;
-      if (!buf) { updateSoundUI(false); return; }
-      if (source) return; // 已在播放
-      startSource(Math.max(ctx.currentTime, ctx.currentTime + 0.03));
-      updateSoundUI(true);
-      removeUnlock();
-    });
   }
 
   if (soundToggle) {
@@ -1301,6 +1314,8 @@
     });
   }
 
+  // 初始不谎报状态：未真正出声前一律显示关闭
+  updateSoundUI(false);
   tryPlay();
   // 浏览器自动播放受限时，等首次交互再播放（不阻塞页面）
   unlockEvents.forEach(function (ev) {
