@@ -1199,6 +1199,9 @@
   let actx = null;
   let audioBuffer = null;
   let source = null;
+  let startedAt = 0;      // 本次 source 的 start 时间点（ctx.currentTime）
+  let startOffset = 0;    // 本次 start 传入的偏移量（秒）
+  let elapsed = 0;        // 暂停时保存的播放进度（秒）
 
   function ensureCtx() {
     if (actx) return actx;
@@ -1248,9 +1251,10 @@
     return audioBuffer;
   }
 
-  // 立即起播：不等任何状态、不加延迟淡入，有 buffer 就出声
-  function startSource() {
+  // 从指定偏移开始起播：loop 循环、首尾相接，支持暂停后从原进度续播
+  function startSource(offset) {
     if (!actx || !audioBuffer || source) return false;
+    const o = ((offset || 0) % audioBuffer.duration + audioBuffer.duration) % audioBuffer.duration;
     const s = actx.createBufferSource();
     const gain = actx.createGain();
     gain.gain.value = BGM_VOLUME;
@@ -1258,18 +1262,23 @@
     s.loop = true; // 整段无缝循环，首尾相接、无空档
     s.connect(gain);
     gain.connect(actx.destination);
-    s.start(0);
+    s.start(0, o);
     source = s;
-    console.log('[BGM] startSource 完成, ctx.state=', actx.state, ', loop=', s.loop);
+    startedAt = actx.currentTime;
+    startOffset = o;
+    console.log('[BGM] startSource 完成, offset=', o.toFixed(2), '秒, ctx.state=', actx.state, ', loop=', s.loop);
     return true;
   }
 
-  function stopSource() {
-    if (source) {
-      try { source.stop(); } catch (e) {}
-      try { source.disconnect(); } catch (e) {}
-      source = null;
-    }
+  // 暂停并保存当前播放进度，便于下次从原位置续播
+  function pauseSource() {
+    if (!source || !actx) return;
+    const raw = startOffset + (actx.currentTime - startedAt);
+    elapsed = ((raw % audioBuffer.duration) + audioBuffer.duration) % audioBuffer.duration;
+    try { source.stop(); } catch (e) {}
+    try { source.disconnect(); } catch (e) {}
+    source = null;
+    console.log('[BGM] 已暂停，进度保存为=', elapsed.toFixed(2), '秒');
   }
 
   // 解除自动播放限制：把挂起的上下文恢复成出声状态
@@ -1297,8 +1306,8 @@
     console.log('[BGM] play() 调用, userMuted=', userMuted, ', ctx.state=', ctx.state, ', hasBuffer=', !!audioBuffer);
 
     function tryStart() {
-      startSource();   // 已有 source 时会自动跳过，只补 resume
-      unlockCtx();     // 被挂起则恢复（手势内即可出声）
+      startSource(elapsed);   // 已有 source 时会自动跳过；没有则从上次进度续播
+      unlockCtx();            // 被挂起则恢复（手势内即可出声）
       updateSoundUI(true);
     }
 
@@ -1318,9 +1327,9 @@
       e.stopPropagation();
       console.log('[BGM] 点击按钮, isPlaying=', isPlaying(), ', ctx.state=', actx && actx.state);
       if (isPlaying()) {
-        // 正在出声 -> 静音
+        // 正在出声 -> 暂停（保留进度）
         userMuted = true;
-        stopSource();
+        pauseSource();
         updateSoundUI(false);
       } else {
         // 没出声（被拦截或已静音）-> 开始播放
