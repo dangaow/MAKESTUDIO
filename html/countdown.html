@@ -1297,7 +1297,12 @@
     if (!ctx) { updateSoundUI(false); return; }
     // 触发起解码（后台不阻塞），并尝试恢复上下文（需在用户手势内才真正生效）
     prepareAudio();
-    if (ctx.state === 'suspended') ctx.resume().catch(function () {});
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(function () {});
+    } else {
+      // 上下文已经在出声状态：直接开播，避免关了再开时永远点不回来
+      onCtxRunning();
+    }
   }
 
   if (soundToggle) {
