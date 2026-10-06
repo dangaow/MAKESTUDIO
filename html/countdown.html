@@ -1215,12 +1215,14 @@
         const cache = await caches.open('make-studio-audio-v1');
         const hit = await cache.match(url);
         if (hit) {
+          console.log('[BGM] 命中缓存，直接播放');
           const blob = await hit.blob();
           return await blob.arrayBuffer();
         }
       } catch (e) { /* 忽略缓存读取失败 */ }
     }
     const res = await fetch(url);
+    console.log('[BGM] 无缓存，网络下载完成，status=', res.status);
     const blob = await res.blob();
     if (window.caches) {
       try {
@@ -1238,7 +1240,9 @@
     if (!ctx) return null;
     try {
       audioBuffer = await ctx.decodeAudioData(await fetchAudioBytes(AUDIO_URL));
+      console.log('[BGM] 解码成功，时长=', audioBuffer.duration.toFixed(2), '秒');
     } catch (e) {
+      console.error('[BGM] 解码失败', e);
       audioBuffer = null;
     }
     return audioBuffer;
@@ -1256,6 +1260,7 @@
     gain.connect(actx.destination);
     s.start(0);
     source = s;
+    console.log('[BGM] startSource 完成, ctx.state=', actx.state, ', loop=', s.loop);
     return true;
   }
 
@@ -1270,7 +1275,12 @@
   // 解除自动播放限制：把挂起的上下文恢复成出声状态
   function unlockCtx() {
     if (actx && actx.state === 'suspended') {
-      actx.resume().catch(function () {});
+      console.log('[BGM] 尝试 resume，当前 state=', actx.state);
+      actx.resume().then(function () {
+        console.log('[BGM] resume 成功, state=', actx.state);
+      }).catch(function (err) {
+        console.warn('[BGM] resume 被拒绝：', err && err.name, err && err.message);
+      });
     }
   }
 
@@ -1284,6 +1294,7 @@
     if (userMuted) return;
     const ctx = ensureCtx();
     if (!ctx) { updateSoundUI(false); return; }
+    console.log('[BGM] play() 调用, userMuted=', userMuted, ', ctx.state=', ctx.state, ', hasBuffer=', !!audioBuffer);
 
     function tryStart() {
       startSource();   // 已有 source 时会自动跳过，只补 resume
@@ -1305,6 +1316,7 @@
   if (soundToggle) {
     soundToggle.addEventListener('click', function (e) {
       e.stopPropagation();
+      console.log('[BGM] 点击按钮, isPlaying=', isPlaying(), ', ctx.state=', actx && actx.state);
       if (isPlaying()) {
         // 正在出声 -> 静音
         userMuted = true;
