@@ -24,25 +24,6 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="zh_CN">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b1a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='%2322d3ee' stroke-opacity='.35' stroke-width='2.5'/%3E%3Cpath d='M24 24L38 32L24 40' fill='none' stroke='%2322d3ee' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M40 44H54' stroke='%23818cf8' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
-<style>
-  /* 自托管字体：消除 Google Fonts 外链的国内访问阻塞，字体不变（可变字体用 range 声明） */
-  @font-face{
-    font-family:'Saira Extra Condensed';font-style:normal;font-weight:100;
-    font-display:swap;src:url('assets/fonts/saira-100.woff2') format('woff2');
-  }
-  @font-face{
-    font-family:'Caveat';font-style:normal;font-weight:400 700;
-    font-display:swap;src:url('assets/fonts/caveat-var.woff2') format('woff2');
-  }
-  @font-face{
-    font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;
-    font-display:swap;src:url('assets/fonts/jbm-var.woff2') format('woff2');
-  }
-  @font-face{
-    font-family:'Orbitron';font-style:normal;font-weight:400 900;
-    font-display:swap;src:url('assets/fonts/orbitron-var.woff2') format('woff2');
-  }
-</style>
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
@@ -857,6 +838,59 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
 
 <script>
 (function(){'use strict';
+
+/* ---- 字体：Cache API + FontFace 本地加载（首次下载后缓存，二次秒开）---- */
+  var FONT_LIST = [
+    { family:'Saira Extra Condensed', weight:'100', url:'assets/fonts/saira-100.woff2' },
+    { family:'Caveat', weight:'400 700', url:'assets/fonts/caveat-var.woff2' },
+    { family:'JetBrains Mono', weight:'100 800', url:'assets/fonts/jbm-var.woff2' },
+    { family:'Orbitron', weight:'400 900', url:'assets/fonts/orbitron-var.woff2' }
+  ];
+
+  async function fetchFontBytes(url) {
+    var absoluteUrl = new URL(url, window.location.href).href;
+    var cacheName = 'make-studio-fonts-v1';
+
+    if (window.caches) {
+      try {
+        var cache = await caches.open(cacheName);
+        var hit = await cache.match(absoluteUrl);
+        if (hit) { console.log('[FONT] 命中缓存:', url); return await (await hit.blob()).arrayBuffer(); }
+      } catch (e) { console.warn('[FONT] 缓存读取失败', e && e.name, e && e.message); }
+    } else {
+      console.warn('[FONT] 当前环境不支持 Cache API，字体无法本地缓存');
+    }
+
+    var res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var buf = await (await res.blob()).arrayBuffer();
+
+    if (window.caches) {
+      try {
+        var cache = await caches.open(cacheName);
+        await cache.put(absoluteUrl, new Response(buf));
+        console.log('[FONT] 已写入缓存:', url);
+      } catch (e) { console.warn('[FONT] 缓存写入失败', e && e.name, e && e.message); }
+    }
+    return buf;
+  }
+
+  function prepareFonts() {
+    if (!('FontFace' in window) || !document.fonts) return;
+    FONT_LIST.forEach(function (f) {
+      fetchFontBytes(f.url).then(function (buf) {
+        var face = new FontFace(f.family, buf, { style:'normal', weight:f.weight });
+        document.fonts.add(face);
+        return face.load();
+      }).then(function () {
+        console.log('[FONT] 已加载:', f.family, f.weight);
+      }).catch(function (e) {
+        console.warn('[FONT] 加载失败:', f.url, e && e.message);
+      });
+    });
+  }
+
+  prepareFonts();
 
 /* 更新日志 + 神秘痕迹 */
 (function(){
