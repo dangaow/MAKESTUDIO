@@ -1235,16 +1235,17 @@
     console.log('[BGM] 无缓存，网络下载完成, status=', res.status);
 
     const blob = await res.blob();
+    const buf = await blob.arrayBuffer();
     if (window.caches) {
       try {
         const cache = await caches.open('make-studio-audio-v1');
-        await cache.put(absoluteUrl, new Response(blob.clone()));
+        await cache.put(absoluteUrl, new Response(buf));
         console.log('[BGM] 已写入缓存, key=', absoluteUrl);
       } catch (e) {
         console.warn('[BGM] 缓存写入失败', e && e.name, e && e.message);
       }
     }
-    return await blob.arrayBuffer();
+    return buf;
   }
 
   // 下载 + 解码（缓存命中时直接解码，秒开；只解码一次）
