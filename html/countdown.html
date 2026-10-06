@@ -1267,7 +1267,7 @@
     }
   }
 
-  // 解除自动播放限制：把挂起的上下文恢复成出声状态（若被浏览器要求手势，则飞手势后再恢复）
+  // 解除自动播放限制：把挂起的上下文恢复成出声状态
   function unlockCtx() {
     if (actx && actx.state === 'suspended') {
       actx.resume().catch(function () {});
