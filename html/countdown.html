@@ -1274,39 +1274,46 @@
     }
   }
 
+  // 是否正在实际出声（有 source 且上下文运行中）
+  function isPlaying() {
+    return !!source && !!actx && actx.state === 'running';
+  }
+
   // 有缓存直接播；没缓存下载+解码完成后立即播，不等待用户交互
   function play() {
     if (userMuted) return;
     const ctx = ensureCtx();
     if (!ctx) { updateSoundUI(false); return; }
 
+    function tryStart() {
+      startSource();   // 已有 source 时会自动跳过，只补 resume
+      unlockCtx();     // 被挂起则恢复（手势内即可出声）
+      updateSoundUI(true);
+    }
+
     if (audioBuffer) {
-      if (startSource()) {
-        unlockCtx();
-        updateSoundUI(true);
-      }
+      tryStart();
       return;
     }
 
     prepareAudio().then(function (buf) {
       if (!buf || userMuted) return;
-      if (startSource()) {
-        unlockCtx();
-        updateSoundUI(true);
-      }
+      tryStart();
     });
   }
 
   if (soundToggle) {
     soundToggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      if (userMuted) {
-        userMuted = false;
-        play();
-      } else {
+      if (isPlaying()) {
+        // 正在出声 -> 静音
         userMuted = true;
         stopSource();
         updateSoundUI(false);
+      } else {
+        // 没出声（被拦截或已静音）-> 开始播放
+        userMuted = false;
+        play();
       }
     });
   }
@@ -1317,7 +1324,9 @@
 
   // 若被浏览器自动播放策略挂起，任意首次手势后立即恢复出声
   ['pointerdown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function (ev) {
-    window.addEventListener(ev, function () {
+    window.addEventListener(ev, function (e) {
+      // 点击声音按钮时不在这里解锁，避免与按钮的「播放/静音」逻辑冲突（响一下又停）
+      if (e && e.target && e.target.closest && e.target.closest('#sound-toggle')) return;
       if (!userMuted) unlockCtx();
     }, { passive: true });
   });
