@@ -1188,7 +1188,7 @@
   const AUDIO_URL = '../assets/jerk.mp3';
   const soundToggle = document.getElementById('sound-toggle');
   const soundLabel = document.getElementById('sound-label');
-  let userMuted = false;
+  let userMuted = true; // 默认静音（按钮 OFF），等用户点击再播放
 
   function updateSoundUI(on) {
     if (!soundToggle) return;
@@ -1198,6 +1198,7 @@
 
   let actx = null;
   let audioBuffer = null;
+  let audioPromise = null; // 下载+解码的去重 promise，避免同时触发两次
   let source = null;
   let startedAt = 0;      // 本次 source 的 start 时间点（ctx.currentTime）
   let startOffset = 0;    // 本次 start 传入的偏移量（秒）
@@ -1248,19 +1249,26 @@
     return buf;
   }
 
-  // 下载 + 解码（缓存命中时直接解码，秒开；只解码一次）
-  async function prepareAudio() {
-    if (audioBuffer) return audioBuffer;
-    const ctx = ensureCtx();
-    if (!ctx) return null;
-    try {
-      audioBuffer = await ctx.decodeAudioData(await fetchAudioBytes(AUDIO_URL));
-      console.log('[BGM] 解码成功，时长=', audioBuffer.duration.toFixed(2), '秒');
-    } catch (e) {
-      console.error('[BGM] 解码失败', e);
-      audioBuffer = null;
-    }
-    return audioBuffer;
+  // 下载 + 解码（缓存命中时直接解码，秒开；并发调用只解码一次）
+  function prepareAudio() {
+    if (audioBuffer) return Promise.resolve(audioBuffer);
+    if (audioPromise) return audioPromise;
+
+    audioPromise = (async function () {
+      const ctx = ensureCtx();
+      if (!ctx) return null;
+      try {
+        const buf = await ctx.decodeAudioData(await fetchAudioBytes(AUDIO_URL));
+        audioBuffer = buf;
+        console.log('[BGM] 解码成功，时长=', buf.duration.toFixed(2), '秒');
+        return buf;
+      } catch (e) {
+        console.error('[BGM] 解码失败', e);
+        return null;
+      }
+    })();
+
+    return audioPromise;
   }
 
   // 从指定偏移开始起播：loop 循环、首尾相接，支持暂停后从原进度续播
@@ -1351,18 +1359,9 @@
     });
   }
 
-  // 进入页面立即尝试自动播放：有缓存直接播 / 没缓存下载完后播
-  updateSoundUI(true);
-  play();
-
-  // 若被浏览器自动播放策略挂起，任意首次手势后立即恢复出声
-  ['pointerdown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function (ev) {
-    window.addEventListener(ev, function (e) {
-      // 点击声音按钮时不在这里解锁，避免与按钮的「播放/静音」逻辑冲突（响一下又停）
-      if (e && e.target && e.target.closest && e.target.closest('#sound-toggle')) return;
-      if (!userMuted) unlockCtx();
-    }, { passive: true });
-  });
+  // 默认静音显示 OFF；后台预加载音频（下载+解码+写缓存），用户点击按钮即可秒播，不等下载
+  updateSoundUI(false);
+  prepareAudio();
 
   /* ============================================================
    * 初始化
