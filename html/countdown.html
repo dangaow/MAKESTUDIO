@@ -8,37 +8,6 @@
 <title>MAKE STUDIO // COUNTDOWN</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0b1a'/%3E%3Cpath d='M24 24L38 32L24 40' fill='none' stroke='%2322d3ee' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-  /* 自托管字体：消除 Google Fonts 外链的国内访问阻塞，字体不变 */
-  @font-face {
-    font-family: 'Saira Extra Condensed';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('../assets/fonts/saira-400.woff2') format('woff2');
-  }
-  @font-face {
-    font-family: 'Saira Extra Condensed';
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url('../assets/fonts/saira-600.woff2') format('woff2');
-  }
-  @font-face {
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('../assets/fonts/jbm-400.woff2') format('woff2');
-  }
-  @font-face {
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url('../assets/fonts/jbm-600.woff2') format('woff2');
-  }
-</style>
-<style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
@@ -1159,6 +1128,63 @@
     if (soundLabel) soundLabel.textContent = on ? 'SOUND ON' : 'SOUND OFF';
   }
 
+  /* ---- 字体：Cache API + FontFace 本地加载（首次下载后缓存，二次秒开）---- */
+  const FONT_LIST = [
+    { family: 'Saira Extra Condensed', weight: '400', url: '../assets/fonts/saira-400.woff2' },
+    { family: 'Saira Extra Condensed', weight: '600', url: '../assets/fonts/saira-600.woff2' },
+    { family: 'JetBrains Mono', weight: '400', url: '../assets/fonts/jbm-400.woff2' },
+    { family: 'JetBrains Mono', weight: '600', url: '../assets/fonts/jbm-600.woff2' }
+  ];
+
+  async function fetchFontBytes(url) {
+    const absoluteUrl = new URL(url, window.location.href).href;
+    const cacheName = 'make-studio-fonts-v1';
+
+    if (window.caches) {
+      try {
+        const cache = await caches.open(cacheName);
+        const hit = await cache.match(absoluteUrl);
+        if (hit) {
+          console.log('[FONT] 命中缓存:', url);
+          return await (await hit.blob()).arrayBuffer();
+        }
+      } catch (e) {
+        console.warn('[FONT] 缓存读取失败', e && e.name, e && e.message);
+      }
+    } else {
+      console.warn('[FONT] 当前环境不支持 Cache API，字体无法本地缓存');
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const buf = await (await res.blob()).arrayBuffer();
+
+    if (window.caches) {
+      try {
+        const cache = await caches.open(cacheName);
+        await cache.put(absoluteUrl, new Response(buf));
+        console.log('[FONT] 已写入缓存:', url);
+      } catch (e) {
+        console.warn('[FONT] 缓存写入失败', e && e.name, e && e.message);
+      }
+    }
+    return buf;
+  }
+
+  function prepareFonts() {
+    if (!('FontFace' in window) || !document.fonts) return;
+    FONT_LIST.forEach(function (f) {
+      fetchFontBytes(f.url).then(function (buf) {
+        const face = new FontFace(f.family, buf, { style: 'normal', weight: f.weight });
+        document.fonts.add(face);
+        return face.load();
+      }).then(function () {
+        console.log('[FONT] 已加载:', f.family, f.weight);
+      }).catch(function (e) {
+        console.warn('[FONT] 加载失败:', f.url, e && e.message);
+      });
+    });
+  }
   let actx = null;
   let audioBuffer = null;
   let audioPromise = null; // 下载+解码的去重 promise，避免同时触发两次
@@ -1325,6 +1351,7 @@
   // 默认静音显示 OFF；后台预加载音频（下载+解码+写缓存），用户点击按钮即可秒播，不等下载
   updateSoundUI(false);
   prepareAudio();
+  prepareFonts(); // 后台预加载字体并写入缓存，二次访问秒开
 
   /* ============================================================
    * 初始化
