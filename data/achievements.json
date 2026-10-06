@@ -1,0 +1,50 @@
+[
+  {
+    "id": "mail_terminal",
+    "name": "老机器的秘密",
+    "desc": "发现墙角的收信终端",
+    "secret": false
+  },
+  {
+    "id": "hack_log",
+    "name": "系统入侵",
+    "desc": "在更新日志里窥见被拦截的信号",
+    "secret": false
+  },
+  {
+    "id": "play_all",
+    "name": "从头到尾",
+    "desc": "听完整站每一首歌",
+    "secret": false
+  },
+  {
+    "id": "theme_master",
+    "name": "明暗之间",
+    "desc": "切换主题 10 次",
+    "secret": false
+  },
+  {
+    "id": "hidden_konami",
+    "name": "上上下下",
+    "desc": "经典秘籍，心照不宣",
+    "secret": true
+  },
+  {
+    "id": "hidden_lurker",
+    "name": "耐心的潜伏者",
+    "desc": "在这个页面安静停留一分钟",
+    "secret": true
+  },
+  {
+    "id": "hidden_clock",
+    "name": "时间旅人",
+    "desc": "在时间的刻度上敲了三下",
+    "secret": true
+  },
+  {
+    "id": "hidden_brand",
+    "name": "署名之后",
+    "desc": "反复读过工作室的铭牌",
+    "secret": true
+  }
+]
