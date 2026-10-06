@@ -1213,25 +1213,36 @@
 
   // 取音频原始字节：优先命中缓存(秒开)，没有才请求网络，并把结果写回缓存
   async function fetchAudioBytes(url) {
+    const absoluteUrl = new URL(url, window.location.href).href;
+
     if (window.caches) {
       try {
         const cache = await caches.open('make-studio-audio-v1');
-        const hit = await cache.match(url);
+        const hit = await cache.match(absoluteUrl);
         if (hit) {
-          console.log('[BGM] 命中缓存，直接播放');
-          const blob = await hit.blob();
-          return await blob.arrayBuffer();
+          console.log('[BGM] 命中缓存，直接播放, key=', absoluteUrl);
+          return await (await hit.blob()).arrayBuffer();
         }
-      } catch (e) { /* 忽略缓存读取失败 */ }
+      } catch (e) {
+        console.warn('[BGM] 缓存读取失败', e && e.name, e && e.message);
+      }
+    } else {
+      console.warn('[BGM] 当前环境不支持 Cache API（非安全上下文），无法缓存');
     }
+
     const res = await fetch(url);
-    console.log('[BGM] 无缓存，网络下载完成，status=', res.status);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    console.log('[BGM] 无缓存，网络下载完成, status=', res.status);
+
     const blob = await res.blob();
     if (window.caches) {
       try {
         const cache = await caches.open('make-studio-audio-v1');
-        cache.put(url, new Response(blob.clone()));
-      } catch (e) { /* 忽略缓存写入失败 */ }
+        await cache.put(absoluteUrl, new Response(blob.clone()));
+        console.log('[BGM] 已写入缓存, key=', absoluteUrl);
+      } catch (e) {
+        console.warn('[BGM] 缓存写入失败', e && e.name, e && e.message);
+      }
     }
     return await blob.arrayBuffer();
   }
