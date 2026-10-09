@@ -85,6 +85,7 @@
   .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0;
           background: repeating-linear-gradient(90deg, rgba(233,237,245,.85) 0 2px, rgba(233,237,245,.45) 2px 4px); }
   .head-r { position: absolute; top: -2px; bottom: -2px; width: 3px; margin-left: -1px; background: var(--red); box-shadow: 0 0 14px var(--red); left: 0; }
+  .done .head-r { display: none; }
   .mark { position: absolute; top: 0; bottom: 0; border-left: 1px dashed rgba(74, 108, 255, .6); }
   .ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
 
@@ -137,7 +138,7 @@
 <div class="veil" aria-hidden="true"></div>
 
 <div class="hud top">
-  <span class="rec" id="rec"><i></i><span id="recTxt">REC</span></span>
+  <!--REC--><span class="rec"><i></i><span>REC</span></span><!--/REC-->
   <span>TAPE 01</span>
   <span class="who"><span>谎话 / </span><b>DANGAO_W</b></span>
 </div>
@@ -150,32 +151,38 @@
     <button class="cd-btn" id="cdOpen" type="button" aria-haspopup="dialog"><i></i>COUNTDOWN<span>倒计时</span></button>
   </header>
 
-  <section class="eta" aria-live="polite">
+  <!--STATUS-->
+  <section class="eta">
     <div>
       <div class="k">预计完成 · <b>香港时间</b></div>
-      <div class="clock" id="eta">13:00</div>
-      <div class="note" id="etaDate">10 月 9 日 星期五</div>
+      <div class="clock">13:00</div>
+      <div class="note">10 月 9 日 星期五</div>
     </div>
     <div>
-      <div class="k" id="leftLabel">距离预计完成</div>
-      <div class="left" id="left">--:--:--</div>
-      <div class="note" id="leftNote">&nbsp;</div>
+      <div class="k">当前进度</div>
+      <div class="left">35%</div>
+      <div class="note">按现在的速度，大约还要 1 小时 36 分。</div>
     </div>
   </section>
 
   <section class="tape" aria-label="整体进度">
-    <div class="k">整体进度 · 按预计时间推算</div>
-    <div class="track" id="track"><div class="fill" id="fill"></div><div class="head-r" id="headR"></div></div>
-    <div class="ends"><span id="t0">10:09 开始</span><span id="pct">0%</span><span id="t1">13:00 预计完成</span></div>
+    <div class="k">整体进度 · 更新于香港时间 11:00</div>
+    <div class="track"><div class="fill" style="width:35%"></div><div class="head-r" style="left:35%"></div><div class="mark" style="left:47.27%"></div><div class="mark" style="left:95.00%"></div></div>
+    <div class="ends"><span>10:09 开始</span><span>35%</span><span>13:00 预计完成</span></div>
   </section>
 
   <section aria-label="步骤">
-    <ol class="steps" id="steps"></ol>
+    <ol class="steps">
+      <li class="step run"><span class="led"></span><h2>第一段渲染 · 0:00–0:54</h2><span class="chip">进行中</span><span class="when">10:09 开始 · 已渲染 1200 / 1620 帧</span></li>
+      <li class="step wait"><span class="led"></span><h2>第二段渲染 · 0:54–1:48</h2><span class="chip">排队</span><span class="when">预计 11:25 – 12:40</span></li>
+      <li class="step wait"><span class="led"></span><h2>拼接、配上整首歌的音轨、压 720p 手机版</h2><span class="chip">排队</span><span class="when">预计 12:40 – 13:00</span></li>
+    </ol>
   </section>
+  <!--/STATUS-->
 
   <footer>
     <div class="spec">1920×1080 · 30fps · 运动模糊 · 带整首歌音轨 · 另有 720p 手机版</div>
-    <div>时间都是预计的，以香港时间（UTC+8）为准。</div>
+    <div>这一页每 20 分钟更新一次。时间都是预计的，以香港时间（UTC+8）为准。</div>
     <div><a href="../index.html">← 回到 MAKE STUDIO</a></div>
   </footer>
 </main>
@@ -190,54 +197,12 @@
 
 <div class="hud bottom">
   <span class="play">▶ PLAY</span>
-  <span class="stamp" id="stamp">--</span>
+  <span class="stamp"><!--STAMP-->UPDATED OCT 09 11:00 HKT<!--/STAMP--></span>
 </div>
 
 <script>
 (function () {
-  // ---- 固定的预计时间（香港时间，UTC+8）----
-  var HK = '+08:00';
-  var START = Date.parse('2026-10-09T10:09:00' + HK);
-  var END = Date.parse('2026-10-09T13:00:00' + HK);
-  var STEPS = [
-    { name: '第一段渲染 · 0:00–0:54', from: '10:09', to: '11:25' },
-    { name: '第二段渲染 · 0:54–1:48', from: '11:25', to: '12:40' },
-    { name: '拼接、配上整首歌的音轨、压 720p 手机版', from: '12:40', to: '13:00' }
-  ];
-  var at = function (hm) { return Date.parse('2026-10-09T' + hm + ':00' + HK); };
   var $ = function (id) { return document.getElementById(id); };
-  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-  var hms = function (s) { s = Math.max(0, Math.floor(s)); return pad(s / 3600 | 0) + ':' + pad((s % 3600) / 60 | 0) + ':' + pad(s % 60); };
-  // 香港时间的年月日时分秒（不依赖访客自己的时区）
-  var hkParts = function (ms) { var d = new Date(ms + 8 * 3600e3);
-    return { y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate(), h: d.getUTCHours(), mi: d.getUTCMinutes(), s: d.getUTCSeconds() }; };
-  var MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-
-  // 时间轴上标出三步的分界
-  [at(STEPS[1].from), at(STEPS[2].from)].forEach(function (t) {
-    var m = document.createElement('div'); m.className = 'mark'; m.style.left = ((t - START) / (END - START) * 100).toFixed(2) + '%'; $('track').appendChild(m);
-  });
-
-  function tick() {
-    var now = Date.now(), k = Math.min(1, Math.max(0, (now - START) / (END - START))), over = now >= END;
-    $('left').textContent = hms((END - now) / 1000);
-    $('leftLabel').textContent = over ? '预计时间已到' : '距离预计完成';
-    $('leftNote').textContent = over ? '成片马上发布。' : now < START ? '还没开始。' : '每秒刷新一次。';
-    $('rec').className = 'rec' + (over ? ' done' : ''); $('recTxt').textContent = over ? 'STOP' : 'REC';
-    $('fill').style.width = (k * 100).toFixed(2) + '%'; $('headR').style.left = (k * 100).toFixed(2) + '%';
-    $('pct').textContent = Math.floor(k * 100) + '%';
-    var html = '';
-    STEPS.forEach(function (s) {
-      var a = at(s.from), b = at(s.to), st = now >= b ? 'done' : now >= a ? 'run' : 'wait';
-      html += '<li class="step ' + st + '"><span class="led"></span><h2>' + s.name + '</h2>' +
-        '<span class="chip">' + (st === 'done' ? '预计已完成' : st === 'run' ? '进行中' : '排队') + '</span>' +
-        '<span class="when">' + s.from + ' – ' + s.to + '</span></li>';
-    });
-    $('steps').innerHTML = html;
-    var p = hkParts(now);
-    $('stamp').textContent = MON[p.mo] + ' ' + pad(p.d) + ' ' + p.y + '  ' + pad(p.h) + ':' + pad(p.mi) + ':' + pad(p.s) + ' HKT';
-  }
-  tick(); setInterval(tick, 1000);
 
   // ---- 倒计时弹窗 ----
   var cd = $('cd'), frame = $('cdFrame'), opener = $('cdOpen'), lastFocus = null;
