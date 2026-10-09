@@ -133,9 +133,9 @@
   .sb { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center; padding-inline: 16px;
         background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(4,5,11,.55), rgba(4,5,11,.92)); }
   .sb-in { display: grid; gap: 18px; justify-items: center; text-align: center; animation: sbIn 1.2s ease-out both; }
-  .sb-t { font-family: var(--mono); font-size: clamp(44px, 11vw, 112px); line-height: 1; letter-spacing: -.01em; color: var(--silver);
+  .sb-t { position: relative; white-space: nowrap; font-family: var(--mono); font-size: clamp(44px, 11vw, 112px); line-height: 1; letter-spacing: -.01em; color: var(--silver);
           text-shadow: 3px 0 0 rgba(224, 17, 43, .55), -2px 0 0 rgba(74, 108, 255, .5); }
-  .sb-t .cur { display: inline-block; width: .5em; height: .82em; margin-left: .12em; vertical-align: -.06em; background: var(--silver); animation: blink 1s steps(2, start) infinite; }
+  .sb-t .cur { position: absolute; left: calc(100% + .12em); bottom: .1em; width: .5em; height: .82em; background: var(--silver); animation: blink 1s steps(2, start) infinite; }   /* 光标悬在右边，不占宽度，字本身居中 */
   .sb-s { font-size: 14px; color: var(--dim); letter-spacing: .08em; }
   .sb .cd-btn { justify-self: center; margin-top: 8px; }
   @keyframes sbIn { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: none; } }
