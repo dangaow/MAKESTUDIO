@@ -1,0 +1,9 @@
+/* 自托管字体子集：只含页面上用到的字（由 Google Fonts 按字生成，重新生成方法见 README） */
+@font-face { font-family: 'Anton'; font-style: normal; font-weight: 400; font-display: swap; src: url('../assets/fonts/tape-anton.woff2') format('woff2'); }
+@font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('../assets/fonts/tape-spacemono-400.woff2') format('woff2'); }
+@font-face { font-family: 'Space Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('../assets/fonts/tape-spacemono-700.woff2') format('woff2'); }
+@font-face { font-family: 'Silkscreen'; font-style: normal; font-weight: 400; font-display: swap; src: url('../assets/fonts/tape-silkscreen-400.woff2') format('woff2'); }
+@font-face { font-family: 'Silkscreen'; font-style: normal; font-weight: 700; font-display: swap; src: url('../assets/fonts/tape-silkscreen-700.woff2') format('woff2'); }
+@font-face { font-family: 'Noto Sans SC'; font-style: normal; font-weight: 400; font-display: swap; src: url('../assets/fonts/tape-notosanssc-400.woff2') format('woff2'); }
+@font-face { font-family: 'Noto Sans SC'; font-style: normal; font-weight: 900; font-display: swap; src: url('../assets/fonts/tape-notosanssc-900.woff2') format('woff2'); }
+@font-face { font-family: 'Noto Serif SC'; font-style: normal; font-weight: 900; font-display: swap; src: url('../assets/fonts/tape-notoserifsc-900.woff2') format('woff2'); }

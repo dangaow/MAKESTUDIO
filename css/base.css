@@ -1,0 +1,101 @@
+/* ============ MAKE STUDIO · 录像带 · 基础 ============ */
+:root {
+  --bg: #07080b; --bg2: #0d1018; --fg: #e8eaef; --mute: rgba(232, 234, 239, .52); --dim: rgba(232, 234, 239, .3); --line: rgba(232, 234, 239, .13);
+  --blue: #4a6cff; --blue-d: #16224f; --red: #ff2a3c; --osd: #1d3fd6;
+  --f-anton: 'Anton', 'Noto Sans SC', sans-serif;
+  --f-mono: 'Space Mono', ui-monospace, 'Noto Sans SC', monospace;
+  --f-px: 'Silkscreen', 'Space Mono', monospace;
+  --f-sc: 'Noto Sans SC', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --f-scs: 'Noto Serif SC', 'Songti SC', serif;
+  --gut: clamp(20px, 5vw, 72px);
+  --hud: clamp(12px, 1.6vw, 22px);
+  --max: 1240px;
+}
+/* DAY：白天录的，褪色、过曝的暖白 */
+[data-theme="light"] {
+  --bg: #e9e6df; --bg2: #dfdbd2; --fg: #16171b; --mute: rgba(22, 23, 27, .58); --dim: rgba(22, 23, 27, .34); --line: rgba(22, 23, 27, .16);
+  --blue: #2a46d6; --blue-d: #c9d0ee;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--f-sc); font-size: 16px; line-height: 1.65; min-height: 100vh; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; -webkit-user-drag: none; }
+a { color: inherit; text-decoration: none; }
+button { background: none; border: 0; font: inherit; color: inherit; cursor: pointer; }
+ul, ol { list-style: none; }
+em { font-style: normal; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+::selection { background: var(--blue); color: #fff; }
+
+/* 扫描线 + 暗角 + 极淡的颗粒（整页） */
+.scan {
+  position: fixed; inset: 0; z-index: 80; pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, .42) 100%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, .14) 0 1px, transparent 1px 3px);
+}
+.scan::after {
+  content: ''; position: absolute; inset: -50%; opacity: .06; mix-blend-mode: overlay; animation: grain .4s steps(2) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="light"] .scan { background: radial-gradient(ellipse at center, transparent 55%, rgba(255, 250, 235, .55) 100%), repeating-linear-gradient(0deg, rgba(0, 0, 0, .045) 0 1px, transparent 1px 3px); }
+@keyframes grain { 50% { transform: translate(-2%, 1%); } 100% { transform: translate(1%, -2%); } }
+
+/* ============ 取景框（固定在屏幕上） ============ */
+.hud { position: fixed; inset: var(--hud); z-index: 70; pointer-events: none; font-family: var(--f-px); font-size: 13px; letter-spacing: .08em; color: var(--fg); }
+.hc { position: absolute; width: 22px; height: 22px; border: 0 solid var(--fg); opacity: .75; }
+.hc-tl { left: 0; top: 0; border-left-width: 2px; border-top-width: 2px; }
+.hc-tr { right: 0; top: 0; border-right-width: 2px; border-top-width: 2px; }
+.hc-bl { left: 0; bottom: 0; border-left-width: 2px; border-bottom-width: 2px; }
+.hc-br { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; }
+.hud-bl { position: absolute; left: 32px; bottom: 2px; }
+.hud-br { position: absolute; right: 32px; bottom: 2px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; }
+.hud-br span:first-child { font-family: var(--f-px); color: var(--mute); }
+.hud-mode.ff, .hud-mode.rew { color: var(--blue); }
+.hud-mode.stop { color: var(--red); }
+body.mp-on .hud-bl, body.mp-on .hud-br { opacity: 0; }
+
+/* 开场蓝屏 */
+.boot-osd { position: fixed; inset: 0; z-index: 200; display: none; background: var(--osd); color: #fff; font-family: var(--f-px); font-size: clamp(22px, 3vw, 36px); padding: 9vh 8vw; justify-content: space-between; align-items: flex-start; letter-spacing: .06em; }
+html.boot .boot-osd { display: flex; }
+.bo-sp { font-size: .7em; }
+
+/* ============ 出现：像信号接上——横向抖两下再稳住 ============ */
+html.js [data-in] { opacity: 0; }
+html.js [data-in].in { opacity: 1; animation: track-in .24s steps(4, end) both; animation-delay: var(--d, 0s); }
+@keyframes track-in {
+  0% { opacity: 0; transform: translateX(-14px); clip-path: inset(0 0 60% 0); }
+  35% { opacity: 1; transform: translateX(10px); clip-path: inset(30% 0 0 0); filter: brightness(1.8); }
+  70% { transform: translateX(-3px); clip-path: inset(0); }
+  100% { transform: none; filter: none; }
+}
+
+/* ============ 版块标题：像录像机的章节卡 ============ */
+.sec { position: relative; max-width: var(--max); margin: 0 auto; padding: clamp(96px, 13vw, 180px) var(--gut) 0; scroll-margin-top: 30px; }
+.sh { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 16px; margin-bottom: clamp(36px, 5vw, 64px); }
+.sh-ch { font-family: var(--f-px); font-size: 13px; color: var(--blue); letter-spacing: .08em; }
+.sh-rule { height: 1px; background: var(--line); }
+.sh-tc { font-family: var(--f-mono); font-size: 12px; color: var(--mute); }
+.sh-t { grid-column: 1 / 3; font-weight: 900; font-size: clamp(44px, 6.4vw, 88px); line-height: 1.05; letter-spacing: .02em; margin-top: 10px; }
+.sh-en { grid-column: 3; align-self: end; font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; color: var(--mute); text-transform: uppercase; padding-bottom: 12px; text-align: right; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition: none !important; }
+  html.js [data-in] { opacity: 1 !important; }
+  html.boot .boot-osd { display: none; }
+}
+@media (max-width: 760px) {
+  .hud { font-size: 11px; }
+  .hc { width: 14px; height: 14px; }
+  .hud-bl { left: 20px; } .hud-br { right: 20px; font-size: 10px; }
+  .sh { grid-template-columns: auto 1fr; }
+  .sh-tc { display: none; }
+  .sh-t { grid-column: 1 / 3; }
+  .sh-en { grid-column: 1 / 3; text-align: left; padding-bottom: 0; }
+}
+.nw { white-space: nowrap; }

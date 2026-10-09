@@ -1,5 +1,5 @@
-/* Waline 评论（免登录） */
-import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+/* Waline 评论（免登录），跟着 NIGHT / DAY 切换 */
+import { init } from 'https://unpkg.com/@waline/client@3.16.0/dist/waline.js';
 init({
   el: '#waline',
   serverURL: 'https://makestudio-comment.vercel.app',

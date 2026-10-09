@@ -1,37 +1,34 @@
 # MAKE STUDIO // 工作室
 
-MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构建的轻量站点，纯 HTML + CSS + JS 实现，打开即用。
+MAKE STUDIO 音乐工作室官方网站。纯 HTML + CSS + JS，零框架、零构建，GitHub Pages 直接托管。
 
-当前版本：**v4.1.0**
+当前版本：**v5.0.0**（录像带）
 
-## 特性
+## 风格：一盘录像带
 
-- **双主题**：深色（默认）/ 浅色一键切换，首次访问跟随系统偏好，选择记忆在 `localStorage`
-- **动态背景**：粒子画布 + 极光光斑 + 网格 + 暗角，滚动与主题切换全程平滑
-- **站内音乐播放**：底部迷你播放条，本地 mp3 播放《灰烬》《枷锁》（网易云流作兜底）；
-  支持进度条拖动、上一首/下一首、单曲循环、专辑封面旋转、加载失败兜底跳转
-- **站内视频播放**：内嵌 B 站播放器弹窗，站内观看《无解》《FLY》MV，支持全屏与键盘关闭
-- **更新日志**：页脚版本号进入 CHANGELOG 终端风格弹窗
-- **粉丝社区**：QQ 粉丝群入口 + Waline 免登录留言板
-- **响应式**：桌面 / 移动端均有独立适配，触摸设备进度条滑动优化
-- **移动端体验**：汉堡抽屉导航，移动端自动跳过粒子连线以降低 CPU 开销
-- **工业质感**：金属纹理 + 噪点 / 拉丝层 + LED 状态灯，统一卡片式模块语言
-- **历程时间线**：工作室大事记时间线区块（TIMELINE）
-- **设备器材**：宿主 / 麦克风 / 监听设备清单区块（STUDIO GEAR）
-- **成就系统**：发现彩蛋即可解锁太空机台风格成就，含隐藏成就（以 `???` 代名），完成数与进度保存在 `localStorage`
-- **解密终端**：页脚 `terminal.` 入口进入 MS-DOS 风格终端，输入 `decode` 进入 LSB 隐写解码页（`lsb.html`）
-- **LSB 隐写解码**：纯浏览器本地解码，上传图片即可从像素最低位抽出隐藏信息，数据不上传
-- **无障碍**：播放器 / 弹窗带 ARIA 标注，支持 Escape 与焦点管理
-- **《谎话》发布倒数页（`html/render.html`）**：MV 自己的雨夜 + 录像带取景器风格，实时倒数到 2026-10-17 00:00（香港时间）发布，网络时间校准；到点整页闪回一次 MV 后显示 Stand by.（每个浏览器只放一次，`?demo` 试看）。主页连点时钟 6 次进入
-- **自托管字体**：Caveat / JetBrains Mono / Orbitron / Saira Extra Condensed 全部本地 `woff2`，零外链、首次加载不因字体卡住
-- **无缝背景音乐（发布倒数页）**：Web Audio `loop` 整段无缝循环不卡顿；默认关，点左下角开关才下载播放
+整个官网是一盘工作室的录像带，和《谎话》MV、发布倒数页是同一个世界：黑底、冷蓝、只有一点红。
+
+- **取景框**：四个角固定在屏幕上；左上 `● REC MAKE STUDIO TAPE 00`（章节号跟着翻页变）；左下走带状态，往下翻得快是 `▶▶ FF`、往上翻是 `◀◀ REW`、翻到底是 `■ STOP`；右下时间码跟着滚动位置走
+- **开场**：每次打开先闪一下录像机蓝屏 `PLAY ▶`（同一次浏览只放一次）
+- **首页**：雨夜玻璃上的失焦光斑 + 斜雨（canvas，12 帧/秒抽帧，划走就暂停）；`MAKE STUDIO` 偶尔跟踪错位；右下角摄像机日期戳就是实时时钟
+- **下一盘带**：首页底部《谎话》MV 倒数条，点进发布倒数页；2026-10-17 00:00（香港时间）后自动变成 `OUT NOW`
+- **01 宣言**：每行像 MV 里的证词一样从过曝发虚显影出来，首字母 M A K E 是红的
+- **02 作品**：每首歌 / MV 是一盘带子，鼠标移上去有一道跟踪噪声扫过；歌在底部小卡座里放，MV 在 B 站弹窗里放（CRT 开机效果）
+- **03 历程**：剪辑软件式时间线，标记按真实日期摆放，红色播放头停在今天
+- **04 器材**：证物标签 EXHIBIT A / B / C
+- **05 成员**：片尾字幕
+- **06 联系**：带子背面的"拾到请寄回"标签，点一行复制
+- **07 留言**：答录机（Waline 免登录留言板），打字时亮 `● REC`
+- **NIGHT / DAY**：摄像机模式切换（白天是褪色、过曝的暖白），记在 `localStorage`
+- **减少动态效果**：系统开了的话，所有动画、开场蓝屏、雨都停
+- **更新日志 / 成就**：录像机蓝色屏幕菜单；彩蛋全部保留（收信终端、版本号入侵、Konami、潜伏、时间旅人、署名之后）
 
 ## 作品
 
 | 曲目 | 类型 | 时长 | 播放方式 |
 | --- | --- | --- | --- |
-| 灰烬 | SINGLE | 02:17 | 站内播放条（网易云流） |
-| 枷锁 | SINGLE | 03:09 | 站内播放条（网易云流） |
+| 灰烬 | SINGLE | 02:17 | 站内小卡座（本地 mp3，网易云流兜底） |
+| 枷锁 | SINGLE | 03:09 | 站内小卡座（本地 mp3，网易云流兜底） |
 | 无解 | MV | 03:11 | 站内 B 站弹窗 |
 | FLY | MV | 01:34 | 站内 B 站弹窗 |
 
@@ -49,41 +46,45 @@ python -m http.server 8765
 
 ```
 .
-├── index.html                        # 主站点（全部样式与逻辑内置）
+├── index.html                        # 页面结构
+├── css/
+│   ├── fonts.css                     # 自托管字体子集（tools/subset_fonts.py 生成）
+│   ├── base.css                      # 配色、取景框、扫描线、出现动画、章节标题
+│   ├── sections.css                  # 导航、首页、各章节
+│   └── ui.css                        # 复制提示、播放卡座、视频弹窗、更新日志 / 成就菜单、收信终端
+├── js/
+│   ├── site.js                       # 开场、NIGHT/DAY、日期戳、走带（时间码 / FF / REW / STOP）、出现动画、复制、下一盘带、时间线
+│   ├── rain.js                       # 首页雨夜背景
+│   ├── player.js                     # 站内音乐卡座 + B 站视频弹窗
+│   ├── achievements.js               # 成就（存档键名沿用旧版）
+│   ├── changelog.js                  # 更新日志 + 版本号入侵彩蛋
+│   ├── mail.js                       # 隐藏收信终端
+│   └── comments.js                   # Waline 留言板
 ├── html/
-│   └── render.html / render.js        # 《谎话》MV 发布倒数页：倒数到 2026-10-17 00:00（香港时间），到点闪回一次 MV 后显示 Stand by.（?demo 试看）
-├── arg/                              # 解密活动页面
-│   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
-│   ├── final.html                    # 终局解密页（MS-DOS 风格）
-│   └── signal.html                   # 预留节点页（当前未开放）
-├── backup/                           # 历史备份（不回滚可忽略）
-│   ├── index.backup.html             # 删除 CRT 彩蛋/成就前的备份，供回滚参考
-│   └── make-studio-decrypt-backup.html # 历史活动解密版本备份
+│   └── render.html / render.js       # 《谎话》MV 发布倒数页：倒数到 2026-10-17 00:00（香港时间），到点闪回一次 MV 后显示 Stand by.（?demo 试看）
 ├── api/
 │   └── signal.js                     # 邮件回信函数（Vercel Function + Resend，可选）
 ├── tools/
+│   ├── subset_fonts.py               # 重新生成字体子集：改了页面文字后运行 python3 tools/subset_fonts.py
 │   └── stego.py                      # 图像 LSB 隐写工具（Python，可选）
 ├── assets/
-│   ├── fonts/                        # 自托管字体（Caveat / JetBrains Mono / Orbitron / Saira Extra Condensed）
-│   │   ├── caveat-var.woff2
-│   │   ├── jbm-400.woff2 / jbm-600.woff2 / jbm-var.woff2
-│   │   ├── orbitron-var.woff2
-│   │   └── saira-100.woff2 / saira-400.woff2 / saira-600.woff2
-│   ├── cover-huijin.jpg              # 《灰烬》封面
-│   ├── cover-jiasuo.jpg              # 《枷锁》封面
-│   ├── huijin.mp3                    # 《灰烬》音频
-│   ├── jiasuo.mp3                    # 《枷锁》音频
+│   ├── fonts/tape-*.woff2            # 首页字体子集（Anton / Space Mono / Silkscreen / 思源黑体 / 思源宋体）
+│   ├── fonts/render-*.woff2          # 发布倒数页字体子集
+│   ├── cover-huijin.jpg / cover-jiasuo.jpg / cover-wujie.jpg / cover-fly.jpg   # 作品封面
+│   ├── huijin.mp3 / jiasuo.mp3       # 歌曲音频
 │   ├── countdown-beat.mp3            # 发布倒数页背景音乐（Web Audio 无缝循环）
-│   ├── arg-teaser.jpg / logo-share.png
-│   ├── render/fb-N.jpg               # 发布倒数页的 MV 闪回画面（6 张，960×540）
-│   └── README.md
+│   ├── logo-share.png                # 分享卡片图（1200×630，录像带风格）
+│   ├── arg-teaser.jpg
+│   └── render/fb-N.jpg               # 发布倒数页的 MV 闪回画面（6 张，960×540）
 ```
+
+旧版（v4 及以前，单文件 + 粒子背景）可以在 git 历史里找到，网站上不再保留备份文件。
 
 ## 技术栈
 
 - 原生 HTML / CSS / JavaScript，无任何框架与构建步骤
 - 音频：HTML5 Audio，本地 mp3 优先，网易云外链流兜底；倒计时页改用 Web Audio（无缝循环 + Cache API 缓存）
-- 字体：本地自托管 `woff2`（零 Google Fonts 外链）
+- 字体：本地自托管 `woff2` 子集（只含页面上用到的字，由 `tools/subset_fonts.py` 从 Google Fonts 生成；字体零外链）
 - 视频：B 站播放器 iframe（[player.bilibili.com/player.html](https://player.bilibili.com/player.html)）
 - 评论区：[Waline](https://waline.js.org)（后端部署于 Vercel）
 
@@ -97,12 +98,12 @@ python -m http.server 8765
 
 ## 成就
 
-页脚 `ACHIEVEMENTS` 入口可查看成就总览与进度；发现任意彩蛋都会弹出终端风格解锁提示（渐隐渐显）。
+页脚「成就」入口可查看成就总览与进度（录像机蓝色屏幕菜单）；发现任意彩蛋都会在左上角弹出屏幕菜单式的解锁提示。
 
 | 成就 | 解锁条件 |
 | --- | --- |
 | 从头到尾 | 听完整站每一首歌 |
-| 明暗之间 | 切换主题 10 次 |
+| 明暗之间 | 切换 NIGHT / DAY 10 次 |
 | ???（隐藏） | ??? |
 
 除上表外，站点还有若干隐藏成就与活动相关成就，解锁前以 `???` 代名、解锁方法不公开；解锁后即显示真实名称与说明。全部进度（含完成数、解锁状态与时间）保存于 `localStorage.make-studio-achievements`；如需重置，执行：
@@ -113,7 +114,7 @@ localStorage.removeItem('make-studio-achievements')
 
 ## 常见问题
 
-- **音乐加载失败**：默认播放 `assets/` 下的本地 mp3，只要文件随仓库部署就不会失效；仅在本地文件缺失时才尝试网易云外链（有签名时效）。如需换歌，替换 `index.html` 中 `PLAYLIST` 数组的 `srcs` 即可。
+- **音乐加载失败**：默认播放 `assets/` 下的本地 mp3，只要文件随仓库部署就不会失效；仅在本地文件缺失时才尝试网易云外链（有签名时效）。如需换歌，替换 `js/player.js` 中 `PLAYLIST` 数组的 `srcs` 即可。
 - **评论打不开**：评论区后端部署于 Vercel，国内网络环境偶尔超时，属服务端可达性问题。
 - **切歌有短暂中止请求**：控制台出现的 `ERR_ABORTED` 是音频流切换的正常现象，不影响播放。
 
