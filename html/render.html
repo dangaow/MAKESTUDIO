@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#04050b">
-<title>谎话 · Stand by. | MAKE STUDIO</title>
-<meta name="description" content="dangao_w《谎话》MV · TAPE 01 · Stand by.">
-<meta property="og:title" content="谎话 · Stand by.">
-<meta property="og:description" content="dangao_w《谎话》MV · TAPE 01 · Stand by.">
+<title>谎话 · 10.17 | MAKE STUDIO</title>
+<meta name="description" content="dangao_w《谎话》MV · 2026.10.17 发布">
+<meta property="og:title" content="谎话 · 10.17">
+<meta property="og:description" content="dangao_w《谎话》MV · 2026.10.17 发布">
 <script>
-  // 过了预计时间（香港时间 13:00）再打开：先盖黑，不露出进度页，直接闪回 → Stand by.（?demo 除外）
+  // 过了发布时间（香港时间 10 月 17 日 00:00）再打开：先盖黑，不露出倒数，直接闪回 → Stand by.（?demo 除外）
   (function () {
     var q = location.search;
-    if (!/[?&]demo\b/.test(q) && (Date.now() >= Date.parse('2026-10-09T13:00:00+08:00') || /[?&]standby\b/.test(q)))
+    if (!/[?&]demo\b/.test(q) && (Date.now() >= Date.parse('2026-10-17T00:00:00+08:00') || /[?&]standby\b/.test(q)))
       document.documentElement.className += ' pre';
   })();
 </script>
@@ -85,7 +85,7 @@
   .k { font-size: 13px; color: var(--dim); letter-spacing: .04em; }
   .k b { color: var(--silver); font-weight: 400; }
   .clock { font-family: var(--tall); font-size: clamp(72px, 17vw, 132px); line-height: .95; letter-spacing: .01em; margin-top: 10px; font-variant-numeric: tabular-nums; }
-  .left { font-family: var(--mono); font-size: clamp(34px, 8vw, 58px); line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums;
+  .left { white-space: nowrap; font-family: var(--mono); font-size: clamp(30px, 7.4vw, 50px); line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums;
           text-shadow: 3px 0 0 rgba(224, 17, 43, .6), -2px 0 0 rgba(74, 108, 255, .55); }
   .note { font-size: 13px; color: var(--dim); margin-top: 10px; line-height: 1.6; }
 
@@ -110,31 +110,17 @@
   .step.run .chip { color: var(--silver); border-color: var(--red); background: rgba(224, 17, 43, .16); }
   .step.done .chip { color: var(--ok); border-color: rgba(159, 226, 184, .4); }
 
-  .cd-btn { justify-self: start; display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; cursor: pointer;
-            font-family: var(--pixel); font-size: 11px; letter-spacing: .14em; color: var(--silver);
-            background: rgba(10, 15, 34, .72); border: 1px solid var(--line); padding: 8px 12px; }
-  .cd-btn i { width: 7px; height: 7px; background: var(--red); box-shadow: 0 0 8px var(--red); }
-  .cd-btn span { font-family: var(--sans); letter-spacing: .04em; font-size: 12px; color: var(--dim); }
-  .cd-btn:hover, .cd-btn:focus-visible { border-color: var(--red); outline: none; }
-
-  /* 倒计时弹窗：里面直接放 html/countdown.html */
-  .cd { position: fixed; inset: 0; z-index: 10; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 10px;
-        background: rgba(2, 3, 8, .9); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-        padding: calc(12px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
-  .cd[hidden] { display: none; }
-  .cd-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--pixel); font-size: 11px; letter-spacing: .14em; color: var(--dim); }
-  .cd-bar > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .cd-bar .acts { display: flex; gap: 8px; flex: none; }
-  .cd-bar a, .cd-bar button { font: inherit; letter-spacing: inherit; color: var(--silver); background: none; border: 1px solid var(--line); padding: 7px 11px; cursor: pointer; text-decoration: none; white-space: nowrap; }
-  .cd-bar a:hover, .cd-bar button:hover, .cd-bar a:focus-visible, .cd-bar button:focus-visible { border-color: var(--red); outline: none; }
-  .cd iframe { width: 100%; height: 100%; border: 1px solid var(--line); background: #02060c; display: block; }
+  /* 左下角的声音开关（原倒数页的背景音乐，默认关） */
+  .snd { white-space: nowrap; font: inherit; letter-spacing: inherit; color: var(--dim); background: none; border: 1px solid var(--line); padding: 6px 10px; cursor: pointer; }
+  .snd[aria-pressed="true"] { color: var(--silver); border-color: var(--red); }
+  .snd:hover, .snd:focus-visible { color: var(--silver); outline: none; border-color: var(--silver); }
 
   footer { display: grid; gap: 8px; font-size: 12.5px; color: var(--dim); line-height: 1.7; }
   footer .spec { font-family: var(--mono); color: var(--silver); font-size: 12px; }
   footer a { color: var(--silver); text-decoration: none; border-bottom: 1px solid var(--line); }
   footer a:hover, footer a:focus-visible { border-bottom-color: var(--silver); outline: none; }
 
-  /* 13:00：MV 闪回（整页盖住），之后 Stand by. */
+  /* 发布时刻：MV 闪回（整页盖住），之后 Stand by. */
   .fb { position: fixed; inset: 0; z-index: 20; background: #000; }
   .fb[hidden], .sb[hidden], main[hidden], .pre main { display: none; }
   .pre .fb[hidden] { display: block; }                                          /* 黑屏等闪回开始 */
@@ -146,13 +132,11 @@
           text-shadow: 3px 0 0 rgba(224, 17, 43, .55), -2px 0 0 rgba(74, 108, 255, .5); }
   .sb-t .cur { position: absolute; left: calc(100% + .12em); bottom: .1em; width: .5em; height: .82em; background: var(--silver); animation: blink 1s steps(2, start) infinite; }   /* 光标悬在右边，不占宽度，字本身居中 */
   .sb-s { font-size: 14px; color: var(--dim); letter-spacing: .08em; }
-  .sb .cd-btn { justify-self: center; margin-top: 8px; }
   @keyframes sbIn { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: none; } }
 
   @media (max-width: 560px) {
     .eta { grid-template-columns: minmax(0, 1fr); }
-    .hud .who span, .hud .play { display: none; }
-    .hud.bottom { justify-content: flex-end; }
+    .hud .who span, .stamp .sd { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { .rec i, .step.run .led, .sb-t .cur { animation: none; } .sb-in { animation: none; } }
 </style>
@@ -169,21 +153,20 @@
 
 <main id="main">
   <header class="head">
-    <div class="eyebrow">MV MASTER · RENDERING</div>
+    <div class="eyebrow">MV · 2026.10.17</div>
     <h1>谎话</h1>
-    <p class="by"><strong>dangao_w</strong> 的《谎话》MV 正在逐帧渲染成 1080p 母版。<br>下面是预计的完成时间。</p>
-    <button class="cd-btn cd-open" type="button" aria-haspopup="dialog"><i></i>COUNTDOWN<span>倒计时</span></button>
+    <p class="by"><strong>dangao_w</strong>《谎话》MV<br>2026 年 10 月 17 日发布。</p>
   </header>
 
   <section class="eta">
     <div>
-      <div class="k">预计完成 · <b>香港时间</b></div>
-      <div class="clock">13:00</div>
-      <div class="note">10 月 9 日 星期五</div>
+      <div class="k">发布 · <b>香港时间</b></div>
+      <div class="clock">10.17</div>
+      <div class="note">2026 年 10 月 17 日 星期六 00:00</div>
     </div>
     <div>
-      <div class="k">距离预计完成</div>
-      <div class="left" id="left">--:--:--</div>
+      <div class="k">距离发布</div>
+      <div class="left" id="left">-- 天 --:--:--</div>
       <div class="note">实时更新</div>
     </div>
   </section>
@@ -191,7 +174,7 @@
   <section class="tape" aria-label="整体进度">
     <div class="k">整体进度 · 实时更新</div>
     <div class="track" id="track"><div class="fill" id="fill"></div><div class="head-r" id="headR"></div></div>
-    <div class="ends"><span>10:09 开始</span><span id="pct">0%</span><span>13:00 预计完成</span></div>
+    <div class="ends"><span>10.09 母版完成</span><span id="pct">0%</span><span>10.17 发布</span></div>
   </section>
 
   <section aria-label="步骤">
@@ -199,8 +182,8 @@
   </section>
 
   <footer>
-    <div class="spec">1920×1080 · 30fps · 运动模糊 · 带整首歌音轨 · 另有 720p 手机版</div>
-    <div>时间都是预计的，以香港时间（UTC+8）为准。</div>
+    <div class="spec">1920×1080 · 30fps · 1:48 · TAPE 01</div>
+    <div>时间以香港时间（UTC+8）为准。</div>
     <div><a href="../index.html">← 回到 MAKE STUDIO</a></div>
   </footer>
 </main>
@@ -209,22 +192,13 @@
   <div class="sb-in">
     <p class="sb-t">Stand by.<span class="cur" aria-hidden="true"></span></p>
     <p class="sb-s">谎话 · dangao_w</p>
-    <button class="cd-btn cd-open" type="button" aria-haspopup="dialog"><i></i>COUNTDOWN<span>倒计时</span></button>
   </div>
 </section>
 
 <div class="fb" id="fb" aria-hidden="true" hidden><canvas id="fbc"></canvas></div>
 
-<div class="cd" id="cd" role="dialog" aria-modal="true" aria-label="倒计时" hidden>
-  <div class="cd-bar">
-    <span>COUNTDOWN · 2026/10/15</span>
-    <span class="acts"><a href="countdown.html" target="_blank" rel="noopener">新窗口打开</a><button type="button" id="cdClose">关闭 ✕</button></span>
-  </div>
-  <iframe id="cdFrame" title="倒计时" allow="autoplay; fullscreen"></iframe>
-</div>
-
 <div class="hud bottom">
-  <span class="play" id="hudMode">▶ PLAY</span>
+  <button class="snd" id="snd" type="button" aria-pressed="false">♪ SOUND OFF</button>
   <span class="stamp" id="stamp">--</span>
 </div>
 

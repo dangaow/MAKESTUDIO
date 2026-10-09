@@ -1809,7 +1809,7 @@ a:focus-visible{outline:2px solid var(--c-cyan);outline-offset:3px;border-radius
       n++;
       clearTimeout(t);
       if(n >= 3 && !got){ got = true; unlock('hidden_clock'); }
-      if(n >= 6){ n = 0; got = false; window.location.href = 'html/countdown.html'; return; }
+      if(n >= 6){ n = 0; got = false; window.location.href = 'html/render.html'; return; }
       t = setTimeout(function(){ n = 0; got = false; }, 3000);
     });
   })();

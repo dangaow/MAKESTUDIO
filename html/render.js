@@ -1,18 +1,19 @@
-// 《谎话》MV 渲染进度页（html/render.html）
-// 按固定的预计时间实时走：10:09 开始，13:00 预计完成（香港时间）。
-// 到 13:00：整页闪回一次 MV（6 张画面，每张几十毫秒，像录像带倒带），停在「谎话」上，CRT 关机 → Stand by. + 倒计时按钮。
-// 过了 13:00 再打开：直接黑屏 → 闪回 → Stand by.；闪回每个浏览器只放一次，看过的人再打开直接是 Stand by.
-// 试看：?demo 把时钟拨到 13:00 前 8 秒（每次都放闪回）；?standby 直接看 Stand by.
+// 《谎话》MV 发布倒数页（html/render.html，原来的渲染进度页改的；旧的 html/countdown.html 已删）
+// 倒数到香港时间 2026-10-17 00:00 发布，进度条从 10-09 12:16 母版完成走到发布，实时更新。
+// 时间先用本机时钟，再用网络时间校准（本机时间不准也不会倒数错）。左下角可以打开背景音乐（默认关）。
+// 到发布时刻：整页闪回一次 MV（6 张画面，每张几十毫秒，像录像带倒带），停在「谎话」上，CRT 关机 → Stand by.
+// 过了发布时刻再打开：直接黑屏 → 闪回 → Stand by.；闪回每个浏览器只放一次，看过的人再打开直接是 Stand by.
+// 试看：?demo 把时钟拨到发布前 8 秒（每次都放闪回）；?standby 直接看 Stand by.
 (function () {
   'use strict';
   var HK = '+08:00';
-  var START = Date.parse('2026-10-09T10:09:00' + HK);
-  var END = Date.parse('2026-10-09T13:00:00' + HK);
+  var START = Date.parse('2026-10-09T12:16:00' + HK);                              // 母版完成
+  var END = Date.parse('2026-10-17T00:00:00' + HK);                                // 发布
   var STEPS = [
-    { name: '第一段渲染 · 0:00–0:54', from: '10:09', to: '11:25' },
-    { name: '第二段渲染 · 0:54–1:48', from: '11:25', to: '12:40' },
-    { name: '拼接、配上整首歌的音轨、压 720p 手机版', from: '12:40', to: '13:00' }
+    { name: '母版渲染完成 · 1080p · 运动模糊', at: START, when: '10.09 12:16' },
+    { name: 'MV 发布', at: END, when: '10.17 00:00' }
   ];
+  var BGM_URL = '../assets/countdown-beat.mp3', BGM_VOLUME = .13;
   // 闪回用的画面（assets/render/fb-N.jpg，按播放顺序：从片尾倒回片头），在 MV 里的时间（秒）和处理方式
   var FB_T = [96.5, 80.6, 64.5, 33.5, 14.4, 2.2];
   var FB_HOW = ['none', 'invert', 'none', 'red', 'flip', 'none'];
@@ -21,7 +22,7 @@
 
   var q = location.search;
   var offset = /[?&]demo\b/.test(q) ? END - 8000 - Date.now() : 0;
-  var demo = offset !== 0, forceStandby = /[?&]standby\b/.test(q), SEEN = 'make-studio-render-flashback-seen';
+  var demo = offset !== 0, forceStandby = /[?&]standby\b/.test(q), SEEN = 'make-studio-huanghua-release-flashback-seen';
   function seen() { try { return localStorage.getItem(SEEN) === '1'; } catch (e) { return false; } }
   function markSeen() { if (demo) return; try { localStorage.setItem(SEEN, '1'); } catch (e) {} }
   var now = function () { return Date.now() + offset; };
@@ -30,54 +31,72 @@
   var $ = function (id) { return document.getElementById(id); };
   var pad = function (n) { return (n < 10 ? '0' : '') + n; };
   var hms = function (s) { s = Math.max(0, Math.floor(s)); return pad(s / 3600 | 0) + ':' + pad((s % 3600) / 60 | 0) + ':' + pad(s % 60); };
-  var at = function (hm) { return Date.parse('2026-10-09T' + hm + ':00' + HK); };
+  function left(s) { s = Math.max(0, Math.floor(s)); var d = s / 86400 | 0; return (d ? d + ' 天 ' : '') + hms(s % 86400); }
   var MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   function hkStamp(ms) {
     var d = new Date(ms + 8 * 3600e3);
-    return MON[d.getUTCMonth()] + ' ' + pad(d.getUTCDate()) + ' ' + d.getUTCFullYear() + '  ' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + ' HKT';
+    return '<span class="sd">' + MON[d.getUTCMonth()] + ' ' + pad(d.getUTCDate()) + ' ' + d.getUTCFullYear() + '  </span>' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + ' HKT';   // 手机上只显示时间
   }
 
-  // ---------------------------------------------------------------- 进度（每秒）
-  [at(STEPS[1].from), at(STEPS[2].from)].forEach(function (t) {
-    var m = document.createElement('div'); m.className = 'mark'; m.style.left = ((t - START) / (END - START) * 100).toFixed(2) + '%'; $('track').appendChild(m);
-  });
+  // ---------------------------------------------------------------- 网络时间校准（本机时钟不准时也倒数对；失败就用本机时间）
+  if (!demo) {
+    var t0 = performance.now();
+    fetch('https://www.cloudflare.com/cdn-cgi/trace', { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (txt) {
+      var m = /(?:^|\n)ts=([0-9.]+)/.exec(txt || ''); if (!m) return;
+      var net = Number(m[1]) * 1000 + (performance.now() - t0) / 2;
+      if (net > 1.6e12 && net < 2.2e12 && Math.abs(net - Date.now()) > 1500) { offset = net - Date.now(); tick(); }
+    }).catch(function () {});
+  }
+
+  // ---------------------------------------------------------------- 倒数（每秒）
   var phase = 'live';                                                            // live → flashback → standby
   function tick() {
     var t = now();
-    $('stamp').textContent = hkStamp(t);
+    $('stamp').innerHTML = hkStamp(t);
     if (phase !== 'live') return;
     var k = Math.min(1, Math.max(0, (t - START) / (END - START)));
-    $('left').textContent = hms((END - t) / 1000);
+    $('left').textContent = left((END - t) / 1000);
     $('fill').style.width = (k * 100).toFixed(2) + '%'; $('headR').style.left = (k * 100).toFixed(2) + '%';
     $('pct').textContent = Math.floor(k * 100) + '%';
     var html = '';
     STEPS.forEach(function (s) {
-      var a = at(s.from), b = at(s.to), st = t >= b ? 'done' : t >= a ? 'run' : 'wait';
+      var st = t >= s.at ? 'done' : 'run';
       html += '<li class="step ' + st + '"><span class="led"></span><h2>' + s.name + '</h2>' +
-        '<span class="chip">' + (st === 'done' ? '完成' : st === 'run' ? '进行中' : '排队') + '</span>' +
-        '<span class="when">' + s.from + ' – ' + s.to + '</span></li>';
+        '<span class="chip">' + (st === 'done' ? '完成' : '倒数中') + '</span>' +
+        '<span class="when">' + s.when + '</span></li>';
     });
     $('steps').innerHTML = html;
     if (t >= END) {
       phase = 'flashback';
       if (loaded && (seen() || still)) { standby(); return; }                       // 看过了：直接 Stand by.
-      setTimeout(flashback, loaded ? 0 : 450);                                    // 页面开着时走到 13:00：进度条到头后停一下再闪回
+      setTimeout(flashback, loaded ? 0 : 450);                                    // 页面开着时倒数到 0：进度条到头后停一下再闪回
     }
   }
 
-  // ---------------------------------------------------------------- 倒计时弹窗
-  var cd = $('cd'), frame = $('cdFrame'), lastFocus = null;
-  function openCd() { lastFocus = document.activeElement; frame.src = 'countdown.html'; cd.hidden = false; document.body.style.overflow = 'hidden'; $('cdClose').focus(); }
-  function closeCd() { cd.hidden = true; frame.src = 'about:blank'; document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); }
-  Array.prototype.forEach.call(document.querySelectorAll('.cd-open'), function (b) { b.addEventListener('click', openCd); });
-  $('cdClose').addEventListener('click', closeCd);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !cd.hidden) closeCd(); });
+  // ---------------------------------------------------------------- 背景音乐（原倒数页那首，Web Audio 整段无缝循环；默认关，点了才下载）
+  var snd = $('snd'), actx = null, buf = null, src = null, gain = null, loading = false;
+  function sndLabel() { var on = !!src; snd.setAttribute('aria-pressed', on ? 'true' : 'false'); snd.textContent = loading ? '♪ LOADING' : on ? '♪ SOUND ON' : '♪ SOUND OFF'; }
+  function play() {
+    if (!buf) return;
+    src = actx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(gain); src.start(); sndLabel();
+  }
+  snd.addEventListener('click', function () {
+    if (src) { src.stop(); src.disconnect(); src = null; sndLabel(); return; }
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    if (!actx) { actx = new AC(); gain = actx.createGain(); gain.gain.value = BGM_VOLUME; gain.connect(actx.destination); }
+    if (actx.state === 'suspended') actx.resume();
+    if (buf) { play(); return; }
+    if (loading) return;
+    loading = true; sndLabel();
+    fetch(BGM_URL).then(function (r) { return r.arrayBuffer(); }).then(function (a) { return actx.decodeAudioData(a); })
+      .then(function (b) { buf = b; loading = false; play(); }).catch(function () { loading = false; sndLabel(); });
+  });
 
   // ---------------------------------------------------------------- Stand by.
   function standby() {
     phase = 'standby'; document.documentElement.classList.remove('pre');
     $('main').hidden = true; $('fb').hidden = true; $('sb').hidden = false;
-    $('rec').className = 'rec stby'; $('recTxt').textContent = 'STBY'; $('hudMode').textContent = '■ STOP';
+    $('rec').className = 'rec stby'; $('recTxt').textContent = 'STBY';
     document.title = '谎话 · Stand by. | MAKE STUDIO';
   }
 
@@ -195,8 +214,7 @@
   requestAnimationFrame(loop);
 
   // ---------------------------------------------------------------- 开始
-  var loaded = true;                                                             // 第一次 tick：这时已经过了 13:00 说明是之后才打开的
+  var loaded = true;                                                             // 第一次 tick：这时已经过了发布时刻，说明是之后才打开的
   if (forceStandby) standby();
-  else if (now() < END) document.title = '谎话 · 渲染中 | MAKE STUDIO';
   tick(); loaded = false; setInterval(tick, 1000);
 })();
