@@ -51,7 +51,8 @@ python -m http.server 8765
 .
 ├── index.html                        # 主站点（全部样式与逻辑内置）
 ├── html/
-│   └── countdown.html                 # 全屏倒计时宣传页（动态倒计时 + 遮罩 + 特效）
+│   ├── countdown.html                 # 全屏倒计时宣传页（动态倒计时 + 遮罩 + 特效）
+│   └── render.html                    # 《谎话》MV 渲染进度页（固定的预计完成时间，香港时间）
 ├── arg/                              # 解密活动页面
 │   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
 │   ├── final.html                    # 终局解密页（MS-DOS 风格）
