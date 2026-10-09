@@ -52,7 +52,7 @@ python -m http.server 8765
 ├── index.html                        # 主站点（全部样式与逻辑内置）
 ├── html/
 │   ├── countdown.html                 # 全屏倒计时宣传页（动态倒计时 + 遮罩 + 特效）
-│   └── render.html                    # 《谎话》MV 渲染进度页（固定的预计完成时间，香港时间）
+│   ├── render.html / render.js        # 《谎话》MV 渲染进度页：按预计时间实时走（香港时间 13:00），到点播放 MV 闪回后显示 Stand by.（?demo 试看）
 ├── arg/                              # 解密活动页面
 │   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
 │   ├── final.html                    # 终局解密页（MS-DOS 风格）
@@ -76,6 +76,7 @@ python -m http.server 8765
 │   ├── jiasuo.mp3                    # 《枷锁》音频
 │   ├── 36079862732-1-192.MP3         # 倒计时页背景音乐（Cache API 缓存 / Web Audio 无缝循环）
 │   ├── arg-teaser.jpg / logo-share.png
+│   ├── render/fb-XX.jpg              # 渲染进度页的 MV 闪回画面（24 张，960×540）
 │   └── README.md
 ```
 
