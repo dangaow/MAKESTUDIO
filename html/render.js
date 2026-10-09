@@ -1,7 +1,8 @@
 // 《谎话》MV 渲染进度页（html/render.html）
 // 按固定的预计时间实时走：10:09 开始，13:00 预计完成（香港时间）。
 // 到 13:00：整页闪回一次 MV（6 张画面，每张几十毫秒，像录像带倒带），停在「谎话」上，CRT 关机 → Stand by. + 倒计时按钮。
-// 试看：?demo 把时钟拨到 13:00 前 8 秒；?standby 直接看 Stand by.
+// 过了 13:00 再打开：直接黑屏 → 闪回 → Stand by.；闪回每个浏览器只放一次，看过的人再打开直接是 Stand by.
+// 试看：?demo 把时钟拨到 13:00 前 8 秒（每次都放闪回）；?standby 直接看 Stand by.
 (function () {
   'use strict';
   var HK = '+08:00';
@@ -20,7 +21,9 @@
 
   var q = location.search;
   var offset = /[?&]demo\b/.test(q) ? END - 8000 - Date.now() : 0;
-  var forceStandby = /[?&]standby\b/.test(q);
+  var demo = offset !== 0, forceStandby = /[?&]standby\b/.test(q), SEEN = 'make-studio-render-flashback-seen';
+  function seen() { try { return localStorage.getItem(SEEN) === '1'; } catch (e) { return false; } }
+  function markSeen() { if (demo) return; try { localStorage.setItem(SEEN, '1'); } catch (e) {} }
   var now = function () { return Date.now() + offset; };
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -55,7 +58,11 @@
         '<span class="when">' + s.from + ' – ' + s.to + '</span></li>';
     });
     $('steps').innerHTML = html;
-    if (t >= END) { phase = 'flashback'; setTimeout(flashback, still ? 0 : 450); }
+    if (t >= END) {
+      phase = 'flashback';
+      if (loaded && (seen() || still)) { standby(); return; }                       // 看过了：直接 Stand by.
+      setTimeout(flashback, loaded ? 0 : 450);                                    // 页面开着时走到 13:00：进度条到头后停一下再闪回
+    }
   }
 
   // ---------------------------------------------------------------- 倒计时弹窗
@@ -68,7 +75,7 @@
 
   // ---------------------------------------------------------------- Stand by.
   function standby() {
-    phase = 'standby';
+    phase = 'standby'; document.documentElement.classList.remove('pre');
     $('main').hidden = true; $('fb').hidden = true; $('sb').hidden = false;
     $('rec').className = 'rec stby'; $('recTxt').textContent = 'STBY'; $('hudMode').textContent = '■ STOP';
     document.title = '谎话 · Stand by. | MAKE STUDIO';
@@ -90,7 +97,7 @@
       if (!seq.length) { standby(); return; }
       var durs = seq.map(function (i) { return FB_MS[i]; });
       var fb = $('fb'), cv = $('fbc'), c = cv.getContext('2d');
-      fb.hidden = false; document.body.style.overflow = 'hidden';
+      fb.hidden = false; document.body.style.overflow = 'hidden'; markSeen();
       var dpr = Math.min(1.5, window.devicePixelRatio || 1), cw, ch;
       function size() { cw = cv.width = Math.round(innerWidth * dpr); ch = cv.height = Math.round(innerHeight * dpr); }
       size(); window.addEventListener('resize', size);
@@ -188,6 +195,8 @@
   requestAnimationFrame(loop);
 
   // ---------------------------------------------------------------- 开始
-  if (forceStandby) { phase = 'standby'; standby(); }
-  tick(); setInterval(tick, 1000);
+  var loaded = true;                                                             // 第一次 tick：这时已经过了 13:00 说明是之后才打开的
+  if (forceStandby) standby();
+  else if (now() < END) document.title = '谎话 · 渲染中 | MAKE STUDIO';
+  tick(); loaded = false; setInterval(tick, 1000);
 })();

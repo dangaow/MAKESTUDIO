@@ -52,7 +52,7 @@ python -m http.server 8765
 ├── index.html                        # 主站点（全部样式与逻辑内置）
 ├── html/
 │   ├── countdown.html                 # 全屏倒计时宣传页（动态倒计时 + 遮罩 + 特效）
-│   ├── render.html / render.js        # 《谎话》MV 渲染进度页：按预计时间实时走（香港时间 13:00），到点闪回一次 MV 后显示 Stand by.（?demo 试看）
+│   ├── render.html / render.js        # 《谎话》MV 渲染进度页：按预计时间实时走（香港时间 13:00），到点闪回一次 MV 后显示 Stand by.；之后打开从黑屏直接闪回，每个浏览器只放一次（?demo 试看）
 ├── arg/                              # 解密活动页面
 │   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
 │   ├── final.html                    # 终局解密页（MS-DOS 风格）
