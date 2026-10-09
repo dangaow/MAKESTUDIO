@@ -74,7 +74,7 @@ python -m http.server 8765
 │   ├── cover-jiasuo.jpg              # 《枷锁》封面
 │   ├── huijin.mp3                    # 《灰烬》音频
 │   ├── jiasuo.mp3                    # 《枷锁》音频
-│   ├── 36079862732-1-192.MP3         # 倒计时页背景音乐（Cache API 缓存 / Web Audio 无缝循环）
+│   ├── countdown-beat.mp3            # 倒计时页背景音乐（Cache API 缓存 / Web Audio 无缝循环）
 │   ├── arg-teaser.jpg / logo-share.png
 │   ├── render/fb-N.jpg               # 渲染进度页的 MV 闪回画面（6 张，960×540）
 │   └── README.md
