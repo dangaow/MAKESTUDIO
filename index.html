@@ -7,7 +7,7 @@
 <meta name="keywords" content="MAKE STUDIO,音乐工作室,谎话,灰烬,枷锁,无解,FLY,MV,原创音乐,影像,dangao_w">
 <meta name="author" content="MAKE STUDIO">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#07080b">
+<meta name="theme-color" content="#05070d">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MAKE STUDIO // 音乐工作室">
 <meta name="twitter:description" content="MAKE STUDIO 音乐工作室官方网站 — 发布原创音乐与影像作品，站内即可播放全部曲目与 MV。">
@@ -21,9 +21,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="zh_CN">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2307080b'/%3E%3Cpath d='M8 8h12M8 8v12M56 8H44M56 8v12M8 56h12M8 56V44M56 56H44M56 56V44' stroke='%23e8eaef' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%23ff2a3c'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305070d'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,serif' font-size='40' fill='%23f2f1ee'%3EM%3C/text%3E%3Ccircle cx='50' cy='16' r='5' fill='%23ff3b3b'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="assets/img/still-1.jpg">
 <script>
-/* 先定主题，避免闪一下；html.js 让"出现"动画只在有脚本时先藏起元素 */
+/* 先定主题，避免闪一下；html.js 让"淡入"动画只在有脚本时先藏起元素 */
 (function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('make-studio-theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}})();
 </script>
 <link rel="stylesheet" href="css/fonts.css">
@@ -33,197 +34,175 @@
 <link rel="stylesheet" href="https://unpkg.com/@waline/client@3.16.0/dist/waline.css">
 </head>
 <body>
-<div class="scan" aria-hidden="true"></div>
 
-<!-- 开场：录像机蓝屏 PLAY ▶（每次打开只放一次） -->
-<div class="boot-osd" id="boot-osd" aria-hidden="true"><span>PLAY ▶</span><span class="bo-sp">SP</span></div>
+<div id="copy-toast" role="status" aria-live="polite"><span id="ct-text">已复制</span></div>
 
-<!-- 取景框：四个角 + 左下走带状态 + 右下时间码 -->
-<div class="hud" aria-hidden="true">
-  <i class="hc hc-tl"></i><i class="hc hc-tr"></i><i class="hc hc-bl"></i><i class="hc hc-br"></i>
-  <div class="hud-bl"><span class="hud-mode" id="hud-mode">▶ PLAY</span></div>
-  <div class="hud-br"><span>TC</span> <span id="hud-tc">00:00:00:00</span></div>
-</div>
-
-<!-- 复制成功（屏幕菜单字） -->
-<div id="copy-toast" role="status" aria-live="polite"><span class="ct-text" id="ct-text">COPIED ✓</span></div>
-
-<nav id="nav">
+<header id="nav">
   <div class="nav-in">
-    <div class="nav-l">
-      <span class="rec"><i></i>REC</span>
-      <button class="nav-logo" type="button" aria-label="MAKE STUDIO">MAKE STUDIO</button>
-      <span class="tape-no" id="tape-no">TAPE 00</span>
-    </div>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="#sec-phil" data-ch="01"><b>01</b>宣言</a></li>
-      <li><a href="#sec-works" data-ch="02"><b>02</b>作品</a></li>
-      <li><a href="#sec-time" data-ch="03"><b>03</b>历程</a></li>
-      <li><a href="#sec-gear" data-ch="04"><b>04</b>器材</a></li>
-      <li><a href="#sec-mem" data-ch="05"><b>05</b>成员</a></li>
-      <li><a href="#sec-con" data-ch="06"><b>06</b>联系</a></li>
-      <li><a href="#sec-com" data-ch="07"><b>07</b>留言</a></li>
-    </ul>
-    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换 NIGHT / DAY 模式"><span class="tt-d">NIGHT</span><span class="tt-l">DAY</span></button>
-    <button class="nav-burger" id="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="nav-links">MENU</button>
-  </div>
-</nav>
-
-<!-- ============ 00 首页 ============ -->
-<header id="hero" data-ch="00">
-  <canvas id="rain" aria-hidden="true"></canvas>
-  <div class="hero-in">
-    <p class="hero-k">MAKE STUDIO · 音乐工作室 · EST. 2023 · HEBEI</p>
-    <h1 id="h-t" class="glitch" data-text="MAKE STUDIO"><span>MAKE</span><span>STUDIO</span></h1>
-    <p class="hero-tag">heartbeat, <em>feelings</em>, songs.</p>
-  </div>
-
-  <a class="next-tape" id="rel" href="html/render.html" aria-label="下一盘带：《谎话》MV，10 月 17 日 00:00 首发，进入倒数页">
-    <span class="nt-k"><i></i><b id="rel-k">NEXT TAPE</b></span>
-    <span class="nt-t">《谎话》MV</span>
-    <span class="nt-d" id="rel-d">10.17 00:00 首发</span>
-    <span class="nt-cd" id="rel-cd">&nbsp;</span>
-    <span class="nt-go">→</span>
-  </a>
-
-  <div class="datestamp" id="clk" role="button" tabindex="0" aria-label="现在时间">
-    <span id="clk-d">2026.10.09</span>
-    <span id="clk-t">00:00:00</span>
+    <button class="nav-logo" type="button" aria-label="MAKE STUDIO">MAKE STUDIO</button>
+    <nav aria-label="主导航">
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#sec-phil" data-ch="sec-phil"><span>01</span>宣言</a></li>
+        <li><a href="#sec-works" data-ch="sec-works"><span>02</span>作品</a></li>
+        <li><a href="#sec-time" data-ch="sec-time"><span>03</span>历程</a></li>
+        <li><a href="#sec-gear" data-ch="sec-gear"><span>04</span>器材</a></li>
+        <li><a href="#sec-mem" data-ch="sec-mem"><span>05</span>成员</a></li>
+        <li><a href="#sec-con" data-ch="sec-con"><span>06</span>联系</a></li>
+        <li><a href="#sec-com" data-ch="sec-com"><span>07</span>留言</a></li>
+      </ul>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换夜间 / 日间"><span class="tt-d">夜</span><i>/</i><span class="tt-l">昼</span></button>
+    <button class="nav-burger" id="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="nav-links"><i></i><i></i></button>
   </div>
 </header>
+
+<!-- ============ 首页 ============ -->
+<section id="hero" aria-label="MAKE STUDIO">
+  <div class="stills" id="stills" aria-hidden="true">
+    <figure class="still on" data-tc="01:06"><img src="assets/img/still-1.jpg" alt=""></figure>
+    <figure class="still" data-tc="01:16"><img data-src="assets/img/still-2.jpg" alt=""></figure>
+    <figure class="still" data-tc="01:19"><img data-src="assets/img/still-3.jpg" alt=""></figure>
+  </div>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="hero-txt">
+    <p class="kicker">MAKE STUDIO — 原创音乐与影像 · 河北 · Since 2023</p>
+    <h1 id="h-t">heartbeat, <em>feelings,</em><br>songs.</h1>
+  </div>
+
+  <a class="release" id="rel" href="html/render.html" aria-label="下一部作品：《谎话》MV，2026 年 10 月 17 日 00:00 首发，进入倒数页">
+    <span class="next-k"><span id="rel-k">NEXT RELEASE</span><i id="rel-tag">即将首发</i></span>
+    <b class="next-t">《谎话》MV</b>
+    <span class="next-d">2026.10.17 · 00:00</span>
+    <span class="next-bar"><i id="rel-bar"></i></span>
+    <span class="next-cd"><span id="rel-cd">&nbsp;</span><span id="rel-go">进入倒数 →</span></span>
+  </a>
+
+  <div class="hero-foot">
+    <span class="caption">STILL — 《谎话》MV（2026）<span id="still-tc">01:06</span></span>
+    <span class="clock" id="clk" role="button" tabindex="0" aria-label="现在时间">河北 <span id="clk-t">00:00:00</span></span>
+  </div>
+</section>
 
 <main id="ct">
 
   <!-- ============ 01 宣言 ============ -->
-  <section class="sec" id="sec-phil" data-ch="01">
-    <div class="sh"><span class="sh-ch">CH.01</span><span class="sh-rule"></span><span class="sh-tc">00:00:08:12</span>
-      <h2 class="sh-t">宣言</h2><span class="sh-en">MANIFESTO</span></div>
-    <div class="mani" id="mani">
-      <p class="ml"><time>[00:00:01]</time><span><b>M</b>uch luvv</span></p>
-      <p class="ml"><time>[00:00:03]</time><span><b>A</b>nd</span></p>
-      <p class="ml"><time>[00:00:04]</time><span><b>K</b>eep going</span></p>
-      <p class="ml ml-shift"><time>[00:00:06]</time><span>can <b>M</b><b>A</b><b>K</b><b>E</b></span></p>
-      <p class="ml"><time>[00:00:08]</time><span><b>E</b>verything</span></p>
+  <section class="sec" id="sec-phil">
+    <div class="sh"><span class="sh-n">01</span><h2 class="sh-t">宣言</h2><span class="sh-en">Manifesto</span></div>
+    <div class="mani" data-in>
+      <p><em>M</em>uch luvv,</p>
+      <p><em>A</em>nd</p>
+      <p><em>K</em>eep going —</p>
+      <p class="mani-make">can <b>MAKE</b></p>
+      <p><em>E</em>verything.</p>
     </div>
   </section>
 
   <!-- ============ 02 作品 ============ -->
-  <section class="sec" id="sec-works" data-ch="02">
-    <div class="sh"><span class="sh-ch">CH.02</span><span class="sh-rule"></span><span class="sh-tc">00:00:21:04</span>
-      <h2 class="sh-t">作品</h2><span class="sh-en">WORKS · 点一下就放</span></div>
+  <section class="sec" id="sec-works">
+    <div class="sh"><span class="sh-n">02</span><h2 class="sh-t">作品</h2><span class="sh-en">Works</span><span class="sh-r">点一下，站内播放</span></div>
     <div class="works">
-      <a class="tape" data-in data-music="huijin" href="https://music.163.com/song?id=3405702569" target="_blank" rel="noopener" aria-label="播放《灰烬》">
-        <span class="tape-art"><img src="assets/cover-huijin.jpg" alt="《灰烬》封面" loading="lazy"><span class="tape-osd">▶ PLAY</span></span>
-        <span class="tape-spine"><span class="ts-no">TAPE 01</span><b class="ts-name">灰烬</b><span class="ts-kind">SINGLE</span></span>
-        <span class="tape-meta"><span>2026</span><span>02:17</span></span>
+      <a class="work" data-in data-music="huijin" href="https://music.163.com/song?id=3405702569" target="_blank" rel="noopener" aria-label="播放《灰烬》">
+        <span class="work-art"><img src="assets/cover-huijin.jpg" alt="《灰烬》封面" loading="lazy"><span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></span></span>
+        <span class="work-t">灰烬</span>
+        <span class="work-m"><span>Single</span><span>2026</span><span>02:17</span></span>
       </a>
-      <a class="tape" data-in data-music="jiasuo" href="https://y.music.163.com/m/song?id=3350521507" target="_blank" rel="noopener" aria-label="播放《枷锁》">
-        <span class="tape-art"><img src="assets/cover-jiasuo.jpg" alt="《枷锁》封面" loading="lazy"><span class="tape-osd">▶ PLAY</span></span>
-        <span class="tape-spine"><span class="ts-no">TAPE 02</span><b class="ts-name">枷锁</b><span class="ts-kind">SINGLE</span></span>
-        <span class="tape-meta"><span>2025</span><span>03:09</span></span>
+      <a class="work" data-in data-music="jiasuo" href="https://y.music.163.com/m/song?id=3350521507" target="_blank" rel="noopener" aria-label="播放《枷锁》">
+        <span class="work-art"><img src="assets/cover-jiasuo.jpg" alt="《枷锁》封面" loading="lazy"><span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></span></span>
+        <span class="work-t">枷锁</span>
+        <span class="work-m"><span>Single</span><span>2025</span><span>03:09</span></span>
       </a>
-      <a class="tape" data-in data-video="wujie" href="https://www.bilibili.com/video/BV136uE6cEWg/" target="_blank" rel="noopener" aria-label="观看《无解》MV">
-        <span class="tape-art"><img src="assets/cover-wujie.jpg" alt="《无解》MV 封面" loading="lazy"><span class="tape-osd">▶ PLAY</span></span>
-        <span class="tape-spine"><span class="ts-no">TAPE 03</span><b class="ts-name">无解</b><span class="ts-kind mv">MV</span></span>
-        <span class="tape-meta"><span>2026</span><span>03:11</span></span>
+      <a class="work" data-in data-video="wujie" href="https://www.bilibili.com/video/BV136uE6cEWg/" target="_blank" rel="noopener" aria-label="观看《无解》MV">
+        <span class="work-art"><img src="assets/cover-wujie.jpg" alt="《无解》MV 封面" loading="lazy"><span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></span></span>
+        <span class="work-t">无解</span>
+        <span class="work-m"><span>MV</span><span>2026</span><span>03:11</span></span>
       </a>
-      <a class="tape" data-in data-video="fly" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="观看《FLY》MV">
-        <span class="tape-art"><img src="assets/cover-fly.jpg" alt="《FLY》MV 画面" loading="lazy"><span class="tape-osd">▶ PLAY</span></span>
-        <span class="tape-spine"><span class="ts-no">TAPE 04</span><b class="ts-name">FLY</b><span class="ts-kind mv">MV</span></span>
-        <span class="tape-meta"><span>2026</span><span>01:34</span></span>
+      <a class="work" data-in data-video="fly" href="https://www.bilibili.com/video/BV1wC496oEf4/" target="_blank" rel="noopener" aria-label="观看《FLY》MV">
+        <span class="work-art"><img src="assets/cover-fly.jpg" alt="《FLY》MV 画面" loading="lazy"><span class="work-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></span></span>
+        <span class="work-t">FLY</span>
+        <span class="work-m"><span>MV</span><span>2026</span><span>01:34</span></span>
       </a>
     </div>
   </section>
 
   <!-- ============ 03 历程 ============ -->
-  <section class="sec" id="sec-time" data-ch="03">
-    <div class="sh"><span class="sh-ch">CH.03</span><span class="sh-rule"></span><span class="sh-tc">00:00:34:18</span>
-      <h2 class="sh-t">历程</h2><span class="sh-en">TIMELINE</span></div>
-    <div class="tl" id="tl" data-in>
-      <div class="tl-ruler" aria-hidden="true"><span>2024</span><span>2025</span><span>2026</span><span>2027</span></div>
-      <div class="tl-track" aria-hidden="true"></div>
-      <ol class="tl-list">
-        <li class="mk up" data-date="2023-10-06"><time datetime="2023-10-06">2023.10.06</time><b>工作室正式成立</b><span>FOUNDED · THE BEGINNING</span></li>
-        <li class="mk dn" data-date="2025-04-12"><time datetime="2025-04-12">2025.04.12</time><b>开始筹备第一张全长专辑</b><span>PREPARING FULL-LENGTH ALBUM</span></li>
-        <li class="mk up" data-date="2025-12-14"><time datetime="2025-12-14">2025.12.14</time><b>发布第一首歌曲<span class="nw">《心雨》</span></b><span>FIRST SINGLE OUT NOW</span></li>
-        <li class="mk dn" data-date="2026-02-14"><time datetime="2026-02-14">2026.02.14</time><b>主理人 @dangao_w 发布单曲<span class="nw">《枷锁》</span></b><span>FOUNDER'S SOLO SINGLE</span></li>
-        <li class="mk up next" data-date="2026-10-17"><a href="html/render.html"><time datetime="2026-10-17">2026.10.17 · 00:00</time><b>《谎话》MV 首发</b><span id="tl-next">NEXT · 进倒数页 →</span></a></li>
-      </ol>
-      <div class="tl-head" id="tl-head" aria-hidden="true"><span>NOW</span></div>
-    </div>
+  <section class="sec" id="sec-time">
+    <div class="sh"><span class="sh-n">03</span><h2 class="sh-t">历程</h2><span class="sh-en">Timeline</span></div>
+    <ol class="tl">
+      <li class="tl-row" data-in><time datetime="2023-10-06">2023.10.06</time><b>工作室正式成立</b><span>Founded · The beginning</span></li>
+      <li class="tl-row" data-in><time datetime="2025-04-12">2025.04.12</time><b>开始筹备第一张全长专辑</b><span>Preparing full-length album</span></li>
+      <li class="tl-row" data-in><time datetime="2025-12-14">2025.12.14</time><b>发布第一首歌曲《心雨》</b><span>First single out now</span></li>
+      <li class="tl-row" data-in><time datetime="2026-02-14">2026.02.14</time><b>主理人 @dangao_w 发布单曲《枷锁》</b><span>Founder's solo single</span></li>
+      <li class="tl-row next" data-in><a href="html/render.html"><time datetime="2026-10-17">2026.10.17</time><b>《谎话》MV 首发</b><span id="tl-next">● 即将 · 进入倒数 →</span></a></li>
+    </ol>
   </section>
 
   <!-- ============ 04 器材 ============ -->
-  <section class="sec" id="sec-gear" data-ch="04">
-    <div class="sh"><span class="sh-ch">CH.04</span><span class="sh-rule"></span><span class="sh-tc">00:00:47:02</span>
-      <h2 class="sh-t">器材</h2><span class="sh-en">STUDIO GEAR · 证物</span></div>
-    <div class="exhibits">
-      <div class="ex" data-in><div class="ex-h"><span>EXHIBIT A</span><span>DAW</span></div><div class="ex-k">HOST · 宿主</div><div class="ex-v">盗版的 FL Studio 26</div></div>
-      <div class="ex" data-in><div class="ex-h"><span>EXHIBIT B</span><span>INPUT</span></div><div class="ex-k">MIC · 麦克风</div><div class="ex-v">某不知名闪克麦克风</div></div>
-      <div class="ex" data-in><div class="ex-h"><span>EXHIBIT C</span><span>OUTPUT</span></div><div class="ex-k">MONITOR · 监听</div><div class="ex-v">小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</div></div>
+  <section class="sec" id="sec-gear">
+    <div class="sh"><span class="sh-n">04</span><h2 class="sh-t">器材</h2><span class="sh-en">Studio gear</span></div>
+    <div class="gear">
+      <blockquote class="quote" data-in><p>「正是这些<em>破破烂烂</em>的东西<br>造就了我<em>神奇</em>的生活」</p></blockquote>
+      <dl class="gear-list" data-in>
+        <div><dt>Host · 宿主</dt><dd>盗版的 FL Studio 26</dd><span>DAW</span></div>
+        <div><dt>Mic · 麦克风</dt><dd>某不知名闪克麦克风</dd><span>Input</span></div>
+        <div><dt>Monitor · 监听</dt><dd>小时候留下的不知名牌子的垃圾音箱+雷蛇耳机</dd><span>Output</span></div>
+      </dl>
     </div>
-    <blockquote class="quote" data-in><p>「正是这些<em>破破烂烂</em>的东西<br>造就了我<em>神奇</em>的生活」</p></blockquote>
   </section>
 
   <!-- ============ 05 成员 ============ -->
-  <section class="sec" id="sec-mem" data-ch="05">
-    <div class="sh"><span class="sh-ch">CH.05</span><span class="sh-rule"></span><span class="sh-tc">00:00:58:27</span>
-      <h2 class="sh-t">成员</h2><span class="sh-en">CAST</span></div>
-    <div class="credits" data-in>
-      <div class="cr"><span class="cr-role">FOUNDER · 主理人 · 音乐人</span><span class="cr-name">dangao_w</span><span class="cr-id">@MAKE STUDIO · ID 0001 · JOINED 2023</span></div>
-      <div class="cr"><span class="cr-role">DIRECTOR · 策划</span><span class="cr-name">X</span><span class="cr-id">@MAKE STUDIO · ID 0002 · JOINED 2025</span></div>
+  <section class="sec" id="sec-mem">
+    <div class="sh"><span class="sh-n">05</span><h2 class="sh-t">成员</h2><span class="sh-en">Members</span></div>
+    <div class="credits">
+      <div class="cr" data-in><span class="cr-role">Founder · 主理人 · 音乐人</span><span class="cr-name">dangao_w</span><span class="cr-id">ID 0001 · Joined 2023</span></div>
+      <div class="cr" data-in><span class="cr-role">Director · 策划</span><span class="cr-name">X</span><span class="cr-id">ID 0002 · Joined 2025</span></div>
     </div>
   </section>
 
   <!-- ============ 06 联系 ============ -->
-  <section class="sec" id="sec-con" data-ch="06">
-    <div class="sh"><span class="sh-ch">CH.06</span><span class="sh-rule"></span><span class="sh-tc">00:01:09:15</span>
-      <h2 class="sh-t">联系</h2><span class="sh-en">CONTACT · 点一下复制</span></div>
-    <div class="label" data-in>
-      <div class="label-h"><span>IF FOUND, PLEASE RETURN TO</span><span>拾到请寄回</span></div>
-      <button class="row" type="button" data-copy="makestudio_qz@outlook.com"><span class="row-k">EMAIL</span><span class="row-v">makestudio_qz@outlook.com</span><span class="row-c">COPY</span></button>
-      <button class="row" type="button" data-copy="@MAKEStudio/@dangao_w"><span class="row-k">BILIBILI</span><span class="row-v">@MAKEStudio / @dangao_w</span><span class="row-c">COPY</span></button>
-      <button class="row" type="button" data-copy="538460781"><span class="row-k">QQ 粉丝群</span><span class="row-v">538460781</span><span class="row-c">COPY</span></button>
-      <button class="row" type="button" data-copy="Hebei, CN"><span class="row-k">LOCATION</span><span class="row-v">河北 · Hebei, CN</span><span class="row-c">COPY</span></button>
-      <button class="row" type="button" data-copy="Always open"><span class="row-k">HOURS</span><span class="row-v">全天营业 · Always open</span><span class="row-c">COPY</span></button>
+  <section class="sec" id="sec-con">
+    <div class="sh"><span class="sh-n">06</span><h2 class="sh-t">联系</h2><span class="sh-en">Contact</span><span class="sh-r">点一行，复制</span></div>
+    <div class="contact" data-in>
+      <button class="row" type="button" data-copy="makestudio_qz@outlook.com"><span class="row-k">Email</span><span class="row-v">makestudio_qz@outlook.com</span><span class="row-c">复制</span></button>
+      <button class="row" type="button" data-copy="@MAKEStudio/@dangao_w"><span class="row-k">Bilibili</span><span class="row-v">@MAKEStudio / @dangao_w</span><span class="row-c">复制</span></button>
+      <button class="row" type="button" data-copy="538460781"><span class="row-k">QQ 粉丝群</span><span class="row-v">538460781</span><span class="row-c">复制</span></button>
+      <button class="row" type="button" data-copy="Hebei, CN"><span class="row-k">Location</span><span class="row-v">河北 · Hebei, CN</span><span class="row-c">复制</span></button>
+      <button class="row" type="button" data-copy="Always open"><span class="row-k">Hours</span><span class="row-v">全天营业 · Always open</span><span class="row-c">复制</span></button>
     </div>
   </section>
 
   <!-- ============ 07 留言 ============ -->
-  <section class="sec" id="sec-com" data-ch="07">
-    <div class="sh"><span class="sh-ch">CH.07</span><span class="sh-rule"></span><span class="sh-tc">00:01:21:09</span>
-      <h2 class="sh-t">留言</h2><span class="sh-en">COMMUNITY · 答录机</span></div>
-    <div class="machine" id="machine" data-in>
-      <div class="machine-h"><span class="mh-rec"><i></i>REC</span><span>请在哔声后留言 · 说说你想听的</span><span class="mh-beep">BEEP ▮</span></div>
-      <div class="waline" id="waline"></div>
-    </div>
+  <section class="sec" id="sec-com">
+    <div class="sh"><span class="sh-n">07</span><h2 class="sh-t">留言</h2><span class="sh-en">Community</span><span class="sh-r">说说你想听的</span></div>
+    <div class="comments" data-in><div class="waline" id="waline"></div></div>
   </section>
 
-  <footer class="foot-wrap" data-ch="END">
-    <p class="eot">END OF TAPE</p>
-    <p class="eot-osd">■ STOP</p>
-    <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
-    <div class="foot-entry-row">
-      <button class="ver-entry" id="ver-entry" type="button" aria-label="查看更新日志">v5.0.0</button>
-      <button class="ver-entry" id="ach-entry" type="button" aria-label="查看成就">成就</button>
+  <footer class="foot-wrap">
+    <p class="foot-word" aria-hidden="true">MAKE STUDIO</p>
+    <div class="foot-row">
+      <p class="foot">© <span id="foot-year">2026</span> <span class="brand">MAKE STUDIO</span> · Made with <span class="foot-luvv">luvv</span> &amp; <span class="foot-fl">FL Studio</span></p>
+      <div class="foot-entry-row">
+        <button class="ver-entry" id="ver-entry" type="button" aria-label="查看更新日志">v5.0.0</button>
+        <button class="ver-entry" id="ach-entry" type="button" aria-label="查看成就">成就</button>
+      </div>
     </div>
   </footer>
 </main>
 
-<!-- 更新日志（录像机屏幕菜单） -->
+<!-- 更新日志 -->
 <div class="log-modal" id="log-modal" hidden>
   <div class="log-card">
     <div class="log-head">
-      <span class="log-title">TAPE LOG · 更新日志</span>
+      <span class="log-title">更新日志 <em>Changelog</em></span>
       <button class="log-close" id="log-close" type="button" aria-label="关闭">✕</button>
     </div>
     <div class="log-body">
       <div class="log-line">MAKE STUDIO // 更新日志</div>
       <div class="log-line dim">────────────────────</div>
       <div class="log-ver-row"><span class="log-ver">v5.0.0</span><span class="log-date">2026-10-09</span></div>
-      <div class="log-item">+ 全站换新：一盘录像带</div>
+      <div class="log-item">+ 全站换新：首页是《谎话》MV 的画面</div>
       <div class="log-item">+ 作品：《无解》《FLY》有封面了</div>
-      <div class="log-item">+ 首页多了下一盘带：《谎话》10.17</div>
+      <div class="log-item">+ 首页多了《谎话》首发倒数</div>
       <div class="log-item">* 以前解锁的成就都还在</div>
       <div class="log-item">* 代码拆成多个文件，打开更快</div>
       <div class="log-ver-row"><span class="log-ver">v4.1.0</span><span class="log-date">2026-10-08</span></div>
@@ -268,21 +247,20 @@
   </div>
 </div>
 
-<!-- 站内播放：底部小卡座 -->
+<!-- 站内播放：底部播放条 -->
 <div id="mp-bar" role="region" aria-label="音乐播放器">
   <div class="mp-main">
-    <div class="mp-reels" aria-hidden="true"><i></i><i></i></div>
     <div class="mp-cover"><img id="mp-cover" src="assets/cover-huijin.jpg" alt="封面"></div>
     <div class="mp-info">
       <div class="mp-name" id="mp-name"></div>
       <div class="mp-sub"><span class="mp-dot"></span><span id="mp-state">等待播放</span></div>
     </div>
     <div class="mp-ctrl">
-      <button class="mp-btn" id="mp-prev" type="button" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M6 4h3.6v16H6z"></path><path d="M20 5v14l-10-7z"></path></svg></button>
-      <button class="mp-btn mp-play" id="mp-toggle" type="button" aria-label="播放 / 暂停"><svg viewBox="0 0 24 24"><polygon points="7,4 21,12 7,20"></polygon></svg></button>
-      <button class="mp-btn" id="mp-next" type="button" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="M14.4 4H18v16h-3.6z"></path><path d="M4 5v14l10-7z"></path></svg></button>
-      <button class="mp-btn stroke" id="mp-loop" type="button" aria-label="单曲循环：关" title="单曲循环"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M17 2l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></button>
-      <button class="mp-btn stroke" id="mp-close" type="button" aria-label="关闭播放器"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      <button class="mp-btn" id="mp-prev" type="button" aria-label="上一首"><svg viewBox="0 0 24 24"><path d="M6 5h2.4v14H6z"></path><path d="M19 5.5v13L9 12z"></path></svg></button>
+      <button class="mp-btn mp-play" id="mp-toggle" type="button" aria-label="播放 / 暂停"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"></polygon></svg></button>
+      <button class="mp-btn" id="mp-next" type="button" aria-label="下一首"><svg viewBox="0 0 24 24"><path d="M15.6 5H18v14h-2.6z"></path><path d="M5 5.5v13L15 12z"></path></svg></button>
+      <button class="mp-btn stroke" id="mp-loop" type="button" aria-label="单曲循环：关" title="单曲循环"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></button>
+      <button class="mp-btn stroke" id="mp-close" type="button" aria-label="关闭播放器"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     </div>
   </div>
   <div class="mp-prog">
@@ -293,12 +271,12 @@
 </div>
 <audio id="mp-audio" preload="none"></audio>
 
-<!-- 站内播放：B 站视频弹窗（CRT 开机） -->
+<!-- 站内播放：B 站视频弹窗 -->
 <div id="vid-modal" hidden>
   <div class="vid-box">
     <div class="vid-head">
       <div class="vid-title" id="vid-n"></div>
-      <div class="vid-head-r"><span class="vid-tag">BILIBILI</span><button class="vid-close" id="vid-close" type="button" aria-label="关闭视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+      <div class="vid-head-r"><span class="vid-tag">Bilibili</span><button class="vid-close" id="vid-close" type="button" aria-label="关闭视频"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
     </div>
     <div class="vid-stage"><iframe id="vid-frame" title="MAKE STUDIO 视频" allow="autoplay; fullscreen; encrypted-media" allowfullscreen referrerpolicy="strict-origin"></iframe></div>
   </div>
@@ -323,12 +301,12 @@
   </div>
 </div>
 
-<!-- 成就：解锁提示 + 录像机菜单式总览 -->
+<!-- 成就：解锁提示 + 总览 -->
 <div class="ach-toast-stack" id="ach-toasts" aria-live="polite"></div>
 <div class="log-modal" id="ach-modal" hidden>
   <div class="log-card">
     <div class="log-head">
-      <span class="log-title">MENU · 成就</span>
+      <span class="log-title">成就 <em>Achievements</em></span>
       <button class="log-close" id="ach-close" type="button" aria-label="关闭">✕</button>
     </div>
     <div class="log-body">
@@ -343,7 +321,6 @@
 
 <script src="js/achievements.js"></script>
 <script src="js/site.js"></script>
-<script src="js/rain.js"></script>
 <script src="js/player.js"></script>
 <script src="js/changelog.js"></script>
 <script src="js/mail.js"></script>
