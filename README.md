@@ -62,9 +62,6 @@ python -m http.server 8765
 │   └── comments.js                   # Waline 评论
 ├── html/
 │   └── render.html / render.js        # 《谎话》MV 发布倒数页：倒数到 2026-10-17 00:00（香港时间），到点闪回一次 MV 后显示 Stand by.（?demo 试看）
-├── backup/                           # 历史备份（不回滚可忽略）
-│   ├── index.backup.html             # 删除 CRT 彩蛋/成就前的备份，供回滚参考
-│   └── make-studio-decrypt-backup.html # 历史活动解密版本备份
 ├── api/
 │   └── signal.js                     # 邮件回信函数（Vercel Function + Resend，可选）
 ├── tools/
