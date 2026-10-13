@@ -22,7 +22,7 @@ MAKE STUDIO 音乐工作室官方网站。一个单文件、零框架、零构�
 - **解密终端**：页脚 `terminal.` 入口进入 MS-DOS 风格终端，输入 `decode` 进入 LSB 隐写解码页（`lsb.html`）
 - **LSB 隐写解码**：纯浏览器本地解码，上传图片即可从像素最低位抽出隐藏信息，数据不上传
 - **无障碍**：播放器 / 弹窗带 ARIA 标注，支持 Escape 与焦点管理
-- **《谎话》发布倒数页（`html/render.html`）**：MV 自己的雨夜 + 录像带取景器风格，实时倒数到 2026-10-17 00:00（香港时间）发布，网络时间校准；到点整页闪回一次 MV 后显示 Stand by.（每个浏览器只放一次，`?demo` 试看）。主页连点时钟 6 次进入
+- **《谎话》发布倒数页（`html/render.html`）**：MV 自己的雨夜 + 录像带取景器风格，原定 2026-10-17 00:00（香港时间）发布，2026-10-13 提前发了，页面已改成已发布（10.13），网络时间校准；到点整页闪回一次 MV 后显示 Stand by.（每个浏览器只放一次，`?demo` 试看）。主页连点时钟 6 次进入
 - **自托管字体**：Caveat / JetBrains Mono / Orbitron / Saira Extra Condensed 全部本地 `woff2`，零外链、首次加载不因字体卡住
 - **无缝背景音乐（发布倒数页）**：Web Audio `loop` 整段无缝循环不卡顿；默认关，点左下角开关才下载播放
 
@@ -51,7 +51,7 @@ python -m http.server 8765
 .
 ├── index.html                        # 主站点（全部样式与逻辑内置）
 ├── html/
-│   └── render.html / render.js        # 《谎话》MV 发布倒数页：倒数到 2026-10-17 00:00（香港时间），到点闪回一次 MV 后显示 Stand by.（?demo 试看）
+│   └── render.html / render.js        # 《谎话》MV 发布页：2026-10-13 已发布（原定 10-17），打开时闪回一次 MV 后显示 Stand by.（?demo 试看倒数）
 ├── arg/                              # 解密活动页面
 │   ├── lsb.html                      # LSB 隐写解码页（MS-DOS 风格）
 │   ├── final.html                    # 终局解密页（MS-DOS 风格）

@@ -1,5 +1,5 @@
 // 《谎话》MV 发布倒数页（html/render.html，原来的渲染进度页改的；旧的 html/countdown.html 已删）
-// 倒数到香港时间 2026-10-17 00:00 发布，进度条从 10-09 12:16 母版完成走到发布，实时更新。
+// 原定香港时间 2026-10-17 00:00 发布，10-13 提前发出来了，发布时间改成 10-13（已发布）。进度条从 10-09 12:16 母版完成走到发布。
 // 时间先用本机时钟，再用网络时间校准（本机时间不准也不会倒数错）。左下角可以打开背景音乐（默认关）。
 // 到发布时刻：整页闪回一次 MV（6 张画面，每张几十毫秒，像录像带倒带），停在「谎话」上，CRT 关机 → Stand by.
 // 过了发布时刻再打开：直接黑屏 → 闪回 → Stand by.；闪回每个浏览器只放一次，看过的人再打开直接是 Stand by.
@@ -8,10 +8,10 @@
   'use strict';
   var HK = '+08:00';
   var START = Date.parse('2026-10-09T12:16:00' + HK);                              // 母版完成
-  var END = Date.parse('2026-10-17T00:00:00' + HK);                                // 发布
+  var END = Date.parse('2026-10-13T00:00:00' + HK);                                // 发布（原定 10.17，10.13 提前发了）
   var STEPS = [
     { name: '母版渲染完成 · 1080p · 运动模糊', at: START, when: '10.09 12:16' },
-    { name: 'MV 发布', at: END, when: '10.17 00:00' }
+    { name: 'MV 发布', at: END, when: '10.13' }
   ];
   var BGM_URL = '../assets/countdown-beat.mp3', BGM_VOLUME = .13;
   // 闪回用的画面（assets/render/fb-N.jpg，按播放顺序：从片尾倒回片头），在 MV 里的时间（秒）和处理方式
@@ -62,7 +62,7 @@
     STEPS.forEach(function (s) {
       var st = t >= s.at ? 'done' : 'run';
       html += '<li class="step ' + st + '"><span class="led"></span><h2>' + s.name + '</h2>' +
-        '<span class="chip">' + (st === 'done' ? '完成' : '倒数中') + '</span>' +
+        '<span class="chip">' + (st === 'done' ? (s.at === END ? '已发布' : '完成') : '倒数中') + '</span>' +
         '<span class="when">' + s.when + '</span></li>';
     });
     $('steps').innerHTML = html;
@@ -97,7 +97,7 @@
     phase = 'standby'; document.documentElement.classList.remove('pre');
     $('main').hidden = true; $('fb').hidden = true; $('sb').hidden = false;
     $('rec').className = 'rec stby'; $('recTxt').textContent = 'STBY';
-    document.title = '谎话 · Stand by. | MAKE STUDIO';
+    document.title = '谎话 · 10.13 已发布 | MAKE STUDIO';
   }
 
   // ---------------------------------------------------------------- MV 闪回
